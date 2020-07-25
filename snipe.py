@@ -122,7 +122,7 @@ def timeSnipe(config):
 
     wait_time = snipe_time - now
     wait_time = wait_time.seconds
-    cli_ui.info(f"\nSniping \"{config['target']}\" in", wait_time, "seconds\n\n")
+    cli_ui.info(f"\n{Fore.GREEN}Sniping \"{config['target']}\" in", wait_time, "seconds\n\n", Fore.RESET)
     return snipe_time
 
 
@@ -131,7 +131,7 @@ def authenticate(email, password):
     headers = {"User-Agent": ua.random, "Content-Type": "application/json"}
     r = requests.post("https://authserver.mojang.com/authenticate", json=authenticate_json, headers=headers)
     config["username"] = r.json()["selectedProfile"]["name"]
-    return r.json()["accessToken"], r.json()["selectedProfile"]["name"], r.json()["selectedProfile"]["id"];
+    return r.json()["accessToken"], r.json()["selectedProfile"]["name"], r.json()["selectedProfile"]["id"]
 
 
 def get_questions(bearer):
@@ -173,15 +173,12 @@ def snipe():
     for _ in range(2):
         r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
         print(datetime.now())
-        print(r.status_code)
-        if r.status_code == 404:
-            print(f"{Fore.RED}[ERROR] | Failed to snipe name {Fore.RESET}")
+        if r.status_code == 404 or 400:
+            print(f"{Fore.RED}[ERROR] | Failed to snipe name", datetime.now())
         elif r.status_code == 201:
-            print(f"{Fore.GREEN} [SUCESS] || Sniped{Fore.RESET}")
+            print(f"{Fore.GREEN} [SUCESS] | Sniped", datetime.now())
         elif r.status_code == 401:
-            print(f"{Fore.RED}[ERROR] | REQUEST NOT AUTHENTICATED {Fore.RESET}")
-        else:
-            print(Fore.YELLOW, "unknown status", Fore.RESET)
+            print(f"{Fore.RED}[ERROR] | REQUEST NOT AUTHENTICATED", datetime.now())
 
 full_auth()
 snipe_time = timeSnipe(config)
@@ -192,10 +189,11 @@ while not_over:
     now = datetime.strptime(now, '%Y-%m-%dT%H:%M:%S')
     # print(datetime.now())
     if now >= snipe_time - thirty_sec and not setup_snipe:
+        full_auth()
         latency = ping("api.mojang.com")
         latency = latency * 1000 + 10
-        latency = timedelta(milliseconds=latency)
         print(latency)
+        latency = timedelta(milliseconds=latency)
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
         print("Sniping now")
@@ -203,7 +201,6 @@ while not_over:
             t = threading.Thread(target=snipe)
             t.start()
             threads.append(t)
-            sleep(.009)
 
         for thread in threads:
             thread.join()

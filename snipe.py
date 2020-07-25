@@ -174,11 +174,11 @@ def snipe():
         r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
         print(datetime.now())
         if r.status_code == 404 or 400:
-            print(f"{Fore.RED}[ERROR] | Failed to snipe name", datetime.now())
+            print(f"{Fore.RED}[ERROR] | Failed to snipe name | {r.status_code}", datetime.now())
         elif r.status_code == 201:
-            print(f"{Fore.GREEN} [SUCESS] | Sniped", datetime.now())
+            print(f"{Fore.GREEN} [SUCESS] | Sniped | {r.status_code}", datetime.now())
         elif r.status_code == 401:
-            print(f"{Fore.RED}[ERROR] | REQUEST NOT AUTHENTICATED", datetime.now())
+            print(f"{Fore.RED}[ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", datetime.now())
 
 full_auth()
 snipe_time = timeSnipe(config)
@@ -192,12 +192,12 @@ while not_over:
         full_auth()
         latency = ping("api.mojang.com")
         latency = latency * 1000 + 10
-        print(latency)
+        print(latency, "ms")
         latency = timedelta(milliseconds=latency)
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
         print("Sniping now")
-        for _ in range(20):
+        for _ in range(25):
             t = threading.Thread(target=snipe)
             t.start()
             threads.append(t)

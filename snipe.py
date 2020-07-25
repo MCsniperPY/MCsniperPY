@@ -150,8 +150,9 @@ def get_questions(bearer):
 
 def acc_setup(config, questions, uuid):
     answers = []
-    # if len(questions) == 0:
-        
+    if len(questions) == 0:
+        return
+
     for i in range(3):
         answers.append({"id": questions[i]["answer"]["id"], "answer": config["questions"][i]})
     post_answers = requests.post("https://api.mojang.com/user/security/location", json=answers, headers=auth)
@@ -171,8 +172,8 @@ def full_auth():
 
 def snipe():
     for _ in range(2):
+        print(Fore.GREEN, "sending request")
         r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
-        print(datetime.now())
         if r.status_code == 404 or 400:
             print(f"{Fore.RED}[ERROR] | Failed to snipe name | {r.status_code}", datetime.now())
         elif r.status_code == 201:
@@ -191,7 +192,7 @@ while not_over:
     if now >= snipe_time - thirty_sec and not setup_snipe:
         full_auth()
         latency = ping("api.mojang.com")
-        latency = latency * 1000 + 10
+        latency = latency * 1000 * 2 + 10
         print(latency, "ms")
         latency = timedelta(milliseconds=latency)
         setup_snipe = True
@@ -201,6 +202,7 @@ while not_over:
             t = threading.Thread(target=snipe)
             t.start()
             threads.append(t)
+            sleep(.01)
 
         for thread in threads:
             thread.join()

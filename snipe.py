@@ -122,7 +122,7 @@ def timeSnipe(config):
 
     wait_time = snipe_time - now
     wait_time = wait_time.seconds
-    cli_ui.info(f"\n{Fore.GREEN}Sniping \"{config['target']}\" in", wait_time, "seconds\n\n", Fore.RESET)
+    cli_ui.info(f"\n{Fore.GREEN} Sniping \"{config['target']}\" in", wait_time, f"seconds | Sniping at {snipe_time}\n\n", Fore.RESET)
     return snipe_time
 
 
@@ -157,10 +157,10 @@ def acc_setup(config, questions, uuid):
         answers.append({"id": questions[i]["answer"]["id"], "answer": config["questions"][i]})
     post_answers = requests.post("https://api.mojang.com/user/security/location", json=answers, headers=auth)
     if post_answers.status_code != 204:
-        print(f"{Fore.RED}Failed: {post_answers.text}{Fore.RESET}")
+        print(f"{Fore.RED} Failed: {post_answers.text} {Fore.RESET}")
         quit()
     else:
-        print(f"{Fore.GREEN}credentials for {config['username']} verified {Fore.RESET}")
+        print(f"{Fore.GREEN} credentials for {config['username']} verified {Fore.RESET} ")
 
 
 def full_auth():
@@ -171,15 +171,16 @@ def full_auth():
 
 
 def snipe():
-    for _ in range(2):
-        print(Fore.GREEN, "sending request")
-        r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
-        if r.status_code == 404 or 400:
-            print(f"{Fore.RED}[ERROR] | Failed to snipe name | {r.status_code}", datetime.now())
-        elif r.status_code == 201:
-            print(f"{Fore.GREEN} [SUCESS] | Sniped | {r.status_code}", datetime.now())
-        elif r.status_code == 401:
-            print(f"{Fore.RED}[ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", datetime.now())
+    current_agent = ua.random
+    auth["User-Agent"] = current_agent
+    print(Fore.GREEN, "sending request |", datetime.now())
+    r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
+    if r.status_code == 404 or 400:
+        print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", datetime.now())
+    elif r.status_code == 201:
+        print(f"{Fore.GREEN} [SUCESS] | Sniped | {r.status_code}", datetime.now())
+    elif r.status_code == 401:
+        print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", datetime.now())
 
 full_auth()
 snipe_time = timeSnipe(config)
@@ -192,13 +193,13 @@ while not_over:
     if now >= snipe_time - thirty_sec and not setup_snipe:
         full_auth()
         latency = ping("api.mojang.com")
-        latency = latency * 1000 * 2 + 10
+        latency = latency * 1000 * 3 + 30
         print(latency, "ms")
         latency = timedelta(milliseconds=latency)
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
         print("Sniping now")
-        for _ in range(25):
+        for _ in range(30):
             t = threading.Thread(target=snipe)
             t.start()
             threads.append(t)

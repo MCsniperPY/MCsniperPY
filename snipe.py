@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 # from requests_threads import AsyncSession
 from colorama import init, Fore
 import threading
+import random
 
 init()
 thirty_sec = timedelta(seconds=30)
@@ -173,6 +174,7 @@ def full_auth():
 def snipe():
     current_agent = ua.random
     auth["User-Agent"] = current_agent
+    auth["X-Forwarded-For"] = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
     print(Fore.GREEN, "sending request |", datetime.now())
     r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
     if r.status_code == 404 or 400:
@@ -193,7 +195,7 @@ while not_over:
     if now >= snipe_time - thirty_sec and not setup_snipe:
         full_auth()
         latency = ping("api.mojang.com")
-        latency = latency * 1000 * 3 + 30
+        latency = latency * 1000 * 3 + 30 + 2000
         print(latency, "ms")
         latency = timedelta(milliseconds=latency)
         setup_snipe = True
@@ -203,7 +205,7 @@ while not_over:
             t = threading.Thread(target=snipe)
             t.start()
             threads.append(t)
-            sleep(.01)
+            sleep(.05)
 
         for thread in threads:
             thread.join()

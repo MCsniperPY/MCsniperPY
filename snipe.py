@@ -47,59 +47,11 @@ config = json.load(open(config_path))
 
 
 # checking the json file for missing fields
-if config["target"] == '':
-    cli_ui.info(cli_ui.green, "You will now be able to select a username to snipe from namemc.", cli_ui.reset)
-    choices = []
-    min_searches = input("Minimum searches?")
-    try:
-        min_searches = int(min_searches)
-    except:
-        min_searches = input("enter an integer now please: ")
-    headers = {'User-agent': ua.random}
-    page = requests.get(f"https://namemc.com/minecraft-names?length_op=&length=3&lang=&searches={min_searches}", headers=headers)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    divs = soup.findAll("div", {"class": "row no-gutters py-1 px-3 border-top"})
-    top_div = soup.find("div", {"class": "row no-gutters py-1 px-3"})
-
-    if str(type(top_div)) == "<class 'NoneType'>":
-        cli_ui.error("there are no names with that many searches")
-        quit()
-
-    name = top_div.find("a").text
-    searches = top_div.findAll("div")[1].text
-    time = top_div.find("time").text
-    from_zone = tz.tzutc()
-    to_zone = tz.tzlocal()
-    utc = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.000Z')
-    utc = utc.replace(tzinfo=from_zone)
-    time = utc.astimezone(to_zone)
-    time = time.strftime("%Y-%m-%d %H:%M:%S")
-
-    # availability = "Availability Time"
-    # print("name".ljust(20), availability.center(20), "searches".rjust(20), "\n" + "-" * (len("name") + len(availability) + len("searches") + 20 + 20))
-    sleep(4)
-    # print(name.ljust(20), time.center(20), searches.rjust(20))
-    choices.append(name.ljust(20) + time.center(20) + searches.rjust(20))
-
-    for div in divs:
-        name = div.find("a").text
-        searches = div.findAll("div")[1].text
-        time = div.find("time").attrs["datetime"]
-        from_zone = tz.tzutc()
-        to_zone = tz.tzlocal()
-        utc = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.000Z')
-        utc = utc.replace(tzinfo=from_zone)
-        time = utc.astimezone(to_zone)
-        time = time.strftime("%Y-%m-%d %I:%M:%S")
-        # print(name.ljust(20), time.center(20), searches.rjust(20))
-        choices.append(name.ljust(20) + time.center(20) + searches.rjust(20))
-
-    # print(choices)
-    availability = "Availability Time"
-
-    config["target"] = cli_ui.ask_choice("name".ljust(20), availability.center(20), "searches".rjust(20), "\n" + "-" * (len("name") + len(availability) + len("searches") + 20 + 20), choices=choices)
-    config["target"] = config["target"].split(' ')[0]
-elif config["password"] == '':
+config["target"] = input('What name would you like to snipe? ')
+if config['email'] == '':
+    print("missing email")
+    quit()
+if config["password"] == '':
     cli_ui.error('Missing Password!')
     quit()
 
@@ -123,7 +75,7 @@ def timeSnipe(config):
 
     wait_time = snipe_time - now
     wait_time = wait_time.seconds
-    cli_ui.info(f"\n{Fore.GREEN} Sniping \"{config['target']}\" in", wait_time, f"seconds | Sniping at {snipe_time}\n\n", Fore.RESET)
+    cli_ui.info(Fore.GREEN, f"Sniping \"{config['target']}\" in", wait_time, f"seconds | Sniping at {snipe_time} {Fore.RESET}\n\n")
     return snipe_time
 
 
@@ -147,8 +99,10 @@ def get_questions(bearer):
     except TypeError:
         return questions
 
-
-
+def validate(token):
+    r = requests.post("https://authserver.mojang.com/validate", json={"accessToken": token}, headers={"User-Agent": ua.random, "Content-Type": "application/json"})
+    if r.status_code != 204:
+        print(Fore.RED, "Failed to authenticate", Fore.RESET)
 def acc_setup(config, questions, uuid):
     answers = []
     if len(questions) == 0:
@@ -169,20 +123,22 @@ def full_auth():
     config["bearer"], config["username"], uuid = authenticate(config["email"], config["password"])
     qs = get_questions(config["bearer"])
     acc_setup(config, qs, uuid)
+    validate(config["bearer"])
 
 
 def snipe():
-    current_agent = ua.random
-    auth["User-Agent"] = current_agent
-    auth["X-Forwarded-For"] = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
-    print(Fore.GREEN, "sending request |", datetime.now())
-    r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
-    if r.status_code == 404 or 400:
-        print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", datetime.now())
-    elif r.status_code == 201:
-        print(f"{Fore.GREEN} [SUCESS] | Sniped | {r.status_code}", datetime.now())
-    elif r.status_code == 401:
-        print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", datetime.now())
+    for _ in range(2):
+        current_agent = ua.random
+        auth["User-Agent"] = current_agent
+        auth["X-Forwarded-For"] = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
+        print(Fore.GREEN, "sending request |", datetime.now())
+        r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
+        if r.status_code == 404 or 400:
+            print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", datetime.now())
+        elif r.status_code == 201:
+            print(f"{Fore.GREEN} [SUCESS] | Sniped | {r.status_code}", datetime.now())
+        elif r.status_code == 401:
+            print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", datetime.now())
 
 full_auth()
 snipe_time = timeSnipe(config)
@@ -195,13 +151,13 @@ while not_over:
     if now >= snipe_time - thirty_sec and not setup_snipe:
         full_auth()
         latency = ping("api.mojang.com")
-        latency = latency * 1000 * 3 + 30 + 2000
-        print(latency, "ms")
+        latency = latency * 1000 * 3 + 30 + 3000
+        print("sniping", latency, "ms before drop time.")
         latency = timedelta(milliseconds=latency)
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
         print("Sniping now")
-        for _ in range(30):
+        for _ in range(20):
             t = threading.Thread(target=snipe)
             t.start()
             threads.append(t)

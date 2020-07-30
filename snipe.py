@@ -6,7 +6,7 @@ import requests
 import os
 import json
 import cli_ui
-from time import sleep
+from time import sleep, time
 from bs4 import BeautifulSoup
 from dateutil import tz
 from fake_useragent import UserAgent
@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from colorama import init, Fore
 import threading
 import random
+
 
 init()
 thirty_sec = timedelta(seconds=30)
@@ -75,7 +76,7 @@ def timeSnipe(config):
 
     wait_time = snipe_time - now
     wait_time = wait_time.seconds
-    cli_ui.info(Fore.GREEN, f"Sniping \"{config['target']}\" in", wait_time, f"seconds | Sniping at {snipe_time} {Fore.RESET}\n\n")
+    cli_ui.info(f"Sniping \"{config['target']}\" in", wait_time, f"seconds | Sniping at {snipe_time} (utc)\n\n")
     return snipe_time
 
 
@@ -94,8 +95,7 @@ def get_questions(bearer):
     questions = questions.json()
     try:
         if questions["errorMessage"] == "The request requires user authentication":
-            print("check your bearer token. Most likely expired or incorrect.")
-            quit()
+            print("Bearer didn't work...")
     except TypeError:
         return questions
 
@@ -113,7 +113,6 @@ def acc_setup(config, questions, uuid):
     post_answers = requests.post("https://api.mojang.com/user/security/location", json=answers, headers=auth)
     if post_answers.status_code != 204:
         print(f"{Fore.RED} Failed: {post_answers.text} {Fore.RESET}")
-        quit()
     else:
         print(f"{Fore.GREEN} credentials for {config['username']} verified {Fore.RESET} ")
 
@@ -127,41 +126,39 @@ def full_auth():
 
 
 def snipe():
-    for _ in range(2):
-        current_agent = ua.random
-        auth["User-Agent"] = current_agent
-        auth["X-Forwarded-For"] = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
-        print(Fore.GREEN, "sending request |", datetime.now())
-        r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
-        if r.status_code == 404 or 400:
-            print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", datetime.now())
-        elif r.status_code == 201:
-            print(f"{Fore.GREEN} [SUCESS] | Sniped | {r.status_code}", datetime.now())
-        elif r.status_code == 401:
-            print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", datetime.now())
+    # current_agent = ua.random
+    # auth["User-Agent"] = current_agent
+    # auth["X-Forwarded-For"] = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
+    # print(Fore.GREEN, "sending request |", datetime.now())
+    start = time()
+    r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
+    if r.status_code == 404 or 400:
+        print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", time() - start, "|", datetime.now())
+    elif r.status_code == 201:
+        print(f"{Fore.GREEN} [SUCESS] | Sniped {config['target']} onto {config['email']} | {r.status_code}", time() - start, "|", datetime.now())
+    elif r.status_code == 401:
+        print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", time() - start, "|", datetime.now())
 
 full_auth()
 snipe_time = timeSnipe(config)
-sleep(1)
 
 while not_over:
-    now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
-    now = datetime.strptime(now, '%Y-%m-%dT%H:%M:%S')
-    # print(datetime.now())
+    now = datetime.utcnow()
     if now >= snipe_time - thirty_sec and not setup_snipe:
         full_auth()
         latency = ping("api.mojang.com")
-        latency = latency * 1000 * 3 + 30 + 3000
+        latency = latency * 1000 * 3 + 1_300
         print("sniping", latency, "ms before drop time.")
         latency = timedelta(milliseconds=latency)
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
         print("Sniping now")
-        for _ in range(20):
+        for _ in range(19):
             t = threading.Thread(target=snipe)
             t.start()
             threads.append(t)
-            sleep(.05)
+            sleep(.015)
+
 
         for thread in threads:
             thread.join()

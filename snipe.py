@@ -5,7 +5,6 @@ from ping3 import ping
 import requests
 import os
 import json
-import cli_ui
 from time import sleep, time
 from bs4 import BeautifulSoup
 from dateutil import tz
@@ -53,7 +52,7 @@ if config['email'] == '':
     print("missing email")
     quit()
 if config["password"] == '':
-    cli_ui.error('Missing Password!')
+    print('Missing Password!')
     quit()
 
 
@@ -71,12 +70,12 @@ def timeSnipe(config):
         status_bar = soup.find(id="status-bar")
         info = status_bar.find_all("div", class_="col-sm-6 my-1")
         status = info[0].text.split("\n")[2]
-        cli_ui.error(f"\"{config['target']}\" is {status}. The sniper cannot claim names that are {status} so go claim it fast through https://my.minecraft.net if possible.")
+        print(f"\"{config['target']}\" is {status}. The sniper cannot claim names that are {status} so go claim it fast through https://my.minecraft.net if possible.")
         quit()
 
     wait_time = snipe_time - now
     wait_time = wait_time.seconds
-    cli_ui.info(f"Sniping \"{config['target']}\" in", wait_time, f"seconds | Sniping at {snipe_time} (utc)\n\n")
+    print(f"Sniping \"{config['target']}\" in", wait_time, f"seconds | Sniping at {snipe_time} (utc)")
     return snipe_time
 
 

@@ -133,7 +133,7 @@ def snipe():
     r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name", headers=auth, json={"name": config["target"], "password": config["password"]})
     if r.status_code == 404 or 400:
         print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", time() - start, "|", datetime.now())
-    elif r.status_code == 201:
+    elif str(r.status_code)[0] == '2':
         print(f"{Fore.GREEN} [SUCESS] | Sniped {config['target']} onto {config['email']} | {r.status_code}", time() - start, "|", datetime.now())
     elif r.status_code == 401:
         print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", time() - start, "|", datetime.now())
@@ -145,7 +145,9 @@ while not_over:
     now = datetime.utcnow()
     if now >= snipe_time - thirty_sec and not setup_snipe:
         full_auth()
-        latency = ping("api.mojang.com")
+        start_latency = time()
+        r = requests.post(f"https://api.mojang.com/user/profile/{uuid}/name")
+        latency = time() - start_latency
         latency = latency * 1000 * 3 + 1_300
         print("sniping", latency, "ms before drop time.")
         latency = timedelta(milliseconds=latency)

@@ -1,4 +1,4 @@
 config.json
 .vscode
 build
-# I have build in because I'm experimenting with converting to exe
+__pycache__

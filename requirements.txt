@@ -4,3 +4,4 @@ bs4
 fake-useragent
 colorama
 python-dateutil
+readchar

@@ -56,6 +56,13 @@ def snipe():
         print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED | {r.status_code}", time() - start, "|", datetime.now())
 
 
+#                          _               _   _                          _      
+#   _ __ _   _ _ __  _ __ (_)_ __   __ _  | |_| |__   ___    ___ ___   __| | ___ 
+#  | '__| | | | '_ \| '_ \| | '_ \ / _` | | __| '_ \ / _ \  / __/ _ \ / _` |/ _ \
+#  | |  | |_| | | | | | | | | | | | (_| | | |_| | | |  __/ | (_| (_) | (_| |  __/
+#  |_|   \__,_|_| |_|_| |_|_|_| |_|\__, |  \__|_| |_|\___|  \___\___/ \__,_|\___|
+#                                  |___/                                         
+
 print(f"""
 
 {Fore.RESET}███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ {Fore.BLUE}██████╗ ██╗   ██╗
@@ -94,9 +101,9 @@ while not_over:
     now = datetime.utcnow()
     if now >= snipe_time - thirty_sec and not setup_snipe:
         if security_questions_yes_no:
-            uuid = full_auth()
+            uuid = full_auth(config)
         if not security_questions_yes_no:
-            pass
+            no_questions_full_auth(config)
         start_latency = time()
         requests.post(f"https://api.mojang.com/user/profile/{uuid}/name")
         latency = time() - start_latency

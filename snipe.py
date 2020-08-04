@@ -101,9 +101,9 @@ while not_over:
     now = datetime.utcnow()
     if now >= snipe_time - thirty_sec and not setup_snipe:
         if security_questions_yes_no:
-            uuid = full_auth(config)
+            uuid, auth = full_auth(config)
         if not security_questions_yes_no:
-            no_questions_full_auth(config)
+            uuid, auth = no_questions_full_auth(config)
         start_latency = time()
         requests.post(f"https://api.mojang.com/user/profile/{uuid}/name")
         latency = time() - start_latency

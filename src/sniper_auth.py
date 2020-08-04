@@ -13,7 +13,6 @@ def authenticate(config):
 
 
 def get_questions(config):
-    global auth
     auth = {"Authorization": "Bearer: " + config["bearer"]}
     questions = requests.get("https://api.mojang.com/user/security/challenges", headers=auth)
     questions = questions.json()
@@ -21,7 +20,7 @@ def get_questions(config):
         if questions["errorMessage"] == "The request requires user authentication":
             print("Bearer didn't work...")
     except TypeError:
-        return questions
+        return questions, auth
 
 
 def validate(token):
@@ -30,7 +29,7 @@ def validate(token):
         print(Fore.RED, "Failed to authenticate", Fore.RESET)
 
 
-def acc_setup(config, questions, uuid):
+def acc_setup(config, questions, uuid, auth):
     answers = []
     if len(questions) == 0:
         return
@@ -46,15 +45,14 @@ def acc_setup(config, questions, uuid):
 
 def no_questions_full_auth(config):
     config["bearer"], config["username"], uuid = authenticate(config)
-    get_questions(config)
+    no, auth = get_questions(config)
     validate(config["bearer"])
-    return uuid
+    return uuid, auth
 
 
 def full_auth(config):
-    global uuid
     config["bearer"], config["username"], uuid = authenticate(config)
-    qs = get_questions(config)
-    acc_setup(config, qs, uuid)
+    qs, auth = get_questions(config)
+    acc_setup(config, qs, uuid, auth)
     validate(config["bearer"])
-    return uuid
+    return uuid, auth

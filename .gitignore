@@ -1,4 +1,5 @@
 config.json
 .vscode
 build
+accounts.txt
 __pycache__

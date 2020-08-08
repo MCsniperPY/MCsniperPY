@@ -1,6 +1,8 @@
 import requests
 from colorama import Fore
 from fake_useragent import UserAgent
+from src.util import custom_info
+
 ua = UserAgent()
 
 
@@ -19,6 +21,7 @@ def get_questions(config):
     try:
         if questions["errorMessage"] == "The request requires user authentication":
             print("Bearer didn't work...")
+
     except TypeError:
         return questions, auth
 
@@ -40,7 +43,7 @@ def acc_setup(config, questions, uuid, auth):
     if post_answers.status_code != 204:
         print(f"{Fore.RED} Failed: {post_answers.text} {Fore.RESET}")
     else:
-        print(f"{Fore.GREEN} credentials for {config['username']} verified {Fore.RESET} ")
+        custom_info(f"{Fore.GREEN}credentials for {config['email']} verified{Fore.RESET}")
 
 
 def no_questions_full_auth(config):

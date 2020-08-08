@@ -18,4 +18,4 @@ def ask_yes_no(question):
 
 
 if __name__ == '__main__':
-    print(ask_yes_no("Is 3snipe better"))
+    print(ask_yes_no("yes or no?"))

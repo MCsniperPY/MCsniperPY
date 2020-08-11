@@ -42,7 +42,7 @@ def ask_option(options):
         try:
             # takes an input using readchar's readkey function
             choice = int(readchar.readkey())
-            selection_validation = options[choice - 1]
+            options[choice - 1]
             # returns the option the user selected by list index
             return choice - 1
         except (ValueError, IndexError):

@@ -3,3 +3,5 @@ config.json
 build
 accounts.txt
 __pycache__
+venv
+.idea

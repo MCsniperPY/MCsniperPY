@@ -10,8 +10,11 @@ def authenticate(config):
     authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": config['email'], "password": config['password']}
     headers = {"User-Agent": ua.random, "Content-Type": "application/json"}
     r = requests.post("https://authserver.mojang.com/authenticate", json=authenticate_json, headers=headers)
-    config["username"] = r.json()["selectedProfile"]["name"]
-    return r.json()["accessToken"], r.json()["selectedProfile"]["name"], r.json()["selectedProfile"]["id"]
+    try:
+        uuid = r.json()["selectedProfile"]["id"]
+    except KeyError:
+        uuid = "unpaid_acc"
+    return r.json()["accessToken"], uuid
 
 
 def get_questions(config):
@@ -32,7 +35,7 @@ def validate(token):
         print(Fore.RED, "Failed to authenticate", Fore.RESET)
 
 
-def acc_setup(config, questions, uuid, auth):
+def acc_setup(config, questions, auth):
     answers = []
     if len(questions) == 0:
         return
@@ -47,15 +50,15 @@ def acc_setup(config, questions, uuid, auth):
 
 
 def no_questions_full_auth(config):
-    config["bearer"], config["username"], uuid = authenticate(config)
-    no, auth = get_questions(config)
+    config["bearer"], uuid = authenticate(config)
+    _, auth = get_questions(config)
     validate(config["bearer"])
     return uuid, auth
 
 
 def full_auth(config):
-    config["bearer"], config["username"], uuid = authenticate(config)
+    config["bearer"], uuid = authenticate(config)
     qs, auth = get_questions(config)
-    acc_setup(config, qs, uuid, auth)
+    acc_setup(config, qs, auth)
     validate(config["bearer"])
     return uuid, auth

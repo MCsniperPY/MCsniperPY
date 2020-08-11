@@ -32,7 +32,7 @@ sniped = False
 def snipe(config):
     start = time()
     if block_snipe == 0:
-        r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=auth)
+        r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=config['auth'])
     elif block_snipe == 1:
         r = requests.post(f"https://api.mojang.com/user/profile/{config['uuid']}/name", headers=config["auth"], json={"name": target_username, "password": config["password"]})
     if r.status_code == 404 or r.status_code == 400:
@@ -86,15 +86,20 @@ while not_over:
     now = datetime.utcnow()
     if now >= snipe_time - setup_x_seconds_before and not setup_snipe:
         if security_questions_yes_no:
+            custom_info('starting auth for accounts with security questions')
             i = 0
             for account in config:
-                config[i]['uuid'], auth = full_auth(account)
+                config[i]['uuid'], config[i]['auth'] = full_auth(account)
+                custom_info("part of uuid: " + config[i]["uuid"][0:15])
                 i += 1
         if not security_questions_yes_no:
+            custom_info('starting auth for accounts without security questions')
             i = 0
             for account in config:
-                config[i]['uuid'], auth = no_questions_full_auth(account)
+                config[i]['uuid'], config[i]['auth'] = no_questions_full_auth(account)
+                custom_info("part of uuid: " + config[i]["uuid"][0:15])
                 i += 1
+        custom_info('setup complete')
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
         custom_info("sniping now")

@@ -10,6 +10,7 @@ def get_accs_from_txt():
         if len(acc) == 2:
             acc_dict["email"] = acc[0]
             acc_dict["password"] = acc[1].strip("\n")
+            acc_dict["questions"] = ['', '', '']
 
         elif len(acc) == 5:
             acc_dict["email"] = acc[0]

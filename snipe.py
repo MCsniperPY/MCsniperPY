@@ -30,21 +30,21 @@ sniped = False
 
 
 # snipes based on the global target username. need to change the auth headers tho
-def snipe(config):
-    start = time()
-    if block_snipe == 0:
-        r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=config['auth'])
-    elif block_snipe == 1:
-        r = requests.post(f"https://api.mojang.com/user/profile/{config['uuid']}/name", headers=config["auth"], json={"name": target_username, "password": config["password"]})
+# def snipe(config):
+#     start = time()
+#     if block_snipe == 0:
+#         r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=config['auth'])
+#     elif block_snipe == 1:
+#         r = requests.post(f"https://api.mojang.com/user/profile/{config['uuid']}/name", headers=config["auth"], json={"name": target_username, "password": config["password"]})
 
-    if r.status_code == 404 or r.status_code == 400:
-        print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-    elif r.status_code == 204 or r.status_code == 200:
-        print(f"{Fore.GREEN} [SUCESS] | Sniped {target_username} onto {config['email']} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-    elif r.status_code == 401:
-        print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-    else:
-        print(f"{Fore.RED} [ERROR] | IDK | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+#     if r.status_code == 404 or r.status_code == 400:
+#         print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+#     elif r.status_code == 204 or r.status_code == 200:
+#         print(f"{Fore.GREEN} [SUCESS] | Sniped {target_username} onto {config['email']} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+#     elif r.status_code == 401:
+#         print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+#     else:
+#         print(f"{Fore.RED} [ERROR] | IDK | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
 
 
 print_title()
@@ -75,6 +75,7 @@ elif block_snipe == 2:
         t = threading.Thread(target=acc.authenticate)
         t.start()
         auth_threads.append(t)
+        sleep(.05)
     for thread in auth_threads:
         thread.join()
 
@@ -92,6 +93,7 @@ while not_over:
             t = threading.Thread(target=acc.authenticate)
             t.start()
             auth_threads.append(t)
+            sleep(.05)
         for thread in auth_threads:
             thread.join()
         custom_info('pre-snipe setup complete')
@@ -99,7 +101,7 @@ while not_over:
     elif now >= snipe_time - latency and not sniped:
         for acc in accounts:
             for _ in range(20):
-                t = threading.Thread(target=acc.send_request(block_snipe, target_username))
+                t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username])
                 t.start()
                 threads.append(t)
                 sleep(.015)
@@ -109,3 +111,6 @@ while not_over:
         # for thread in threads:
         #     thread.join()
     sleep(.001)
+
+input("press enter to close the program")
+# I really don't want to put that in but since so many people run by double clicking it i have to :(

@@ -158,7 +158,8 @@ class Account():
             r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth)
         elif block_snipe == 1:
             r = requests.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password})
-
+        else:
+            r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth)
         if r.status_code == 404 or r.status_code == 400:
             print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
         elif r.status_code == 204 or r.status_code == 200:

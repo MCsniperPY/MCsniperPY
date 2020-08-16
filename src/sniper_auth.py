@@ -89,6 +89,7 @@ class Account():
         self.statuses = []
 
     def questions_authenticate(self):
+        self.block_snipe_words = ["block", "snipe"]
         ua = UserAgent()
         authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
         headers = {"User-Agent": ua.random, "Content-Type": "application/json"}

@@ -63,14 +63,15 @@ for i in config:
     acc = Account(i["email"], i["password"], i["questions"])
     accounts.append(acc)
 
-block_snipe = ask_option(["Block name", "Snipe name", "Run authentication (runs automatically before snipe)"])
+block_snipe = ask_option(["Block name", "Snipe name", "Run authentication then block name (runs automatically before snipe)", "run authentication then snipe name (runs automatically before snipe)"])
+
+block_snipe_words = ["block", "snipe"]
 
 if block_snipe == 0:
     custom_info("blocking name")
 elif block_snipe == 1:
     custom_info("sniping name")
 elif block_snipe == 2:
-    # security_questions_yes_no = ask_yes_no(f"{Fore.BLUE}[input]{Fore.RESET} Does your account have security questions")
     for acc in accounts:
         t = threading.Thread(target=acc.authenticate)
         t.start()
@@ -78,12 +79,22 @@ elif block_snipe == 2:
         sleep(.05)
     for thread in auth_threads:
         thread.join()
+    block_snipe = 0
+elif block_snipe == 3:
+    for acc in accounts:
+        t = threading.Thread(target=acc.authenticate)
+        t.start()
+        auth_threads.append(t)
+        sleep(.05)
+    for thread in auth_threads:
+        thread.join()
+    block_snipe = 1
 
 # inputs | Good
-target_username = custom_input('What name would you like to snipe? ')
+target_username = custom_input(f'What name would you like to {block_snipe_words[block_snipe]}? ')
 latency = timedelta(milliseconds=int(custom_input("How many ms early should requests start sending? ")))
 
-snipe_time = timeSnipe(target_username)
+snipe_time = timeSnipe(target_username, block_snipe)
 
 
 while not_over:
@@ -104,7 +115,7 @@ while not_over:
                 t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username])
                 t.start()
                 threads.append(t)
-                sleep(.015)
+                sleep(.01)
 
         not_over = False
         sniped = True
@@ -113,5 +124,5 @@ while not_over:
     sleep(.001)
 
 sleep(3)
-input("press enter to close the program")
+custom_input("press enter to close the program: ")
 # I really don't want to put that in but since so many people run by double clicking it i have to :(

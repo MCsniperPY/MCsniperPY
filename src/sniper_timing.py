@@ -4,9 +4,10 @@ from datetime import datetime
 from src.util import custom_info, custom_input
 
 
-def timeSnipe(target):
+def timeSnipe(target, block_snipe):
     now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
     now = datetime.strptime(now, '%Y-%m-%dT%H:%M:%S')
+    block_snipe_words = ["block", "snipe"]
 
     try:
         namemc_url = f"https://namemc.com/search?q={target}"
@@ -23,12 +24,12 @@ def timeSnipe(target):
             snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
             wait_time = snipe_time - now
             wait_time = wait_time.seconds / 60
-            custom_info(f"Sniping \"{target}\" in {wait_time} minutes | Sniping at {snipe_time} (utc)")
+            custom_info(f"{block_snipe_words[block_snipe]}ing \"{target}\" in {wait_time} minutes | Sniping at {snipe_time} (utc)")
             return snipe_time
         print(f"\"{target}\" is {status}. The sniper cannot claim names that are {status} so go claim it fast through https://my.minecraft.net if possible.")
         quit()
 
     wait_time = snipe_time - now
     wait_time = wait_time.seconds
-    custom_info(f"Sniping \"{target}\" in {wait_time} seconds | Sniping at {snipe_time} (utc)")
+    custom_info(f"{block_snipe_words[block_snipe]}ing \"{target}\" in {wait_time} seconds | Sniping at {snipe_time} (utc)")
     return snipe_time

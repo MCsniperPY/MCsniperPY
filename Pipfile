@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+ping3 = "*"
+requests = "*"
+bs4 = "*"
+fake-useragent = "*"
+colorama = "*"
+python-dateutil = "*"
+readchar = "*"
+
+[requires]
+python_version = "3.8"

@@ -5,7 +5,7 @@ try:
     from src.util import custom_info
     from time import time
     from datetime import datetime
-except FileNotFoundError:
+except:
     import requests
     from colorama import Fore
     from fake_useragent import UserAgent

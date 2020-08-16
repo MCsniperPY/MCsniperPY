@@ -19,7 +19,7 @@ from src.sniper_timing import timeSnipe
 
 init()
 # pre run variables
-setup_x_seconds_before = timedelta(seconds=50)
+setup_x_seconds_before = timedelta(seconds=54)
 auth_threads = []
 threads = []
 accounts = []

@@ -136,7 +136,7 @@ class Account():
         try:
             self.access_token = r.json()["accessToken"]
         except KeyError:
-            custom_info(f"{Fore.RED}Failed to authenticate {self.email}:{r.json()}{Fore.RESET}")
+            custom_info(f"{Fore.RED}Failed to authenticate {self.email}: {r.json()}{Fore.RESET}")
             return
         self.auth = {"Authorization": "Bearer: " + self.access_token}
         r = requests.post("https://authserver.mojang.com/validate", json={"accessToken": self.access_token}, headers={"User-Agent": ua.random, "Content-Type": "application/json"})
@@ -145,6 +145,13 @@ class Account():
             return
         else:
             custom_info(f"{Fore.GREEN}credentials for {self.email} verified{Fore.RESET}")
+        r = requests.get("https://api.mojang.com/user/security/challenges",
+                         headers={"Authorization": "Bearer " + self.access_token})
+        if r.status_code == 200:
+            custom_info(f"{Fore.GREEN}credentials for {self.email} verified{Fore.RESET}")
+        else:
+            custom_info(f"{Fore.RED}Failed to authenticate {self.email}:{r.json()}{Fore.RESET}")
+            return
 
     def authenticate(self):
         if self.has_questions:

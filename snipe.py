@@ -112,5 +112,6 @@ while not_over:
         #     thread.join()
     sleep(.001)
 
+sleep(3)
 input("press enter to close the program")
 # I really don't want to put that in but since so many people run by double clicking it i have to :(

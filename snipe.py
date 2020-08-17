@@ -111,7 +111,7 @@ while not_over:
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
         for acc in accounts:
-            for _ in range(20):
+            for _ in range(27):
                 t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username])
                 t.start()
                 threads.append(t)

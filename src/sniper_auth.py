@@ -167,6 +167,7 @@ class Account():
 
     def send_request(self, block_snipe, target_username):
         start = time()
+        # print(block_snipe)
         if block_snipe == 0:
             r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth)
         elif block_snipe == 1:

@@ -76,7 +76,7 @@ elif block_snipe == 2:
         t = threading.Thread(target=acc.authenticate)
         t.start()
         auth_threads.append(t)
-        sleep(.05)
+        sleep(.5)
     for thread in auth_threads:
         thread.join()
     block_snipe = 0
@@ -92,6 +92,9 @@ elif block_snipe == 3:
 
 # inputs | Good
 target_username = custom_input(f'What name would you like to {block_snipe_words[block_snipe]}? ')
+num_reqs = int(custom_input("How many requests should be sent per account? "))
+custom_info(f"You will be {block_snipe_words[block_snipe].rstrip('e')}ing a name with {num_reqs} %s per account" % ("request" if num_reqs == 1 else "requests"))
+custom_info(f"This means you will be sending {len(accounts) * num_reqs} requests")
 latency = timedelta(milliseconds=int(custom_input("How many ms early should requests start sending? ")))
 
 snipe_time = timeSnipe(target_username, block_snipe)
@@ -110,8 +113,9 @@ while not_over:
         custom_info('pre-snipe setup complete')
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
+        print(datetime.now())
         for acc in accounts:
-            for _ in range(27):
+            for _ in range(num_reqs):
                 t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username])
                 t.start()
                 threads.append(t)

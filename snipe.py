@@ -12,9 +12,10 @@ import os
 
 # My file imports
 from src.util import print_title, ask_option, custom_input, custom_info
-from src.sniper_auth import Account
 from src.get_accs import get_accs_from_txt
 from src.sniper_timing import timeSnipe
+from src.ask_yes_no import ask_yes_no
+from src.sniper_auth import Account
 
 
 init()
@@ -95,6 +96,7 @@ target_username = custom_input(f'What name would you like to {block_snipe_words[
 num_reqs = int(custom_input("How many requests should be sent per account? "))
 custom_info(f"You will be {block_snipe_words[block_snipe].rstrip('e')}ing a name with {num_reqs} %s per account" % ("request" if num_reqs == 1 else "requests"))
 custom_info(f"This means you will be sending {len(accounts) * num_reqs} requests")
+logging_y_n = ask_yes_no("Would you like to log all outputs")
 latency = timedelta(milliseconds=int(custom_input("How many ms early should requests start sending? ")))
 
 snipe_time = timeSnipe(target_username, block_snipe)
@@ -116,7 +118,7 @@ while not_over:
         print(datetime.now())
         for acc in accounts:
             for _ in range(num_reqs):
-                t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username])
+                t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username, logging_y_n])
                 t.start()
                 threads.append(t)
                 sleep(.01)

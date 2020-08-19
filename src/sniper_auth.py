@@ -127,7 +127,7 @@ class Account():
             custom_info(f"{Fore.RED}Failed to authenticate {self.email}: {r.json()['errorMessage']}{Fore.RESET}")
             return
         else:
-            custom_info(f"{Fore.GREEN}credentials for {self.email} verified {str(self.statuses).replace(', ', ' ').replace('[', '').replace(']', '')}{Fore.RESET}")
+            custom_info(f"{Fore.GREEN}credentials for {self.email} verified {str(self.statuses).replace(', ', ' ').replace('[', '').replace(']', '')} | {self.auth['Authorization'][-10:-1]}{Fore.RESET}")
 
     def no_questions_authenticate(self):
         self.block_snipe_words = ["block", "snipe"]
@@ -154,7 +154,7 @@ class Account():
         r = requests.get("https://api.mojang.com/user/security/challenges", headers={"Authorization": "Bearer " + self.access_token})
         self.statuses.append(r.status_code)
         if r.status_code == 200:
-            custom_info(f"{Fore.GREEN}credentials for {self.email} verified | {str(self.statuses).replace(', ', ' ').replace('[', '').replace(']', '')}{Fore.RESET}")
+            custom_info(f"{Fore.GREEN}credentials for {self.email} verified | {str(self.statuses).replace(', ', ' ').replace('[', '').replace(']', '')} | {self.auth['Authorization'][-10:-1]}{Fore.RESET}")
         else:
             custom_info(f"{Fore.RED}Failed to authenticate {self.email}:{r.json()}{Fore.RESET}")
             return
@@ -164,6 +164,7 @@ class Account():
             self.questions_authenticate()
         elif not self.has_questions:
             self.no_questions_authenticate()
+        self.statuses = []
 
     def send_request(self, block_snipe, target_username):
         start = time()
@@ -177,7 +178,7 @@ class Account():
         if r.status_code == 404 or r.status_code == 400:
             print(f"{Fore.RED} [ERROR] | Failed to {self.block_snipe_words[block_snipe]} name | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
         elif r.status_code == 204 or r.status_code == 200:
-            print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe]}ed {target_username} onto {self.email} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+            print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
         elif r.status_code == 401:
             print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
         else:

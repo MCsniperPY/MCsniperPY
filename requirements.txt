@@ -5,3 +5,4 @@ fake-useragent
 colorama
 python-dateutil
 readchar
+aiohttp

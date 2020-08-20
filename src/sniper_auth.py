@@ -5,7 +5,9 @@ try:
     from src.util import custom_info
     from time import time
     from datetime import datetime
+    import aiohttp
 except:
+    import aiohttp
     import requests
     from colorama import Fore
     from fake_useragent import UserAgent
@@ -166,23 +168,43 @@ class Account():
             self.no_questions_authenticate()
         self.statuses = []
 
-    def send_request(self, block_snipe, target_username, logging_y_n):
+    async def send_request(self, block_snipe, target_username, logging_y_n, session):
         start = time()
-        # print(block_snipe)
         if block_snipe == 0:
-            r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth)
+            # r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth)
+            async with session.put("https://api.mojang.com/user/profile/agent/minecraft/name/%s" % target_username, headers=self.auth) as r:
+                await r.read()
+                if logging_y_n:
+                    if r.status == 404 or r.status == 400:
+                        print(f"{Fore.RED} [ERROR] | Failed to {self.block_snipe_words[block_snipe]} name | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                    elif r.status == 204 or r.status == 200:
+                        print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                    elif r.status == 401:
+                        print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                    else:
+                        print(f"{Fore.RED} [ERROR] | IDK | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                else:
+                    if r.status == 204:
+                        print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+        # else:
+        #     print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status}", str(time() - start)[0:10], "|", datetime.now())
         elif block_snipe == 1:
-            r = requests.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password})
+            # r = requests.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password})
+            async with session.post("https://api.mojang.com/user/profile/%s/name" % self.uuid, target_username, headers=self.auth, json={"name": target_username, "password": self.password}) as r:
+                await r.read()
+                if logging_y_n:
+                    if r.status == 404 or r.status == 400:
+                        print(f"{Fore.RED} [ERROR] | Failed to {self.block_snipe_words[block_snipe]} name | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                    elif r.status == 204 or r.status == 200:
+                        print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                    elif r.status == 401:
+                        print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                    else:
+                        print(f"{Fore.RED} [ERROR] | IDK | {r.status}", str(time() - start)[0:10], "|", datetime.now())
+                else:
+                    if r.status == 204:
+                        print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status}", str(time() - start)[0:10], "|", datetime.now())
         else:
             r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth)
-        if logging_y_n:
-            if r.status_code == 404 or r.status_code == 400:
-                print(f"{Fore.RED} [ERROR] | Failed to {self.block_snipe_words[block_snipe]} name | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-            elif r.status_code == 204 or r.status_code == 200:
-                print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-            elif r.status_code == 401:
-                print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-            else:
-                print(f"{Fore.RED} [ERROR] | IDK | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-        else:
-            print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+        
+

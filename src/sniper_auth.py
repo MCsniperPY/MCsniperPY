@@ -89,6 +89,7 @@ class Account():
         else:
             print("i have no idea what went wrong...")
         self.statuses = []
+        self.failed_auth = False
 
     def questions_authenticate(self):
         self.block_snipe_words = ["block", "snipe"]
@@ -104,6 +105,7 @@ class Account():
         try:
             self.access_token = r.json()["accessToken"]
         except KeyError:
+            self.failed_auth = True
             custom_info(f"{Fore.RED}Failed to authenticate {self.email}: {r.json()['errorMessage']}{Fore.RESET}")
             return
         self.auth = {"Authorization": "Bearer: " + self.access_token}
@@ -111,6 +113,7 @@ class Account():
         self.statuses.append(r.status_code)
         try:
             if questions["errorMessage"] == "The request requires user authentication":
+                self.failed_auth = True
                 custom_info(f"{Fore.RED}There was a problem with authentication{Fore.RESET}")
         except TypeError:
             self.questions = questions.json()
@@ -121,11 +124,13 @@ class Account():
         post_answers = requests.post("https://api.mojang.com/user/security/location", json=answers, headers=self.auth)
         self.statuses.append(r.status_code)
         if post_answers.status_code != 204:
+            self.failed_auth = True
             print(f"{Fore.RED} Failed: {post_answers.text} {Fore.RESET}")
             return
         r = requests.post("https://authserver.mojang.com/validate", json={"accessToken": self.access_token}, headers={"User-Agent": ua.random, "Content-Type": "application/json"})
         self.statuses.append(r.status_code)
         if r.status_code != 204:
+            self.failed_auth = True
             custom_info(f"{Fore.RED}Failed to authenticate {self.email}: {r.json()['errorMessage']}{Fore.RESET}")
             return
         else:
@@ -145,6 +150,7 @@ class Account():
         try:
             self.access_token = r.json()["accessToken"]
         except KeyError:
+            self.failed_auth = True
             custom_info(f"{Fore.RED}Failed to authenticate {self.email}: {r.json()}{Fore.RESET}")
             return
         self.auth = {"Authorization": "Bearer: " + self.access_token}
@@ -152,12 +158,14 @@ class Account():
         self.statuses.append(r.status_code)
         if r.status_code != 204:
             custom_info(f"{Fore.RED}Failed to authenticate {self.email}: {r.json()['errorMessage']}{Fore.RESET}")
+            self.failed_auth = True
             return
         r = requests.get("https://api.mojang.com/user/security/challenges", headers={"Authorization": "Bearer " + self.access_token})
         self.statuses.append(r.status_code)
         if r.status_code == 200:
             custom_info(f"{Fore.GREEN}credentials for {self.email} verified | {str(self.statuses).replace(', ', ' ').replace('[', '').replace(']', '')} | {self.auth['Authorization'][-10:-1]}{Fore.RESET}")
         else:
+            self.failed_auth = True
             custom_info(f"{Fore.RED}Failed to authenticate {self.email}:{r.json()}{Fore.RESET}")
             return
 

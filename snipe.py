@@ -108,10 +108,12 @@ while not_over:
             sleep(.05)
         for thread in auth_threads:
             thread.join()
+
         for acc in accounts:
             if acc.failed_auth:
                 custom_info(Fore.RED + "Removed %s from accounts because auth failed." % acc.email + Fore.RESET)
                 accounts.remove(acc)
+        total_reqs = len(accounts) * num_reqs
         custom_info('pre-snipe setup complete')
         setup_snipe = True
         loop = asyncio.get_event_loop()
@@ -119,7 +121,8 @@ while not_over:
         start = time()
         custom_info("starting requests for all accounts")
         loop.run_until_complete(send_requests())
-        custom_input("All requests have been sent. press enter to close the program: ")
+        custom_info(f"took {str(time() - start)[0:10]} seconds to send {total_reqs} requests ({total_reqs / (time() - start)} rqs / sec). All requests have been sent.")
+        custom_input("press enter to close the program: ")
         not_over = False
         sniped = True
     sleep(.001)

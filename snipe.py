@@ -6,9 +6,7 @@ from fake_useragent import UserAgent
 from colorama import init, Fore
 from time import sleep, time
 import threading
-# import requests
-import asyncio
-import aiohttp
+import requests
 import json
 import os
 
@@ -30,6 +28,24 @@ ua = UserAgent()
 not_over = True
 setup_snipe = False
 sniped = False
+
+
+# snipes based on the global target username. need to change the auth headers tho
+# def snipe(config):
+#     start = time()
+#     if block_snipe == 0:
+#         r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=config['auth'])
+#     elif block_snipe == 1:
+#         r = requests.post(f"https://api.mojang.com/user/profile/{config['uuid']}/name", headers=config["auth"], json={"name": target_username, "password": config["password"]})
+
+#     if r.status_code == 404 or r.status_code == 400:
+#         print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+#     elif r.status_code == 204 or r.status_code == 200:
+#         print(f"{Fore.GREEN} [SUCESS] | Sniped {target_username} onto {config['email']} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+#     elif r.status_code == 401:
+#         print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+#     else:
+#         print(f"{Fore.RED} [ERROR] | IDK | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
 
 
 print_title()
@@ -79,23 +95,11 @@ elif block_snipe == 3:
 target_username = custom_input(f'What name would you like to {block_snipe_words[block_snipe]}? ')
 num_reqs = int(custom_input("How many requests should be sent per account? "))
 custom_info(f"You will be {block_snipe_words[block_snipe].rstrip('e')}ing a name with {num_reqs} %s per account" % ("request" if num_reqs == 1 else "requests"))
-total_reqs = len(accounts) * num_reqs
 custom_info(f"This means you will be sending {len(accounts) * num_reqs} requests")
 logging_y_n = ask_yes_no("Would you like to log all outputs")
 latency = timedelta(milliseconds=int(custom_input("How many ms early should requests start sending? ")))
 
 snipe_time = timeSnipe(target_username, block_snipe)
-
-
-async def send_requests():
-    async with aiohttp.ClientSession() as session:
-        await asyncio.gather(*[account.send_request(block_snipe, target_username, logging_y_n, session) for account in accounts for _ in range(num_reqs)])
-        # for acc in accounts:
-        #     for _ in range(num_reqs):
-        #         t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username, logging_y_n, session])
-        #         t.start()
-        #         threads.append(t)
-        #         sleep(.01)
 
 
 while not_over:
@@ -108,21 +112,23 @@ while not_over:
             sleep(.05)
         for thread in auth_threads:
             thread.join()
-
-        for acc in accounts:
-            if acc.failed_auth:
-                custom_info(Fore.RED + "Removed %s from accounts because auth failed." % acc.email + Fore.RESET)
-                accounts.remove(acc)
-        total_reqs = len(accounts) * num_reqs
         custom_info('pre-snipe setup complete')
         setup_snipe = True
-        loop = asyncio.get_event_loop()
     elif now >= snipe_time - latency and not sniped:
-        start = time()
-        custom_info("starting requests for all accounts")
-        loop.run_until_complete(send_requests())
-        custom_info(f"took {str(time() - start)[0:10]} seconds to send {total_reqs} requests ({total_reqs / (time() - start)} rqs / sec). All requests have been sent.")
-        custom_input("press enter to close the program: ")
+        print(datetime.now())
+        for acc in accounts:
+            for _ in range(num_reqs):
+                t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username, logging_y_n])
+                t.start()
+                threads.append(t)
+                sleep(.01)
+
         not_over = False
         sniped = True
+        # for thread in threads:
+        #     thread.join()
     sleep(.001)
+
+sleep(3)
+custom_input("press enter to close the program: ")
+# I really don't want to put that in but since so many people run by double clicking it i have to :(

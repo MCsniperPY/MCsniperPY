@@ -190,7 +190,7 @@ class Account():
         #     print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status}", str(time() - start)[0:10], "|", datetime.now())
         elif block_snipe == 1:
             # r = requests.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password})
-            async with session.post("https://api.mojang.com/user/profile/%s/name" % self.uuid, target_username, headers=self.auth, json={"name": target_username, "password": self.password}) as r:
+            async with session.post("https://api.mojang.com/user/profile/%s/name" % (self.uuid), headers=self.auth, json={"name": target_username, "password": self.password}) as r:
                 await r.read()
                 if logging_y_n:
                     if r.status == 404 or r.status == 400:

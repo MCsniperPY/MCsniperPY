@@ -185,4 +185,5 @@ class Account():
             else:
                 print(f"{Fore.RED} [ERROR] | IDK | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
         else:
-            print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+            if r.ok:
+                print(f"{Fore.GREEN} [SUCCESS] | {self.block_snipe_words[block_snipe].rstrip('e')}ed {target_username} onto {self.email} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())

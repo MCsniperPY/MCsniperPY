@@ -115,7 +115,7 @@ while not_over:
         custom_info('pre-snipe setup complete')
         setup_snipe = True
     elif now >= snipe_time - latency and not sniped:
-        print(datetime.now())
+        custom_info('starting requests for all accounts')
         for acc in accounts:
             for _ in range(num_reqs):
                 t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username, logging_y_n])
@@ -125,10 +125,11 @@ while not_over:
 
         not_over = False
         sniped = True
-        # for thread in threads:
-        #     thread.join()
+        for thread in threads:
+            thread.join()
+        custom_info('all requests have been sent')
     sleep(.001)
 
-sleep(3)
+
 custom_input("press enter to close the program: ")
 # I really don't want to put that in but since so many people run by double clicking it i have to :(

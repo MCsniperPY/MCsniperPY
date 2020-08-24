@@ -64,7 +64,7 @@ for i in config:
     acc = Account(i["email"], i["password"], i["questions"])
     accounts.append(acc)
 
-block_snipe = ask_option(["Block name", "Snipe name", "Run authentication then block name (runs automatically before snipe)", "run authentication then snipe name (runs automatically before snipe)"])
+block_snipe = ask_option(["Block name", "Snipe name", "Run authentication then block name (runs automatically before snipe)", "Run authentication then snipe name (runs automatically before snipe)"])
 
 block_snipe_words = ["block", "snipe"]
 

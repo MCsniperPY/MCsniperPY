@@ -167,7 +167,7 @@ class Account:
                         files = {"model": "slim", "file": ("Skin.png", open("Skin.png", "rb"))}
                         async with session.put(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as response2:
                             if response2.status == 204 or response2.status == 200:
-                                logging.info(f"{Fore.WHTIE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
+                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
                             await response2.read()
                     except FileNotFoundError:
                         logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} no skin change")

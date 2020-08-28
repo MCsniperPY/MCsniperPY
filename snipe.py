@@ -152,7 +152,7 @@ class Account:
         await asyncio.sleep(0)
         # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
         async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
-            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
+            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
             await response.read()
 
     async def snipe_req(self, session, target_username):
@@ -160,10 +160,10 @@ class Account:
         # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
         try:
             async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
-                logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
+                logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
                 await response.read()
         except AttributeError:
-            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names.')
+            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names. | {Fore.YELLOW}or ratelimit{Fore.RESET}')
 
 
 def gather_info():

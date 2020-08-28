@@ -162,6 +162,17 @@ class Account:
             async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
                 logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
                 await response.read()
+                if response.status == 204:
+                    try:
+                        files = {"model": "slim", "file": ("Skin.png", open("Skin.png", "rb"))}
+                        async with session.put(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, files=files) as response2:
+                            if response2.status == 204 or response2.status == 200:
+                                logging.info(f"{Fore.WHTIE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
+                            await response2.read()
+                    except FileNotFoundError:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} no skin change")
+                    except:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email}")
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names. | {Fore.YELLOW}or ratelimit{Fore.RESET}')
 

@@ -152,7 +152,7 @@ class Account:
         await asyncio.sleep(0)
         # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
         async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
-            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET} {Fore.GREEN if str(response.status)[0] == str(2) else Fore.RED} {self.email} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
+            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
             await response.read()
 
     async def snipe_req(self, session, target_username):
@@ -236,6 +236,7 @@ class session:
                 self.ran = True
             elif now >= self.setup_time and not self.setup:
                 loop.run_until_complete(self.run_auth())
+                custom_info("setup complete")
                 self.setup = True
             time.sleep(.00001)
 
@@ -255,9 +256,9 @@ class session:
             await asyncio.wait(self.coros)
             end = time.time()
             elapsed_time = end - start
-            rq_sec = self.num_reqs / elapsed_time
+            rq_sec = self.num_reqs * len(accounts) / elapsed_time
             times.append(rq_sec)
-            logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs} requests")
+            logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
 
     async def run_auth(self):
         async with aiohttp.ClientSession() as session:

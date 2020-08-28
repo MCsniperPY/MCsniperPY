@@ -165,7 +165,7 @@ class Account:
                 if response.status == 204:
                     try:
                         files = {"model": "slim", "file": ("Skin.png", open("Skin.png", "rb"))}
-                        async with session.put(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, files=files) as response2:
+                        async with session.put(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as response2:
                             if response2.status == 204 or response2.status == 200:
                                 logging.info(f"{Fore.WHTIE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
                             await response2.read()

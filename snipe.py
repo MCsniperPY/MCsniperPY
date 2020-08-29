@@ -152,7 +152,8 @@ class Account:
         await asyncio.sleep(0)
         # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
         async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
-            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
+            now = datetime.now()
+            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
             await response.read()
 
     async def snipe_req(self, session, target_username):
@@ -160,8 +161,26 @@ class Account:
         # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
         try:
             async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
-                logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
+                now = datetime.now()
+                logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
                 await response.read()
+                if response.status == 204:
+                    with open("success.txt", "a") as f:
+                        f.write(f"{self.email}:{self.password} - {target_username}\n")
+                    try:
+                        files = {"model": "slim", "url": open("skin.txt", "r").read().strip()}
+                        auth = self.auth
+                        auth["Content-Type"] = "application/x-www-form-urlencoded"
+                        async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as r:
+                            if r.status == 204 or r.status == 200:
+                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
+                            else:
+                                logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email} | {r.status}")
+                                logging.info(await r.json())
+                    except FileNotFoundError:
+                        pass
+                    except:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}i have no idea{Fore.WHITE}]{Fore.RESET} i dont know what happend but it failed")
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names. | {Fore.YELLOW}or ratelimit{Fore.RESET}')
 

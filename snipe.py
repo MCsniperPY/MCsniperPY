@@ -1,135 +1,288 @@
-# This code is written by Kqzz on github (github.com/kqzz) and CANNOT be distributed in closed source versions unless specifically given permission.
-# If you fork this repo or use the code please join my discord and share your project. Discord: https://discord.gg/jZm4qNF
-
+import aiohttp
+import logging
+from colorama import Fore, init
 from datetime import datetime, timedelta
-from fake_useragent import UserAgent
-from colorama import init, Fore
-from time import sleep, time
-import threading
-import requests
+import asyncio
+from os import path
+import time
+from bs4 import BeautifulSoup
 import json
-import os
-
-# My file imports
-from src.util import print_title, ask_option, custom_input, custom_info
-from src.get_accs import get_accs_from_txt
-from src.sniper_timing import timeSnipe
-from src.ask_yes_no import ask_yes_no
-from src.sniper_auth import Account
-
 
 init()
-# pre run variables
-setup_x_seconds_before = timedelta(seconds=54)
-auth_threads = []
-threads = []
-accounts = []
-ua = UserAgent()
-not_over = True
-setup_snipe = False
-sniped = False
+
+logging.basicConfig(level=logging.INFO, format='%(message)s')
+times = []
 
 
-# snipes based on the global target username. need to change the auth headers tho
-# def snipe(config):
-#     start = time()
-#     if block_snipe == 0:
-#         r = requests.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=config['auth'])
-#     elif block_snipe == 1:
-#         r = requests.post(f"https://api.mojang.com/user/profile/{config['uuid']}/name", headers=config["auth"], json={"name": target_username, "password": config["password"]})
+def custom_info(message):
+    logging.info(f"{Fore.BLUE}[info] {Fore.RESET}{message}")
 
-#     if r.status_code == 404 or r.status_code == 400:
-#         print(f"{Fore.RED} [ERROR] | Failed to snipe name | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-#     elif r.status_code == 204 or r.status_code == 200:
-#         print(f"{Fore.GREEN} [SUCESS] | Sniped {target_username} onto {config['email']} | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-#     elif r.status_code == 401:
-#         print(f"{Fore.RED} [ERROR] | REQUEST NOT AUTHENTICATED OR RATELIMIT | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
-#     else:
-#         print(f"{Fore.RED} [ERROR] | IDK | {r.status_code}", str(time() - start)[0:10], "|", datetime.now())
+
+def print_title():
+    print(f"""
+
+{Fore.CYAN}┌──────────────────────────────────────────────────────────────────────────────────────┐
+{Fore.CYAN}│{Fore.RESET} ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ {Fore.BLUE}██████╗ ██╗   ██╗
+{Fore.CYAN}│{Fore.RESET} ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗{Fore.BLUE}██╔══██╗╚██╗ ██╔╝
+{Fore.CYAN}│{Fore.RESET} ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝{Fore.BLUE}██████╔╝ ╚████╔╝{Fore.CYAN}     |
+|{Fore.RESET} ██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗{Fore.BLUE}██╔═══╝   ╚██╔╝     {Fore.CYAN} │
+{Fore.RESET}  ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║{Fore.BLUE}██║        ██║      {Fore.CYAN} │
+{Fore.RESET}  ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝{Fore.BLUE}╚═╝        ╚═╝      {Fore.CYAN} │
+{Fore.CYAN}└──────────────────────────────────────────────────────────────────────────────────────┘
+{Fore.GREEN}Developed by @Kqzz#0001 on Discord {Fore.BLUE}| Discord server: https://discord.gg/jZm4qNF
+{Fore.GREEN}THIS SNIPER IS 100% FREE ON GITHUB""", Fore.RESET)
+
+
+def menu(options):
+    i = 1
+    # loop through options and print
+    custom_info(f"select a number 1 - {len(options)}")
+    for option in options:
+        print(f"{i}). {option}")
+        i += 1
+    # main function loop
+    # Doesn't end until a correct answer is given
+    while True:
+        try:
+            # takes an input using readchar's readkey function
+            choice = int(input("> "))
+            options[choice - 1]
+            # returns the option the user selected by list index
+            return choice - 1
+        except (ValueError, IndexError):
+            print("please enter a valid option")
+
+
+def custom_input(message):
+    print(f"{Fore.BLUE}[input] {Fore.RESET}", end='')
+    input_return = input(message)
+    return input_return
+
+
+def check_resp(status):
+    if str(status)[0] == str(2):
+        return True
+    else:
+        return False
+
+
+def resp_error(message):
+    print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
+
+
+# def get_proxies():
+#     with open("working.txt", "r") as f:
+#         prox = f.readlines()
+#         proxies = []
+#         for proxy in prox:
+#             proxies.append(proxy.strip())
+#         return proxies
+
+
+async def time_snipe(target, block_snipe):
+    now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+    now = datetime.strptime(now, '%Y-%m-%dT%H:%M:%S')
+    block_snipe_words = ["snipe", "block"]
+    async with aiohttp.ClientSession() as session:
+        try:
+            # namemc_url = f"https://namemc.com/search?q={target}"
+            async with session.get(f"https://namemc.com/search?q={target}") as page:
+                # page = requests.get(namemc_url)
+                soup = BeautifulSoup(await page.text(), 'html.parser')
+                snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
+                snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
+        except AttributeError:
+            status_bar = soup.find(id="status-bar")
+            info = status_bar.find_all("div", class_="col-sm-6 my-1")
+            status = info[0].text.split("\n")[2]
+            if status.lower().rstrip('*') == 'available':
+                snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
+                snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
+                wait_time = snipe_time - now
+                wait_time = wait_time.seconds / 60
+                custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+                return snipe_time
+            print(f"\"{target}\" is {status}. The sniper cannot claim names that are {status} so go claim it fast through https://my.minecraft.net if possible.")
+            quit()
+
+        wait_time = snipe_time - now
+        wait_time = wait_time.seconds
+        custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+        return snipe_time
+
+
+class Account:
+    def __init__(self, email, password, questions=[]):
+        self.email = email
+        self.password = password
+        self.questions = questions
+        self.authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
+        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
+
+    async def authenticate(self, session):
+        # logging.info(f"{Fore.WHITE}[{Fore.CYAN}INFO{Fore.WHITE}]{Fore.RESET} starting auth for {Fore.CYAN}{self.email}{Fore.RESET}")
+        async with session.post("https://authserver.mojang.com/authenticate", json=self.authenticate_json, headers=self.headers) as r:
+            if check_resp(r.status):
+                resp_json = await r.json()
+                try:
+                    self.uuid = resp_json["selectedProfile"]["id"]
+                except KeyError:
+                    custom_info(f"{self.email} is unpaid and cannot snipe names. please make sure you are blocking.")
+                self.auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
+                self.access_token = resp_json["accessToken"]
+            else:
+                resp_error(f"invalid credentials | {self.email}")
+                return
+        async with session.get("https://api.mojang.com/user/security/challenges", headers=self.auth) as r:
+            answers = []
+            if check_resp(r.status):
+                resp_json = await r.json()
+                if resp_json == []:
+                    logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.GREEN} signed in to {self.email}{Fore.RESET}")
+                else:
+                    for x in range(3):
+                        answers.append({"id": resp_json[x]["answer"]["id"], "answer": self.questions[x]})
+                    async with session.post("https://api.mojang.com/user/security/location", json=answers, headers=self.auth) as r:
+                        if check_resp(r.status):
+                            logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.GREEN} signed in to {self.email}{Fore.RESET}")
+                        else:
+                            resp_error(f"security questions incorrect | {self.email}")
+
+    async def block_req(self, session, ctarget_username):
+        await asyncio.sleep(0)
+        # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
+        async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
+            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
+            await response.read()
+
+    async def snipe_req(self, session, target_username):
+        await asyncio.sleep(0)
+        # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
+        try:
+            async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
+                logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{datetime.utcnow()}{Fore.RESET}")
+                await response.read()
+                if response.status == 204:
+                    try:
+                        files = {"model": "slim", "file": ("Skin.png", open("Skin.png", "rb"))}
+                        async with session.put(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as response2:
+                            if response2.status == 204 or response2.status == 200:
+                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
+                            await response2.read()
+                    except FileNotFoundError:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} no skin change")
+                    except:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email}")
+        except AttributeError:
+            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names. | {Fore.YELLOW}or ratelimit{Fore.RESET}')
+
+
+def gather_info():
+    block_snipe = menu(options=["Snipe name", "Block Name"])
+    target_username = custom_input(f"What name you would you like to {['snipe', 'block'][block_snipe]}: ")
+    return block_snipe, target_username
+
+
+def load_accounts_file():
+    accounts = []
+    if not path.exists("accounts.txt"):
+        print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} accounts.txt not found | creating one")
+        open('accounts.txt', 'w+')
+        input("Press any key to reload accounts. ")
+        load_accounts_file()
+    else:
+        accounts = open('accounts.txt').readlines()
+        if len(accounts) == 0:
+            print(f"Accounts not found in accounts.txt file please add accounts with format (email:pass) or (email:pass:q1:q2:q3)")
+            input("Press any key to reload accounts.")
+            load_accounts_file()
+
+    return accounts
+
+
+def load_accounts():
+    accounts = []
+    for acc in load_accounts_file():
+        acc = acc.rstrip().split(":")
+        if acc == ['']:
+            continue
+        try:
+            accounts.append(Account(acc[0], acc[1], [acc[2], acc[3], acc[4]]))
+        except IndexError:
+            accounts.append(Account(acc[0], acc[1]))
+    return accounts
+
+
+class session:
+    block_snipe = ["Snipe", "block"]
+
+    def __init__(self, target_username, accounts, block_snipe):
+        self.target_username = target_username
+        self.accounts = accounts
+        self.block_snipe = block_snipe
+        loop = asyncio.get_event_loop()
+        self.drop_time = loop.run_until_complete(time_snipe(self.target_username, self.block_snipe))
+        self.setup_time = self.drop_time - timedelta(seconds=50)
+        self.setup = False
+        self.ran = False
+        settings_json = json.loads(open("settings.json", "r").read())
+        if settings_json["custom_delay"]:
+            self.drop_time = self.drop_time - timedelta(milliseconds=int(custom_input("Custom delay in ms: ")))
+        else:
+            if self.block_snipe == 0:
+                self.drop_time = self.drop_time - timedelta(milliseconds=900)
+            elif self.block_snipe == 1:
+                self.drop_time = self.drop_time - timedelta(milliseconds=170)
+
+    def run(self):
+        loop = asyncio.get_event_loop()
+        # input("press enter to run auth")
+        # loop.run_until_complete(self.run_auth())
+        # input("press enter to run requests")
+        # loop.run_until_complete(self.send_requests())
+        while True:
+            now = datetime.utcnow()
+            if now >= self.drop_time and not self.ran:
+                loop.run_until_complete(self.send_requests())
+                custom_input("press enter to quit: ")
+                quit()
+                self.ran = True
+            elif now >= self.setup_time and not self.setup:
+                loop.run_until_complete(self.run_auth())
+                custom_info("setup complete")
+                self.setup = True
+            time.sleep(.00001)
+
+    async def send_requests(self):
+        async with aiohttp.ClientSession() as session:
+            if self.block_snipe == 0:
+                self.num_reqs = 20
+                self.coros = [
+                    acc.snipe_req(session, self.target_username) for acc in self.accounts for _ in range(self.num_reqs)
+                ]
+            elif self.block_snipe == 1:
+                self.num_reqs = 3
+                self.coros = [
+                    acc.block_req(session, self.target_username) for acc in self.accounts for _ in range(self.num_reqs)
+                ]
+            start = time.time()
+            await asyncio.wait(self.coros)
+            end = time.time()
+            elapsed_time = end - start
+            rq_sec = self.num_reqs * len(accounts) / elapsed_time
+            times.append(rq_sec)
+            logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
+
+    async def run_auth(self):
+        async with aiohttp.ClientSession() as session:
+            coros = [
+                acc.authenticate(session) for acc in self.accounts
+            ]
+            await asyncio.wait(coros)
 
 
 print_title()
-
-# loading the accounts
-try:
-    full_path = os.path.realpath(__file__)
-    full_path = os.path.dirname(full_path)
-    config_path = os.path.join(full_path, "config.json")
-    config = json.load(open(config_path))
-except FileNotFoundError:
-    accounts_path = os.path.join(full_path, "accounts.txt")
-    config = get_accs_from_txt()
-
-for i in config:
-    acc = Account(i["email"], i["password"], i["questions"])
-    accounts.append(acc)
-
-block_snipe = ask_option(["Block name", "Snipe name", "Run authentication then block name (runs automatically before snipe)", "Run authentication then snipe name (runs automatically before snipe)"])
-
-block_snipe_words = ["block", "snipe"]
-
-if block_snipe == 0:
-    custom_info("blocking name")
-elif block_snipe == 1:
-    custom_info("sniping name")
-elif block_snipe == 2:
-    for acc in accounts:
-        t = threading.Thread(target=acc.authenticate)
-        t.start()
-        auth_threads.append(t)
-        sleep(.5)
-    for thread in auth_threads:
-        thread.join()
-    block_snipe = 0
-elif block_snipe == 3:
-    for acc in accounts:
-        t = threading.Thread(target=acc.authenticate)
-        t.start()
-        auth_threads.append(t)
-        sleep(.05)
-    for thread in auth_threads:
-        thread.join()
-    block_snipe = 1
-
-# inputs | Good
-target_username = custom_input(f'What name would you like to {block_snipe_words[block_snipe]}? ')
-num_reqs = int(custom_input("How many requests should be sent per account? "))
-custom_info(f"You will be {block_snipe_words[block_snipe].rstrip('e')}ing a name with {num_reqs} %s per account" % ("request" if num_reqs == 1 else "requests"))
-custom_info(f"This means you will be sending {len(accounts) * num_reqs} requests")
-logging_y_n = ask_yes_no("Would you like to log all outputs")
-latency = timedelta(milliseconds=int(custom_input("How many ms early should requests start sending? ")))
-
-snipe_time = timeSnipe(target_username, block_snipe)
-
-
-while not_over:
-    now = datetime.utcnow()
-    if now >= snipe_time - setup_x_seconds_before and not setup_snipe:
-        for acc in accounts:
-            t = threading.Thread(target=acc.authenticate)
-            t.start()
-            auth_threads.append(t)
-            sleep(.05)
-        for thread in auth_threads:
-            thread.join()
-        custom_info('pre-snipe setup complete')
-        setup_snipe = True
-    elif now >= snipe_time - latency and not sniped:
-        custom_info('starting requests for all accounts')
-        for acc in accounts:
-            for _ in range(num_reqs):
-                t = threading.Thread(target=acc.send_request, args=[block_snipe, target_username, logging_y_n])
-                t.start()
-                threads.append(t)
-                sleep(.01)
-
-        not_over = False
-        sniped = True
-        for thread in threads:
-            thread.join()
-        custom_info('all requests have been sent')
-    sleep(.001)
-
-
-custom_input("press enter to close the program: ")
-# I really don't want to put that in but since so many people run by double clicking it i have to :(
+accounts = load_accounts()
+block_snipe, target_username = gather_info()
+session = session(target_username, accounts, block_snipe)
+session.run()

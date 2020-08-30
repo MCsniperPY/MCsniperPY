@@ -181,6 +181,21 @@ class Account:
                         pass
                     except:
                         logging.info(f"{Fore.WHITE}[{Fore.RED}i have no idea{Fore.WHITE}]{Fore.RESET} i dont know what happend but it failed")
+                    try:
+                        webhooks = []
+                        with open("webhook.txt", "r") as f:
+                            unconverted_webhooks = f.readlines()
+                        for hook in unconverted_webhooks:
+                            webhooks.append(hook.strip())
+                        for hook in webhooks:
+                            async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}`!", "color": 65395}]}) as r:
+                                if r.status == 200 or r.status == 204:
+                                    logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
+                                else:
+                                    logging.info(r.status)
+                                    logging.info(await r.json())
+                    except FileNotFoundError:
+                        pass
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names. | {Fore.YELLOW}or ratelimit{Fore.RESET}')
 

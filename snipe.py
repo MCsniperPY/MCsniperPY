@@ -140,8 +140,11 @@ class Account:
                 if resp_json == []:
                     logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.GREEN} signed in to {self.email}{Fore.RESET}")
                 else:
-                    for x in range(3):
-                        answers.append({"id": resp_json[x]["answer"]["id"], "answer": self.questions[x]})
+                    try:
+                        for x in range(3):
+                            answers.append({"id": resp_json[x]["answer"]["id"], "answer": self.questions[x]})
+                    except IndexError:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} has security questions and you did not provide any!")
                     async with session.post("https://api.mojang.com/user/security/location", json=answers, headers=self.auth) as r:
                         if check_resp(r.status):
                             logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.GREEN} signed in to {self.email}{Fore.RESET}")

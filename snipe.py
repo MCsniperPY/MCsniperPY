@@ -86,11 +86,20 @@ async def time_snipe(target, block_snipe):
     async with aiohttp.ClientSession() as session:
         try:
             # namemc_url = f"https://namemc.com/search?q={target}"
-            async with session.get(f"https://namemc.com/search?q={target}") as page:
-                # page = requests.get(namemc_url)
-                soup = BeautifulSoup(await page.text(), 'html.parser')
-                snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
-                snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
+            try:
+                async with session.get(f"https://namemc.com/search?q={target}") as page:
+                    # page = requests.get(namemc_url)
+                    soup = BeautifulSoup(await page.text(), 'html.parser')
+                    snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
+                    snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
+            except AttributeError:
+                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} you were blocked by namemc. retrying.")
+                await asyncio.sleep(10)
+                async with session.get(f"https://namemc.com/search?q={target}") as page:
+                    # page = requests.get(namemc_url)
+                    soup = BeautifulSoup(await page.text(), 'html.parser')
+                    snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
+                    snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
         except AttributeError:
             status_bar = soup.find(id="status-bar")
             info = status_bar.find_all("div", class_="col-sm-6 my-1")

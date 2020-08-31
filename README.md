@@ -1,6 +1,6 @@
-# MCsnipePY
+![MCsniperPY](https://i.imgur.com/qdr2ZHD.png)
 
-This is an easy-to-use Minecraft name sniper written in python which is in early developent.
+## An easy to use, fast, and async name sniper written in python.
 
 ## IMPORTANT
 
@@ -10,3 +10,7 @@ If you decide to use any code from this project your project **must** be open so
 
 Join my [discord](https://discord.gg/jZm4qNF) server for the instructions on usage.  
 It's not that complicated so if you don't want to the discord it shouldn't be too hard to find out.
+
+## More info
+
+If you find any bugs please report them in my discord. There are still many which we are still finding and removing.

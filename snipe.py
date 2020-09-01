@@ -125,18 +125,23 @@ class Account:
         self.email = email
         self.password = password
         self.questions = questions
+        self.got_name = False
         self.authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
 
     async def authenticate(self, session):
         # logging.info(f"{Fore.WHITE}[{Fore.CYAN}INFO{Fore.WHITE}]{Fore.RESET} starting auth for {Fore.CYAN}{self.email}{Fore.RESET}")
+        debug_mode = json.loads(open("settings.json", "r").read())["debug_mode"]
         async with session.post("https://authserver.mojang.com/authenticate", json=self.authenticate_json, headers=self.headers) as r:
             if check_resp(r.status):
                 resp_json = await r.json()
                 try:
                     self.uuid = resp_json["selectedProfile"]["id"]
                 except KeyError:
-                    custom_info(f"{self.email} is unpaid and cannot snipe names. please make sure you are blocking.")
+                    if debug_mode:
+                        print(resp_json)
+                    else:
+                        custom_info(f"{self.email} is unpaid and cannot snipe names. please make sure you are blocking.")
                 self.auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 self.access_token = resp_json["accessToken"]
             else:
@@ -168,6 +173,8 @@ class Account:
             now = datetime.now()
             logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
             await response.read()
+            if response.status == 204:
+                asyncio.get_event_loop().stop()
 
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
@@ -178,39 +185,44 @@ class Account:
                 logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
                 await response.read()
                 if response.status == 204:
-                    with open("success.txt", "a") as f:
-                        f.write(f"{self.email}:{self.password} - {target_username}\n")
-                    try:
-                        files = {"model": "slim", "url": open("skin.txt", "r").read().strip()}
-                        auth = self.auth
-                        auth["Content-Type"] = "application/x-www-form-urlencoded"
-                        async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as r:
-                            if r.status == 204 or r.status == 200:
-                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
-                            else:
-                                logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email} | {r.status}")
-                                logging.info(await r.json())
-                    except FileNotFoundError:
-                        pass
-                    except:
-                        logging.info(f"{Fore.WHITE}[{Fore.RED}i have no idea{Fore.WHITE}]{Fore.RESET} i dont know what happend but it failed")
-                    try:
-                        webhooks = []
-                        with open("webhook.txt", "r") as f:
-                            unconverted_webhooks = f.readlines()
-                        for hook in unconverted_webhooks:
-                            webhooks.append(hook.strip())
-                        for hook in webhooks:
-                            async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}`!", "color": 65395}]}) as r:
-                                if r.status == 200 or r.status == 204:
-                                    logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
-                                else:
-                                    logging.info(r.status)
-                                    logging.info(await r.json())
-                    except FileNotFoundError:
-                        pass
+                    self.got_name = True
+                    asyncio.get_event_loop().stop()
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names. | {Fore.YELLOW}or ratelimit{Fore.RESET}')
+
+    async def webhook_skin_write_file(self):
+        async with aiohttp.ClientSession() as session:
+            with open("success.txt", "a") as f:
+                f.write(f"{self.email}:{self.password} - {target_username}\n")
+            try:
+                files = {"model": "slim", "url": open("skin.txt", "r").read().strip()}
+                auth = self.auth
+                auth["Content-Type"] = "application/x-www-form-urlencoded"
+                async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as r:
+                    if r.status == 204 or r.status == 200:
+                        logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
+                    else:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email} | {r.status}")
+                        logging.info(await r.json())
+            except FileNotFoundError:
+                pass
+            except:
+                logging.info(f"{Fore.WHITE}[{Fore.RED}i have no idea{Fore.WHITE}]{Fore.RESET} i dont know what happend but it failed")
+            try:
+                webhooks = []
+                with open("webhook.txt", "r") as f:
+                    unconverted_webhooks = f.readlines()
+                for hook in unconverted_webhooks:
+                    webhooks.append(hook.strip())
+                for hook in webhooks:
+                    async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}`!", "color": 65395}]}) as r:
+                        if r.status == 200 or r.status == 204:
+                            logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
+                        else:
+                            logging.info(r.status)
+                            logging.info(await r.json())
+            except FileNotFoundError:
+                pass
 
 
 def gather_info():
@@ -279,10 +291,21 @@ class session:
         while True:
             now = datetime.utcnow()
             if now >= self.drop_time and not self.ran:
-                loop.run_until_complete(self.send_requests())
+                try:
+                    start = time.time()
+                    loop.run_until_complete(self.send_requests())
+                except RuntimeError:
+                    pass
+                for acc in self.accounts:
+                    if acc.got_name:
+                        acc.webhook_skin_write_file()
+                end = time.time()
+                elapsed_time = end - start
+                rq_sec = self.num_reqs * len(accounts) / elapsed_time
+                times.append(rq_sec)
+                logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
                 custom_input("press enter to quit: ")
                 quit()
-                self.ran = True
             elif now >= self.setup_time and not self.setup:
                 loop.run_until_complete(self.run_auth())
                 custom_info("setup complete")
@@ -301,13 +324,7 @@ class session:
                 self.coros = [
                     acc.block_req(session, self.target_username) for acc in self.accounts for _ in range(self.num_reqs)
                 ]
-            start = time.time()
             await asyncio.wait(self.coros)
-            end = time.time()
-            elapsed_time = end - start
-            rq_sec = self.num_reqs * len(accounts) / elapsed_time
-            times.append(rq_sec)
-            logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
 
     async def run_auth(self):
         async with aiohttp.ClientSession() as session:

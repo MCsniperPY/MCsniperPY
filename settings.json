@@ -1,3 +1,4 @@
 {
-    "custom_delay": false
+    "custom_delay": false,
+    "debug_mode": false
 }

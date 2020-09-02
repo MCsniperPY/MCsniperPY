@@ -14,10 +14,6 @@ init()
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 times = []
 
-target_username = sys.argv[1]
-block_snipe = int(sys.argv[2])
-snipe_delay = int(sys.argv[3])
-
 def custom_info(message):
     logging.info(f"{Fore.BLUE}[info] {Fore.RESET}{message}")
 
@@ -280,7 +276,10 @@ class session:
         self.ran = False
         self.settings_json = json.loads(open("settings.json", "r").read())
         if self.settings_json["custom_delay"]:
-            self.drop_time = self.drop_time - timedelta(milliseconds=self.snipe_delay)
+            if self.snipe_delay == "not specified":
+                self.drop_time = self.drop_time - timedelta(milliseconds=int(custom_input("Custom delay in ms: ")))
+            else:
+                self.drop_time = self.drop_time - timedelta(milliseconds=self.snipe_delay)
         else:
             if self.block_snipe == 0:
                 self.drop_time = self.drop_time - timedelta(milliseconds=900)
@@ -343,5 +342,16 @@ class session:
 
 print_title()
 accounts = load_accounts()
+try:
+    target_username = sys.argv[1]
+    block_snipe = sys.argv[2]
+    if str(block_snipe).lower() == "snipe" or str(block_snipe) == "0":
+        block_snipe = 0
+    if str(block_snipe).lower() == "block" or str(block_snipe) == "1":
+        block_snipe = 1
+    snipe_delay = int(sys.argv[3])
+except:
+    block_snipe, target_username = gather_info()
+    snipe_delay = "not specified"
 session = session(target_username, accounts, block_snipe, snipe_delay)
 session.run()

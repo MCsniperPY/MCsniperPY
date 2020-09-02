@@ -273,8 +273,8 @@ class session:
         self.setup_time = self.drop_time - timedelta(seconds=50)
         self.setup = False
         self.ran = False
-        settings_json = json.loads(open("settings.json", "r").read())
-        if settings_json["custom_delay"]:
+        self.settings_json = json.loads(open("settings.json", "r").read())
+        if self.settings_json["custom_delay"]:
             self.drop_time = self.drop_time - timedelta(milliseconds=int(custom_input("Custom delay in ms: ")))
         else:
             if self.block_snipe == 0:
@@ -310,6 +310,8 @@ class session:
                 loop.run_until_complete(self.run_auth())
                 custom_info("setup complete")
                 self.setup = True
+            if self.settings_json["async_freeze"]:
+                print(self.drop_time - now)
             time.sleep(.00001)
 
     async def send_requests(self):

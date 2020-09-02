@@ -1,5 +1,5 @@
 {
     "custom_delay": false,
     "debug_mode": false,
-    "async_freeze": true
+    "async_freeze": false
 }

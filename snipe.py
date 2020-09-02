@@ -188,7 +188,7 @@ class Account:
                     self.got_name = True
                     asyncio.get_event_loop().stop()
         except AttributeError:
-            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} your account is unpaid and cannot snipe names. | {Fore.YELLOW}or ratelimit{Fore.RESET}')
+            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
 
     async def webhook_skin_write_file(self):
         async with aiohttp.ClientSession() as session:
@@ -298,7 +298,7 @@ class session:
                     pass
                 for acc in self.accounts:
                     if acc.got_name:
-                        acc.webhook_skin_write_file()
+                        asyncio.get_event_loop().run_until_complete(acc.webhook_skin_write_file())
                 end = time.time()
                 elapsed_time = end - start
                 rq_sec = self.num_reqs * len(accounts) / elapsed_time

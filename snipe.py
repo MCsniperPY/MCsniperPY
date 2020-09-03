@@ -216,7 +216,7 @@ class Account:
                 for hook in unconverted_webhooks:
                     webhooks.append(hook.strip())
                 for hook in webhooks:
-                    async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}`!", "color": 65395}]}) as r:
+                    async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
                         if r.status == 200 or r.status == 204:
                             logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
                         else:

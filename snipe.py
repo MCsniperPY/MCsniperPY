@@ -319,7 +319,7 @@ class session:
                 print(self.drop_time - now)
             time.sleep(.00001)
 
-    async def webhook_skin_file(acc):
+    async def webhook_skin_file(self, acc):
         await asyncio.wati(acc.webhook_skin_write_file())
 
     async def send_requests(self):

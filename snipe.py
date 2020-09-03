@@ -14,6 +14,7 @@ init()
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 times = []
 
+
 def custom_info(message):
     logging.info(f"{Fore.BLUE}[info] {Fore.RESET}{message}")
 
@@ -93,7 +94,7 @@ async def time_snipe(target, block_snipe):
                     snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
                     snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
             except AttributeError:
-                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} you were blocked by namemc. retrying.")
+                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} you were blocked by namemc or  retrying.")
                 await asyncio.sleep(10)
                 async with session.get(f"https://namemc.com/search?q={target}") as page:
                     # page = requests.get(namemc_url)
@@ -300,11 +301,11 @@ class session:
                     loop.run_until_complete(self.send_requests())
                 except RuntimeError:
                     pass
-                for acc in self.accounts:
-                    if acc.got_name:
-                        asyncio.get_event_loop().run_until_complete(acc.webhook_skin_write_file())
                 end = time.time()
                 elapsed_time = end - start
+                for acc in self.accounts:
+                    if acc.got_name:
+                        asyncio.get_event_loop().run_until_complete(self.webhook_skin_file(acc))
                 rq_sec = self.num_reqs * len(accounts) / elapsed_time
                 times.append(rq_sec)
                 logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
@@ -317,6 +318,9 @@ class session:
             if self.settings_json["async_freeze"]:
                 print(self.drop_time - now)
             time.sleep(.00001)
+
+    async def webhook_skin_file(acc):
+        await asyncio.wati(acc.webhook_skin_write_file())
 
     async def send_requests(self):
         async with aiohttp.ClientSession() as session:
@@ -349,8 +353,14 @@ try:
         block_snipe = 0
     if str(block_snipe).lower() == "block" or str(block_snipe) == "1":
         block_snipe = 1
-    snipe_delay = int(sys.argv[3])
-except:
+    try:
+        snipe_delay = int(sys.argv[3])
+    except IndexError:
+        if block_snipe == 0:
+            snipe_delay = 900
+        else:
+            snipe_delay = 200
+except IndexError:
     block_snipe, target_username = gather_info()
     snipe_delay = "not specified"
 session = session(target_username, accounts, block_snipe, snipe_delay)

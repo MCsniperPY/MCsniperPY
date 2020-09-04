@@ -320,7 +320,7 @@ class session:
             time.sleep(.00001)
 
     async def webhook_skin_file(self, acc):
-        await asyncio.wati(acc.webhook_skin_write_file())
+        await asyncio.wait(acc.webhook_skin_write_file())
 
     async def send_requests(self):
         async with aiohttp.ClientSession() as session:

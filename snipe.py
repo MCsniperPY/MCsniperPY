@@ -127,6 +127,7 @@ class Account:
         self.password = password
         self.questions = questions
         self.got_name = False
+        self.failed_auth = False
         self.authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
 
@@ -147,6 +148,7 @@ class Account:
                 self.access_token = resp_json["accessToken"]
             else:
                 resp_error(f"invalid credentials | {self.email}")
+                self.failed_auth = True
                 return
         async with session.get("https://api.mojang.com/user/security/challenges", headers=self.auth) as r:
             answers = []
@@ -166,6 +168,10 @@ class Account:
                             logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.GREEN} signed in to {self.email}{Fore.RESET}")
                         else:
                             resp_error(f"security questions incorrect | {self.email}")
+                            self.failed_auth = True
+            else:
+                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} something went wrong with authentication for {self.email}!")
+                self.failed_auth = True
 
     async def block_req(self, session, ctarget_username):
         await asyncio.sleep(0)
@@ -289,10 +295,6 @@ class session:
 
     def run(self):
         loop = asyncio.get_event_loop()
-        # input("press enter to run auth")
-        # loop.run_until_complete(self.run_auth())
-        # input("press enter to run requests")
-        # loop.run_until_complete(self.send_requests())
         while True:
             now = datetime.utcnow()
             if now >= self.drop_time and not self.ran:
@@ -308,11 +310,18 @@ class session:
                         asyncio.get_event_loop().run_until_complete(self.webhook_skin_file(acc))
                 rq_sec = self.num_reqs * len(accounts) / elapsed_time
                 times.append(rq_sec)
-                logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
+                logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec (ESTIMATE) {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
                 custom_input("press enter to quit: ")
                 quit()
             elif now >= self.setup_time and not self.setup:
                 loop.run_until_complete(self.run_auth())
+                for acc in accounts:
+                    if acc.failed_auth:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
+                        accounts.remove(acc)
+                if len(accounts) == 0:
+                    logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] you have 0 accounts available to snipe on! | quitting program...")
+                    quit()
                 custom_info("setup complete")
                 self.setup = True
             if self.settings_json["async_freeze"]:
@@ -320,7 +329,7 @@ class session:
             time.sleep(.00001)
 
     async def webhook_skin_file(self, acc):
-        await asyncio.wati(acc.webhook_skin_write_file())
+        await asyncio.wait(acc.webhook_skin_write_file())
 
     async def send_requests(self):
         async with aiohttp.ClientSession() as session:

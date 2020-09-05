@@ -311,7 +311,8 @@ class session:
                 rq_sec = self.num_reqs * len(accounts) / elapsed_time
                 times.append(rq_sec)
                 logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec (ESTIMATE) {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
-                custom_input("press enter to quit: ")
+                if len(sys.argv()) < 3:
+                    custom_input("press enter to quit: ")
                 quit()
             elif now >= self.setup_time and not self.setup:
                 loop.run_until_complete(self.run_auth())

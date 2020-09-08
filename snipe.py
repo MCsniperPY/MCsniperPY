@@ -222,12 +222,19 @@ class Account:
                 for hook in unconverted_webhooks:
                     webhooks.append(hook.strip())
                 for hook in webhooks:
-                    async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
-                        if r.status == 200 or r.status == 204:
-                            logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
-                        else:
-                            logging.info(r.status)
-                            logging.info(await r.json())
+                    if hook.split(":")[0] == "custom_announce":
+                        async with session.post("https://announcements-api.herokuapp.com/api/v1/announce", json={"name": target_username}, headers={"Authorization": hook.split(":")[1].strip()}) as r:
+                            if r.status_code == 204:
+                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent custom announcement of snipe!")
+                            else:
+                                logging.info(r.status, f"{Fore.RED}Failed to send custom announcement!{Fore.RESET}")
+                    else:
+                        async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
+                            if r.status == 200 or r.status == 204:
+                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
+                            else:
+                                logging.info(r.status)
+                                logging.info(await r.json())
             except FileNotFoundError:
                 pass
 

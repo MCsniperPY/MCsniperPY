@@ -207,7 +207,7 @@ class Account:
                     if r.status == 204 or r.status == 200:
                         logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
                     else:
-                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email} | {r.status}")
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email} | {str(r.status)}")
                         logging.info(await r.json())
             except FileNotFoundError:
                 pass

@@ -226,7 +226,7 @@ class Account:
                             if r.status == 204:
                                 logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent custom announcement of snipe!")
                             else:
-                                logging.info(r.status, f"{Fore.RED}Failed to send custom announcement!{Fore.RESET}")
+                                logging.info(f"{Fore.RED} {r.status} | Failed to send custom announcement!{Fore.RESET}")
                                 print(await r.json())
                     else:
                         async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:

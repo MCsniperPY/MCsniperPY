@@ -222,7 +222,7 @@ class Account:
                 for hook in webhooks:
                     print(hook)
                     if hook.split(":")[0] == "custom_announce":
-                        async with session.post("https://announcements-api.herokuapp.com/api/v1/announce", json={"name": target_username}, headers={"Authorization": hook.split(":")[1].strip()}) as r:
+                        async with session.post("https://announcements-api.herokuapp.com/api/v1/announce", json={"name": target_username.strip()}, headers={"Authorization": hook.split(":")[1].strip()}) as r:
                             if r.status == 204:
                                 logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent custom announcement of snipe!")
                             else:

@@ -175,7 +175,6 @@ class Account:
 
     async def block_req(self, session, ctarget_username):
         await asyncio.sleep(0)
-        # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
         async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
             now = datetime.now()
             logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
@@ -185,7 +184,6 @@ class Account:
 
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
-        # logging.info(f'{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Sent Request @ {Fore.CYAN}{datetime.now()}')
         try:
             async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
                 now = datetime.now()
@@ -229,6 +227,7 @@ class Account:
                                 logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent custom announcement of snipe!")
                             else:
                                 logging.info(r.status, f"{Fore.RED}Failed to send custom announcement!{Fore.RESET}")
+                                print(await r.json())
                     else:
                         async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
                             if r.status == 200 or r.status == 204:

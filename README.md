@@ -1,5 +1,5 @@
 ![MCsniperPY](https://i.imgur.com/qdr2ZHD.png)
-
+[![Discord Server](https://img.shields.io/discord/734794891258757160?label=Discord)](https://discord.gg/jZm4qNF)
 ## An easy to use, fast, and async name sniper written in python.
 
 ## IMPORTANT

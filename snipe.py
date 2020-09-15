@@ -8,6 +8,10 @@ import time
 from bs4 import BeautifulSoup
 import json
 import sys
+try:
+    import webbrowser
+except:
+    pass
 
 init()
 
@@ -239,8 +243,25 @@ class Account:
                 pass
 
 
+async def get_name_of_the_week():
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://announcements-api.herokuapp.com/api/v1/nameoftheweek") as r:
+            name_json = await r.json()
+            name = name_json["name"]
+            custom_info(f"Opening {name} in namemc!")
+            try:
+                webbrowser.open_new_tab(f"https://namemc.com/name/{name}")
+                custom_input("press enter to quit: ")
+            except:
+                print("failed to open name!")
+                custom_input("press enter to quit: ")
+
+
 def gather_info():
-    block_snipe = menu(options=["Snipe name", "Block Name"])
+    block_snipe = menu(options=["Snipe name", "Block Name", "Open name of the week in namemc"])
+    if block_snipe == 2:
+        asyncio.get_event_loop().run_until_complete(get_name_of_the_week())
+        quit()
     target_username = custom_input(f"What name you would you like to {['snipe', 'block'][block_snipe]}: ")
     return block_snipe, target_username
 
@@ -380,5 +401,6 @@ try:
 except IndexError:
     block_snipe, target_username = gather_info()
     snipe_delay = "not specified"
+
 session = session(target_username, accounts, block_snipe, snipe_delay)
 session.run()

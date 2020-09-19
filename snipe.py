@@ -90,26 +90,17 @@ async def time_snipe(target, block_snipe):
     block_snipe_words = ["snipe", "block"]
     async with aiohttp.ClientSession() as session:
         try:
-            # namemc_url = f"https://namemc.com/search?q={target}"
-            try:
-                async with session.get(f"https://namemc.com/search?q={target}") as page:
-                    # page = requests.get(namemc_url)
-                    soup = BeautifulSoup(await page.text(), 'html.parser')
-                    snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
-                    snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
-            except AttributeError:
-                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} you were blocked by namemc or  retrying.")
-                await asyncio.sleep(10)
-                async with session.get(f"https://namemc.com/search?q={target}") as page:
-                    # page = requests.get(namemc_url)
-                    soup = BeautifulSoup(await page.text(), 'html.parser')
-                    snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
-                    snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
+            async with session.get(f"https://namemc.com/search?q={target}") as page:
+                # page = requests.get(namemc_url)
+                soup = BeautifulSoup(await page.text(), 'html.parser')
+                snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
+                snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
         except AttributeError:
             status_bar = soup.find(id="status-bar")
             info = status_bar.find_all("div", class_="col-sm-6 my-1")
             status = info[0].text.split("\n")[2]
             if status.lower().rstrip('*') == 'available':
+                custom_info(f"\"{target}\" is {status}. The sniper can turbo {status} names!")
                 snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
                 snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
                 wait_time = snipe_time - now
@@ -135,8 +126,9 @@ class Account:
         self.authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
 
-    async def authenticate(self, session):
-        # logging.info(f"{Fore.WHITE}[{Fore.CYAN}INFO{Fore.WHITE}]{Fore.RESET} starting auth for {Fore.CYAN}{self.email}{Fore.RESET}")
+    async def authenticate(self, session, sleep_time):
+        await asyncio.sleep(sleep_time)
+        # custom_info(f"{Fore.WHITE}starting auth for {self.email}")
         debug_mode = json.loads(open("settings.json", "r").read())["debug_mode"]
         async with session.post("https://authserver.mojang.com/authenticate", json=self.authenticate_json, headers=self.headers) as r:
             if check_resp(r.status):
@@ -306,7 +298,7 @@ class session:
         self.snipe_delay = snipe_delay
         loop = asyncio.get_event_loop()
         self.drop_time = loop.run_until_complete(time_snipe(self.target_username, self.block_snipe))
-        self.setup_time = self.drop_time - timedelta(seconds=50)
+        self.setup_time = self.drop_time - timedelta(seconds=55)
         self.setup = False
         self.ran = False
         self.settings_json = json.loads(open("settings.json", "r").read())
@@ -377,7 +369,7 @@ class session:
     async def run_auth(self):
         async with aiohttp.ClientSession() as session:
             coros = [
-                acc.authenticate(session) for acc in self.accounts
+                acc.authenticate(session, self.accounts.index(acc) * .5) for acc in self.accounts
             ]
             await asyncio.wait(coros)
 

@@ -104,7 +104,11 @@ async def time_snipe(target, block_snipe):
                 snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
                 snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
                 wait_time = snipe_time - now
-                wait_time = wait_time.seconds / 60
+                wait_time = wait_time.seconds
+                if wait_time >= 60:
+                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+                else:
+                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
                 custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
                 return snipe_time
             print(f"\"{target}\" is {status}. The sniper cannot claim names that are {status} so go claim it fast through https://my.minecraft.net if possible.")
@@ -112,7 +116,12 @@ async def time_snipe(target, block_snipe):
 
         wait_time = snipe_time - now
         wait_time = wait_time.seconds
-        custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+        if wait_time >= 60:
+            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+        elif wait_time >= 3600:
+            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+        else:
+            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
         return snipe_time
 
 
@@ -255,7 +264,11 @@ def gather_info():
         asyncio.get_event_loop().run_until_complete(get_name_of_the_week())
         quit()
     target_username = custom_input(f"What name you would you like to {['snipe', 'block'][block_snipe]}: ")
-    return block_snipe, target_username
+    try:
+        delay = int(custom_input("Custom delay in ms: "))
+    except ValueError:
+        print('thats not a valid number')
+    return block_snipe, target_username, delay
 
 
 def load_accounts_file():
@@ -263,7 +276,7 @@ def load_accounts_file():
     if not path.exists("accounts.txt"):
         print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} accounts.txt not found | creating one")
         open('accounts.txt', 'w+')
-        input("Press any key to reload accounts. ")
+        input("Press enter to reload accounts. ")
         load_accounts_file()
     else:
         accounts = open('accounts.txt').readlines()
@@ -302,16 +315,7 @@ class session:
         self.setup = False
         self.ran = False
         self.settings_json = json.loads(open("settings.json", "r").read())
-        if self.settings_json["custom_delay"]:
-            if self.snipe_delay == "not specified":
-                self.drop_time = self.drop_time - timedelta(milliseconds=int(custom_input("Custom delay in ms: ")))
-            else:
-                self.drop_time = self.drop_time - timedelta(milliseconds=self.snipe_delay)
-        else:
-            if self.block_snipe == 0:
-                self.drop_time = self.drop_time - timedelta(milliseconds=900)
-            elif self.block_snipe == 1:
-                self.drop_time = self.drop_time - timedelta(milliseconds=170)
+        self.drop_time = self.drop_time - timedelta(milliseconds=self.snipe_delay)
 
     def run(self):
         loop = asyncio.get_event_loop()
@@ -391,8 +395,7 @@ try:
         else:
             snipe_delay = 200
 except IndexError:
-    block_snipe, target_username = gather_info()
-    snipe_delay = "not specified"
+    block_snipe, target_username, snipe_delay = gather_info()
 
 session = session(target_username, accounts, block_snipe, snipe_delay)
 session.run()

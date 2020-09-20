@@ -138,7 +138,7 @@ class Account:
     async def authenticate(self, session, sleep_time):
         await asyncio.sleep(sleep_time)
         # custom_info(f"{Fore.WHITE}starting auth for {self.email}")
-        debug_mode = json.loads(open("settings.json", "r").read())["debug_mode"]
+        debug_mode = False
         async with session.post("https://authserver.mojang.com/authenticate", json=self.authenticate_json, headers=self.headers) as r:
             if check_resp(r.status):
                 resp_json = await r.json()
@@ -314,7 +314,10 @@ class session:
         self.setup_time = self.drop_time - timedelta(seconds=55)
         self.setup = False
         self.ran = False
-        self.settings_json = json.loads(open("settings.json", "r").read())
+        self.settings_json = {
+            "debug_mode": False,
+            "async_freeze": False
+        }
         self.drop_time = self.drop_time - timedelta(milliseconds=self.snipe_delay)
 
     def run(self):

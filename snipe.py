@@ -284,7 +284,11 @@ def load_accounts_file():
             print(f"Accounts not found in accounts.txt file please add accounts with format (email:pass) or (email:pass:q1:q2:q3)")
             input("Press any key to reload accounts.")
             load_accounts_file()
-
+        if len(accounts) < 30:
+            for i in range(len(accounts)):
+                accounts.append(accounts[i])
+        if len(accounts) > 30:
+            accounts = accounts[0:30]
     return accounts
 
 

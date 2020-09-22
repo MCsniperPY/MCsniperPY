@@ -285,8 +285,13 @@ def load_accounts_file():
             input("Press any key to reload accounts.")
             load_accounts_file()
         if len(accounts) < 30:
-            for i in range(len(accounts)):
+            acctlen = len(accounts)
+            i = 0
+            for _ in range(len(accounts)):
                 accounts.append(accounts[i])
+                i += 1
+                if i > acctlen:
+                    i = 0
         if len(accounts) > 30:
             accounts = accounts[0:30]
     return accounts

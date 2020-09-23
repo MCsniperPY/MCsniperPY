@@ -284,15 +284,13 @@ def load_accounts_file():
             print(f"Accounts not found in accounts.txt file please add accounts with format (email:pass) or (email:pass:q1:q2:q3)")
             input("Press any key to reload accounts.")
             load_accounts_file()
-        if len(accounts) < 30:
-            acctlen = len(accounts)
-            i = 0
-            for _ in range(len(accounts)):
-                accounts.append(accounts[i])
-                i += 1
-                if i > acctlen:
-                    i = 0
+        if len(accounts) < 3:
+            for i in range(len(accounts)):
+                for _ in range(2):
+                    accounts.append(accounts[i])
+            custom_info("You had less than 3 accounts | Using 2 of each account")
         if len(accounts) > 30:
+            print(f"{Fore.WHITE}[{Fore.YELLOW}warning{Fore.WHITE}]{Fore.RESET} you inputted too many accounts | removing {len(accounts) - 30}")
             accounts = accounts[0:30]
     return accounts
 

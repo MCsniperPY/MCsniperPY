@@ -293,7 +293,7 @@ def load_accounts_file():
                 i += 1
                 if i > acctlen:
                     i = 0
-                    b++
+                    b += 1
                 if b > 4:
                     break
         if len(accounts) > 30:

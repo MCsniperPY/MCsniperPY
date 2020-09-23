@@ -294,7 +294,7 @@ def load_accounts_file():
                 if i > acctlen:
                     i = 0
                     b += 1
-                if b > 4:
+                if b > 2:
                     break
         if len(accounts) > 30:
             accounts = accounts[0:30]

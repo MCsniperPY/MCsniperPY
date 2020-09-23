@@ -287,11 +287,15 @@ def load_accounts_file():
         if len(accounts) < 30:
             acctlen = len(accounts)
             i = 0
+            b = 0
             for _ in range(len(accounts)):
                 accounts.append(accounts[i])
                 i += 1
                 if i > acctlen:
                     i = 0
+                    b++
+                if b > 4:
+                    break
         if len(accounts) > 30:
             accounts = accounts[0:30]
     return accounts

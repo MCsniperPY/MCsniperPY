@@ -6,11 +6,10 @@ import asyncio
 from os import path
 import time
 from bs4 import BeautifulSoup
-import json
 import sys
 try:
     import webbrowser
-except:
+except Exception:
     pass
 
 init()
@@ -216,7 +215,7 @@ class Account:
                         logging.info(await r.json())
             except FileNotFoundError:
                 pass
-            except:
+            except Exception:
                 logging.info(f"{Fore.WHITE}[{Fore.RED}i have no idea{Fore.WHITE}]{Fore.RESET} i dont know what happend but it failed")
             try:
                 webhooks = []
@@ -253,7 +252,7 @@ async def get_name_of_the_week():
             try:
                 webbrowser.open_new_tab(f"https://namemc.com/name/{name}")
                 custom_input("press enter to quit: ")
-            except:
+            except Exception:
                 print("failed to open name!")
                 custom_input("press enter to quit: ")
 
@@ -286,8 +285,7 @@ def load_accounts_file():
             load_accounts_file()
         if len(accounts) < 3:
             for i in range(len(accounts)):
-                for _ in range(2):
-                    accounts.append(accounts[i])
+                accounts.append(accounts[i])
             custom_info("You had less than 3 accounts | Using 2 of each account")
         if len(accounts) > 30:
             print(f"{Fore.WHITE}[{Fore.YELLOW}warning{Fore.WHITE}]{Fore.RESET} you inputted too many accounts | removing {len(accounts) - 30}")
@@ -321,10 +319,6 @@ class session:
         self.setup_time = self.drop_time - timedelta(seconds=55)
         self.setup = False
         self.ran = False
-        self.settings_json = {
-            "debug_mode": False,
-            "async_freeze": False
-        }
         self.drop_time = self.drop_time - timedelta(milliseconds=self.snipe_delay)
 
     def run(self):
@@ -359,8 +353,6 @@ class session:
                     quit()
                 custom_info("setup complete")
                 self.setup = True
-            if self.settings_json["async_freeze"]:
-                print(self.drop_time - now)
             time.sleep(.00001)
 
     async def webhook_skin_file(self, acc):
@@ -369,7 +361,7 @@ class session:
     async def send_requests(self):
         async with aiohttp.ClientSession() as session:
             if self.block_snipe == 0:
-                self.num_reqs = 20
+                self.num_reqs = 8
                 self.coros = [
                     acc.snipe_req(session, self.target_username) for acc in self.accounts for _ in range(self.num_reqs)
                 ]

@@ -83,7 +83,7 @@ def resp_error(message):
 #         return proxies
 
 
-async def time_snipe(target, block_snipe):
+async def namemc_timing(target, block_snipe):
     now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
     now = datetime.strptime(now, '%Y-%m-%dT%H:%M:%S')
     block_snipe_words = ["snipe", "block"]
@@ -122,6 +122,41 @@ async def time_snipe(target, block_snipe):
         else:
             custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
         return snipe_time
+
+
+async def nx_timing(target, block_snipe):
+    now = datetime.utcnow()
+    block_snipe_words = ["snipe", "block"]
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"https://api-v2.statz.xyz//check/{target}") as r:
+            resp_json = await r.json()
+            if resp_json["status"] == "soon":
+                snipe_time = datetime.strptime(resp_json()["drop_time"], "%Y-%m-%dT%H:%M:%S.000Z")
+            elif resp_json["status"] == "taken":
+                print(f"\"{target}\" is taken already. The sniper cannot claim names that are taken.")
+            if resp_json["status"] == "":
+                custom_info(f"{target} is available now. If you would like to turbo the name see below.")
+                snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
+                snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
+                wait_time = snipe_time - now
+                wait_time = wait_time.seconds
+                if wait_time >= 60:
+                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+                else:
+                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+                custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+                return snipe_time
+           
+
+async def time_snipe(target, block_snipe):
+    try:
+        timing = await nx_timing(target, block_snipe)
+    except Exception:
+        try:
+            timing = await namemc_timing(target, block_snipe)
+        except Exception:
+            print('uh')
+    return timing
 
 
 class Account:

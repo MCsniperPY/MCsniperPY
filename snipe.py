@@ -152,10 +152,7 @@ async def time_snipe(target, block_snipe):
     try:
         timing = await nx_timing(target, block_snipe)
     except Exception:
-        try:
-            timing = await namemc_timing(target, block_snipe)
-        except Exception:
-            print('uh')
+        timing = await namemc_timing(target, block_snipe)
     return timing
 
 
@@ -259,7 +256,6 @@ class Account:
                 for hook in unconverted_webhooks:
                     webhooks.append(hook.strip())
                 for hook in webhooks:
-                    print(hook)
                     if hook.split(":")[0] == "custom_announce":
                         async with session.post("https://announcements-api.herokuapp.com/api/v1/announce", json={"name": target_username.strip()}, headers={"Authorization": hook.split(":")[1].strip()}) as r:
                             if r.status == 204:

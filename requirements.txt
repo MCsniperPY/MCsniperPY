@@ -1,3 +1,4 @@
 aiohttp
 colorama
 bs4
+discord_rpc

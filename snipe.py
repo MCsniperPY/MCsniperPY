@@ -1,5 +1,6 @@
 import aiohttp
 import logging
+import discord_rpc
 from colorama import Fore, init
 from datetime import datetime, timedelta
 import asyncio
@@ -13,10 +14,47 @@ except Exception:
     pass
 
 init()
-
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 times = []
 
+if __name__ == '__main__':
+    def readyCallback(current_user):
+        print('Our user: {}'.format(current_user))
+
+    def disconnectedCallback(codeno, codemsg):
+        print('Disconnected from Discord rich presence RPC. Code {}: {}'.format(
+            codeno, codemsg
+        ))
+
+    def errorCallback(errno, errmsg):
+        print('An error occurred! Error {}: {}'.format(
+            errno, errmsg
+        ))
+
+    # Note: 'event_name': callback
+    callbacks = {
+        'ready': readyCallback,
+        'disconnected': disconnectedCallback,
+        'error': errorCallback,
+    }
+    discord_rpc.initialize('762165532384165889', callbacks=callbacks, log=False)
+
+    i = 0
+    start = time.time()
+    while i < 10:
+        i += 1
+
+        discord_rpc.update_presence(
+            **{
+                'details': 'Sniping Minecraft Names',
+                'start_timestamp': start,
+                'large_image_key': 'mcsniperpy'
+            }
+        )
+
+        discord_rpc.update_connection()
+        time.sleep(2)
+        discord_rpc.run_callbacks()
 
 def custom_info(message):
     logging.info(f"{Fore.BLUE}[info] {Fore.RESET}{message}")

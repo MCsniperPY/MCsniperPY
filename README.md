@@ -13,4 +13,4 @@ Also, check out the [wiki](https://github.com/Kqzz/MCsniperPY/wiki) for usage st
 
 ## More info
 
-If you find any bugs please report them in my discord. There are still many which we are still finding and removing.
+If you find any bugs please report them in my discord. There are still many which we are still finding and removing. Also, please refer to the wiki for the config file!

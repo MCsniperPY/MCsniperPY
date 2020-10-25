@@ -1,40 +1,58 @@
-import aiohttp
-import logging
-from colorama import Fore, init
-from datetime import datetime, timedelta
-import asyncio
-from os import path
-import time
-from bs4 import BeautifulSoup
-import sys
 try:
-    import webbrowser
-except Exception:
-    pass
+    import aiohttp
+    import logging
+    from colorama import Fore, init
+    from datetime import datetime, timezone
+    import os
+    import asyncio
+    from os import path
+    import time
+    from bs4 import BeautifulSoup
+    import sys
+    import requests
+    try:
+        import webbrowser
+    except Exception:
+        pass
+except ImportError:
+    print("You are missing the required modules | Please refer to the usage on how to install")
+    quit()
 
 init()
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 times = []
+global sent_reqs
+sent_reqs = 0
+default_config = """timing_system:api
+skin:https://namemc.com/skin/4e45a59795a252c3
+skin_model:slim
+change_skin:false
+snipe_reqs:8
+block_reqs:3
+auth_delay:800
+max_accs:30
+auto_link_namemc:false NOT IMPLEMENTED
+"""
 
 
 def custom_info(message):
-    logging.info(f"{Fore.BLUE}[info] {Fore.RESET}{message}")
+    logging.info(f"{Fore.WHITE}[{Fore.BLUE}info{Fore.WHITE}] {Fore.RESET}{message}")
 
 
 def print_title():
-    print(f"""
-
+    title = f"""
 {Fore.CYAN}┌──────────────────────────────────────────────────────────────────────────────────────┐
-{Fore.CYAN}│{Fore.RESET} ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ {Fore.BLUE}██████╗ ██╗   ██╗
-{Fore.CYAN}│{Fore.RESET} ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗{Fore.BLUE}██╔══██╗╚██╗ ██╔╝
-{Fore.CYAN}│{Fore.RESET} ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝{Fore.BLUE}██████╔╝ ╚████╔╝{Fore.CYAN}     |
-|{Fore.RESET} ██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗{Fore.BLUE}██╔═══╝   ╚██╔╝     {Fore.CYAN} │
-{Fore.RESET}  ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║{Fore.BLUE}██║        ██║      {Fore.CYAN} │
-{Fore.RESET}  ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝{Fore.BLUE}╚═╝        ╚═╝      {Fore.CYAN} │
+{Fore.CYAN}│{Fore.RESET}  ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ {Fore.BLUE}██████╗ ██╗   ██╗{Fore.CYAN}   │
+{Fore.CYAN}│{Fore.RESET}  ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗{Fore.BLUE}██╔══██╗╚██╗ ██╔╝{Fore.CYAN}   │
+{Fore.CYAN}│{Fore.RESET}  ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝{Fore.BLUE}██████╔╝ ╚████╔╝{Fore.CYAN}    │
+│{Fore.RESET}  ██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗{Fore.BLUE}██╔═══╝   ╚██╔╝     {Fore.CYAN}│
+│{Fore.RESET}  ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║{Fore.BLUE}██║        ██║      {Fore.CYAN}│
+│{Fore.RESET}  ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝{Fore.BLUE}╚═╝        ╚═╝      {Fore.CYAN}│
 {Fore.CYAN}└──────────────────────────────────────────────────────────────────────────────────────┘
 {Fore.GREEN}Developed by @Kqzz#0001 on Discord {Fore.BLUE}| Discord server: https://discord.gg/jZm4qNF
-{Fore.GREEN}THIS SNIPER IS 100% FREE ON GITHUB""", Fore.RESET)
+{Fore.GREEN}THIS SNIPER IS 100% FREE ON GITHUB{Fore.RESET}"""
+    print(title)
 
 
 def menu(options):
@@ -58,7 +76,7 @@ def menu(options):
 
 
 def custom_input(message):
-    print(f"{Fore.BLUE}[input] {Fore.RESET}", end='')
+    print(f"{Fore.WHITE}[{Fore.BLUE}input{Fore.WHITE}] {Fore.RESET}", end='')
     input_return = input(message)
     return input_return
 
@@ -74,18 +92,43 @@ def resp_error(message):
     print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
 
 
-# def get_proxies():
-#     with open("working.txt", "r") as f:
-#         prox = f.readlines()
-#         proxies = []
-#         for proxy in prox:
-#             proxies.append(proxy.strip())
-#         return proxies
+async def mojang_timing(target, block_snipe):
+    block_snipe_words = ["snipe", "block"]
+    async with aiohttp.ClientSession() as session:
+        old_name_time = int(time.time() - 3456000)
+        async with session.get(f"https://api.mojang.com/users/profiles/minecraft/{target}?at={old_name_time}") as r:
+            try:
+                resp_json = await r.json()
+            except Exception:
+                print(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} Cannot snipe name \"{target}\" | It is either blocked, invalid, or has had no previous owners.")
+                time.sleep(2)
+                quit()
+            async with session.get(f"https://api.mojang.com/user/profiles/{resp_json['id']}/names") as r:
+                old_owner = await r.json()
+                previous_names = len(old_owner)
+                snipe_time = (old_owner[previous_names - 1]["changedToAt"] / 1000) + 3196800
+                if snipe_time > time.time() + 172800:
+                    try:
+                        snipe_time = (old_owner[previous_names - 2]["changedToAt"] / 1000) + 3196800
+                    except KeyError:
+                        resp_error(f"\"{target}\" is unavailable | The sniper cannot claim unavailable names")
+                if snipe_time < time.time():
+                    print(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} \"{target}\" is available | The sniper cannot claim available names with this timing system")
+                    custom_info("replace \"timing_system:api\" with \"timing_system:namemc\" in config.txt for turboing a name")
+                    time.sleep(2)
+                    quit()
+                wait_time = snipe_time - time.time()
+                if wait_time >= 60 and wait_time <= 3600:
+                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60, 1)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
+                elif wait_time >= 3600:
+                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600, 2)} hours | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
+                else:
+                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time)} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
+                return snipe_time
 
 
 async def namemc_timing(target, block_snipe):
-    now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
-    now = datetime.strptime(now, '%Y-%m-%dT%H:%M:%S')
+    now = datetime.utcnow()
     block_snipe_words = ["snipe", "block"]
     async with aiohttp.ClientSession() as session:
         try:
@@ -101,7 +144,11 @@ async def namemc_timing(target, block_snipe):
             if status.lower().rstrip('*') == 'available':
                 custom_info(f"\"{target}\" is {status}. The sniper can turbo {status} names!")
                 snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
-                snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
+                try:
+                    snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
+                except ValueError:
+                    resp_error("invalid time format")
+                    raise ValueError
                 wait_time = snipe_time - now
                 wait_time = wait_time.seconds
                 if wait_time >= 60:
@@ -109,7 +156,7 @@ async def namemc_timing(target, block_snipe):
                 else:
                     custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
                 custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                return snipe_time
+                return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
             print(f"\"{target}\" is {status}. The sniper cannot claim names that are {status} so go claim it fast through https://my.minecraft.net if possible.")
             quit()
 
@@ -121,7 +168,7 @@ async def namemc_timing(target, block_snipe):
             custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
         else:
             custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-        return snipe_time
+        return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
 
 
 async def nx_timing(target, block_snipe):
@@ -133,7 +180,9 @@ async def nx_timing(target, block_snipe):
             if resp_json["status"] == "soon":
                 snipe_time = datetime.strptime(resp_json()["drop_time"], "%Y-%m-%dT%H:%M:%S.000Z")
             elif resp_json["status"] == "taken":
-                print(f"\"{target}\" is taken already. The sniper cannot claim names that are taken.")
+                resp_error(f"\"{target}\" is taken already. The sniper cannot claim names that are taken.")
+                # time.sleep(2)
+                # quit()
             if resp_json["status"] == "":
                 custom_info(f"{target} is available now. If you would like to turbo the name see below.")
                 snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
@@ -145,15 +194,100 @@ async def nx_timing(target, block_snipe):
                 else:
                     custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
                 custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                return snipe_time
+                return snipe_time.timestamp()
 
 
 async def time_snipe(target, block_snipe):
-    try:
-        timing = await nx_timing(target, block_snipe)
-    except Exception:
-        timing = await namemc_timing(target, block_snipe)
+    if config.timing == "api":
+        try:
+            timing = await mojang_timing(target, block_snipe)
+        except Exception:
+            try:
+                timing = await nx_timing(target, block_snipe)
+            except Exception:
+                try:
+                    timing = await namemc_timing(target, block_snipe)
+                except Exception:
+                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+    elif config.timing == "namemc":
+        try:
+            timing = await namemc_timing(target, block_snipe)
+        except Exception as e:
+            resp_error(f"failed to time snipe | retrying | {e}")
+            try:
+                timing = await nx_timing(target, block_snipe)
+            except Exception:
+                resp_error("failed to time snipe | retrying")
+                try:
+                    timing = await mojang_timing(target, block_snipe)
+                except Exception:
+                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+    else:
+        print("Failed to detect timing system | using default")
+        try:
+            timing = await mojang_timing(target, block_snipe)
+        except Exception:
+            print("failed to time snipe | retrying")
+            try:
+                timing = await nx_timing(target, block_snipe)
+            except Exception:
+                print("failed to time snipe | retrying")
+                try:
+                    timing = await namemc_timing(target, block_snipe)
+                except Exception:
+                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     return timing
+
+
+class Config:
+    def __init__(self):
+        self.options = []
+        if not os.path.exists("config.txt"):
+            with open("config.txt", "w") as f:
+                f.write(default_config)
+        with open("config.txt", "r") as f:
+            unconverted_lines = f.readlines()
+            self.lines = list()
+            for line in unconverted_lines:
+                self.lines.append(line.strip())
+            self.timing = self.find_parameter("timing_system")
+            self.block_reqs = int(self.find_parameter("block_reqs"))
+            self.snipe_reqs = int(self.find_parameter("snipe_reqs"))
+            self.skin = self.find_parameter("skin")
+            self.max_accs = int(self.find_parameter("max_accs"))
+            if "namemc.com/skin" in self.skin:
+                self.skin = f"https://namemc.com/texture/{self.skin.split('/')[-1]}.png"
+            self.custom_announce = self.find_parameter("custom_announce")
+            if self.custom_announce is None:
+                del self.custom_announce
+            self.change_skin = self.find_bool("change_skin", False)
+            self.auth_delay = int(self.find_parameter("auth_delay"))
+            self.webhooks = self.find_all("wh")
+            self.skin_model = self.find_parameter("skin_model")
+
+    def find_parameter(self, parameter):
+        for line in self.lines:
+            line = line.split(":")
+            if line[0].lower() == parameter:
+                line.pop(0)
+                line = ":".join(line)
+                self.options.append(line)
+                return line
+
+    def find_bool(self, parameter, default):
+        parameter = self.find_parameter(parameter)
+        parameter = {"false": False, "true": True}[parameter]
+        return parameter
+
+    def find_all(self, parameter):
+        options = []
+        for line in self.lines:
+            line = line.split(":")
+            if line[0] == parameter:
+                line.pop(0)
+                options.append(":".join(line))
+                self.options.append(options)
+        return options
 
 
 class Account:
@@ -166,7 +300,7 @@ class Account:
         self.authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
 
-    async def authenticate(self, session, sleep_time):
+    async def authenticate(self, session, sleep_time, block_snipe):
         await asyncio.sleep(sleep_time)
         # custom_info(f"{Fore.WHITE}starting auth for {self.email}")
         debug_mode = False
@@ -179,7 +313,8 @@ class Account:
                     if debug_mode:
                         print(resp_json)
                     else:
-                        custom_info(f"{self.email} is unpaid and cannot snipe names. please make sure you are blocking.")
+                        if block_snipe == 2:
+                            custom_info(f"{self.email} is unpaid and cannot snipe names. {Fore.RED}YOU ARE SNIPING. This will fail.{Fore.RESET}")
                 self.auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 self.access_token = resp_json["accessToken"]
             else:
@@ -198,6 +333,7 @@ class Account:
                             answers.append({"id": resp_json[x]["answer"]["id"], "answer": self.questions[x]})
                     except IndexError:
                         logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} has security questions and you did not provide any!")
+                        self.failed_auth = True
                         return
                     async with session.post("https://api.mojang.com/user/security/location", json=answers, headers=self.auth) as r:
                         if check_resp(r.status):
@@ -206,94 +342,95 @@ class Account:
                             resp_error(f"security questions incorrect | {self.email}")
                             self.failed_auth = True
             else:
-                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} something went wrong with authentication for {self.email}!")
+                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} something went wrong with authentication for {self.email}! | {r.status}")
                 self.failed_auth = True
 
     async def block_req(self, session, ctarget_username):
         await asyncio.sleep(0)
-        async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
-            now = datetime.now()
-            logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
-            await response.read()
-            if response.status == 204:
-                asyncio.get_event_loop().stop()
+        try:
+            async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
+                global sent_reqs
+                sent_reqs += 1
+                now = datetime.now()
+                logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
+                await response.read()
+                if response.status == 204:
+                    asyncio.get_event_loop().stop()
+        except AttributeError:
+            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
 
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
         try:
             async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
+                global sent_reqs
+                sent_reqs += 1
                 now = datetime.now()
                 logging.info(f"{Fore.WHITE}[{f'{Fore.GREEN}SUCCESS' if response.status == 204 else f'{Fore.RED}FAIL'}{Fore.WHITE}]{Fore.RESET}{' ' + target_username + ' ' + Fore.GREEN + self.email if str(response.status)[0] == str(2) else Fore.RED} | {response.status}{Fore.RESET} @ {Fore.CYAN}{now}{Fore.RESET}")
                 await response.read()
                 if response.status == 204:
                     self.got_name = True
+                    if config.change_skin:
+                        await self.authenticate()
                     asyncio.get_event_loop().stop()
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
 
-    async def webhook_skin_write_file(self):
-        async with aiohttp.ClientSession() as session:
+    def webhook_skin_write_file(self, block_snipe):
+        time.sleep(1)
+        with requests.session() as session:
             with open("success.txt", "a") as f:
                 f.write(f"{self.email}:{self.password} - {target_username}\n")
-            try:
-                files = {"model": "slim", "url": open("skin.txt", "r").read().strip()}
+            if config.change_skin:
+                files = {"model": config.skin_model, "url": config.skin}
                 auth = self.auth
                 auth["Content-Type"] = "application/x-www-form-urlencoded"
-                async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as r:
-                    if r.status == 204 or r.status == 200:
+                with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as r:
+                    if r.status_code == 204 or r.status_code == 200:
                         logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
                     else:
-                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email} | {str(r.status)}")
-                        logging.info(await r.json())
-            except FileNotFoundError:
-                pass
-            except Exception:
-                logging.info(f"{Fore.WHITE}[{Fore.RED}i have no idea{Fore.WHITE}]{Fore.RESET} i dont know what happend but it failed")
-            try:
-                webhooks = []
-                with open("webhook.txt", "r") as f:
-                    unconverted_webhooks = f.readlines()
-                for hook in unconverted_webhooks:
-                    webhooks.append(hook.strip())
-                for hook in webhooks:
-                    if hook.split(":")[0] == "custom_announce":
-                        async with session.post("https://announcements-api.herokuapp.com/api/v1/announce", json={"name": target_username.strip()}, headers={"Authorization": hook.split(":")[1].strip()}) as r:
-                            if r.status == 204:
-                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent custom announcement of snipe!")
-                            else:
-                                logging.info(f"{Fore.RED} {r.status} | Failed to send custom announcement!{Fore.RESET}")
-                                print(await r.json())
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}FAIL{Fore.WHITE}]{Fore.RESET} Failed to change skin {self.email} | {str(r.status_code)}")
+                        logging.info(r.json())
+            else:
+                custom_info(f"not changing skin | {self.email}")
+            for hook in config.webhooks:
+                with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
+                    if r.status_code == 200 or r.status_code == 204:
+                        logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
                     else:
-                        async with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
-                            if r.status == 200 or r.status == 204:
-                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
-                            else:
-                                logging.info(r.status)
-                                logging.info(await r.json())
-            except FileNotFoundError:
-                pass
-
-
-async def get_name_of_the_week():
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://announcements-api.herokuapp.com/api/v1/nameoftheweek") as r:
-            name_json = await r.json()
-            name = name_json["name"]
-            custom_info(f"Opening {name} in namemc!")
+                        logging.info(r.status_code_code)
+                        logging.info(r.json())
+            if len(config.webhooks) == 0:
+                custom_info("No discord webhooks detected | paste a webhook into config.txt with \"wh:\" before it")
             try:
-                webbrowser.open_new_tab(f"https://namemc.com/name/{name}")
-                custom_input("press enter to quit: ")
-            except Exception:
-                print("failed to open name!")
-                custom_input("press enter to quit: ")
+                with session.post("https://announcements-api.herokuapp.com/api/v1/announce", json={"name": target_username.strip()}, headers={"Authorization": config.custom_announce}) as r:
+                    if r.status_code == 204:
+                        logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent custom announcement of snipe!")
+                    else:
+                        logging.info(f"{Fore.RED} {r.status_code} | Failed to send custom announcement!{Fore.RESET}")
+                        print(r.json())
+            except AttributeError:
+                custom_info("No custom announcement detected")
+                custom_info("type >generate in #bot-commands in the discord to announce your snipes")
+
+
+# async def get_name_of_the_week():
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get("https://announcements-api.herokuapp.com/api/v1/nameoftheweek") as r:
+#             name_json = await r.json()
+#             name = name_json["name"]
+#             custom_info(f"Opening {name} in namemc!")
+#             try:
+#                 webbrowser.open_new_tab(f"https://namemc.com/name/{name}")
+#                 custom_input("press enter to quit: ")
+#             except Exception:
+#                 print("failed to open name!")
+#                 custom_input("press enter to quit: ")
 
 
 def gather_info():
-    block_snipe = menu(options=["Snipe name", "Block Name", "Open name of the week in namemc"])
-    if block_snipe == 2:
-        asyncio.get_event_loop().run_until_complete(get_name_of_the_week())
-        quit()
-    target_username = custom_input(f"What name you would you like to {['snipe', 'block'][block_snipe]}: ")
+    block_snipe = menu(options=["Snipe name", "Block name"])
+    target_username = custom_input(f"What name would you like to {['snipe', 'block'][block_snipe]}: ")
     try:
         delay = int(custom_input("Custom delay in ms: "))
     except ValueError:
@@ -314,12 +451,8 @@ def load_accounts_file():
             print(f"Accounts not found in accounts.txt file please add accounts with format (email:pass) or (email:pass:q1:q2:q3)")
             input("Press any key to reload accounts.")
             load_accounts_file()
-        if len(accounts) < 3:
-            for i in range(len(accounts)):
-                accounts.append(accounts[i])
-            custom_info("You had less than 3 accounts | Using 2 of each account")
-        if len(accounts) > 30:
-            print(f"{Fore.WHITE}[{Fore.YELLOW}warning{Fore.WHITE}]{Fore.RESET} you inputted too many accounts | removing {len(accounts) - 30}")
+        if len(accounts) > config.max_accs:
+            print(f"{Fore.WHITE}[{Fore.YELLOW}warning{Fore.WHITE}]{Fore.RESET} you inputted too many accounts | removing {len(accounts) - config.max_accs}")
             accounts = accounts[0:30]
     return accounts
 
@@ -347,15 +480,20 @@ class session:
         self.snipe_delay = snipe_delay
         loop = asyncio.get_event_loop()
         self.drop_time = loop.run_until_complete(time_snipe(self.target_username, self.block_snipe))
-        self.setup_time = self.drop_time - timedelta(seconds=55)
+        try:
+            self.setup_time = self.drop_time - 55
+        except Exception:
+            resp_error(f"Cannot snipe name {target_username}")
+            time.sleep(2)
+            quit()
         self.setup = False
         self.ran = False
-        self.drop_time = self.drop_time - timedelta(milliseconds=self.snipe_delay)
+        self.drop_time = self.drop_time - snipe_delay / 1000
 
     def run(self):
         loop = asyncio.get_event_loop()
         while True:
-            now = datetime.utcnow()
+            now = time.time()
             if now >= self.drop_time and not self.ran:
                 try:
                     start = time.time()
@@ -366,18 +504,22 @@ class session:
                 elapsed_time = end - start
                 for acc in self.accounts:
                     if acc.got_name:
-                        asyncio.get_event_loop().run_until_complete(self.webhook_skin_file(acc))
-                rq_sec = self.num_reqs * len(accounts) / elapsed_time
+                        time.sleep(2)
+                        acc.webhook_skin_write_file(self.block_snipe)
+                rq_sec = sent_reqs * len(accounts) / elapsed_time
                 times.append(rq_sec)
-                logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec (ESTIMATE) {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {self.num_reqs * len(accounts)} requests")
-                if len(sys.argv) < 3:
-                    custom_input("press enter to quit: ")
-                quit()
+                logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec (ESTIMATE) {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {sent_reqs * len(accounts)} requests")
+                try:
+                    if len(sys.argv) < 3:
+                        custom_input("press enter to quit: ")
+                    return
+                except Exception:
+                    return
             elif now >= self.setup_time and not self.setup:
                 loop.run_until_complete(self.run_auth())
                 for acc in accounts:
                     if acc.failed_auth:
-                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
+                        # logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
                         accounts.remove(acc)
                 if len(accounts) == 0:
                     logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] you have 0 accounts available to snipe on! | quitting program...")
@@ -392,43 +534,42 @@ class session:
     async def send_requests(self):
         async with aiohttp.ClientSession() as session:
             if self.block_snipe == 0:
-                self.num_reqs = 8
                 self.coros = [
-                    acc.snipe_req(session, self.target_username) for acc in self.accounts for _ in range(self.num_reqs)
+                    acc.snipe_req(session, self.target_username) for acc in self.accounts for _ in range(config.snipe_reqs)
                 ]
             elif self.block_snipe == 1:
-                self.num_reqs = 3
                 self.coros = [
-                    acc.block_req(session, self.target_username) for acc in self.accounts for _ in range(self.num_reqs)
+                    acc.block_req(session, self.target_username) for acc in self.accounts for _ in range(config.block_reqs)
                 ]
             await asyncio.wait(self.coros)
 
     async def run_auth(self):
         async with aiohttp.ClientSession() as session:
             coros = [
-                acc.authenticate(session, self.accounts.index(acc) * .5) for acc in self.accounts
+                acc.authenticate(session, self.accounts.index(acc) * (config.auth_delay / 1000), self.block_snipe) for acc in self.accounts
             ]
             await asyncio.wait(coros)
 
 
-print_title()
-accounts = load_accounts()
-try:
-    target_username = sys.argv[1]
-    block_snipe = sys.argv[2]
-    if str(block_snipe).lower() == "snipe" or str(block_snipe) == "0":
-        block_snipe = 0
-    if str(block_snipe).lower() == "block" or str(block_snipe) == "1":
-        block_snipe = 1
+if __name__ == '__main__':
+    print_title()
+    config = Config()
+    accounts = load_accounts()
     try:
-        snipe_delay = int(sys.argv[3])
+        target_username = sys.argv[1]
+        block_snipe = sys.argv[2]
+        if str(block_snipe).lower() == "snipe" or str(block_snipe) == "0":
+            block_snipe = 0
+        if str(block_snipe).lower() == "block" or str(block_snipe) == "1":
+            block_snipe = 1
+        try:
+            snipe_delay = int(sys.argv[3])
+        except IndexError:
+            if block_snipe == 0:
+                snipe_delay = 900
+            else:
+                snipe_delay = 200
     except IndexError:
-        if block_snipe == 0:
-            snipe_delay = 900
-        else:
-            snipe_delay = 200
-except IndexError:
-    block_snipe, target_username, snipe_delay = gather_info()
-
-session = session(target_username, accounts, block_snipe, snipe_delay)
-session.run()
+        block_snipe, target_username, snipe_delay = gather_info()
+    session = session(target_username, accounts, block_snipe, snipe_delay)
+    session.run()

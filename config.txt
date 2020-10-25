@@ -1,0 +1,9 @@
+timing_system:namemc
+skin:https://namemc.com/skin/4e45a59795a252c3
+skin_model:slim
+change_skin:false
+snipe_reqs:8
+block_reqs:3
+auth_delay:500
+max_accs:30
+auto_link_namemc:false NOT IMPLEMENTED

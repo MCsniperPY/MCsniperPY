@@ -371,7 +371,7 @@ class Account:
                 if response.status == 204:
                     self.got_name = True
                     if config.change_skin:
-                        await self.authenticate()
+                        await self.authenticate(session, 1, 1)
                     asyncio.get_event_loop().stop()
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')

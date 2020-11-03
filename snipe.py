@@ -1,4 +1,5 @@
 from config import Config
+from utils import *
 
 try:
     import aiohttp
@@ -28,25 +29,6 @@ global sent_reqs
 sent_reqs = 0
 
 
-def custom_info(message):
-    logging.info(f"{Fore.WHITE}[{Fore.BLUE}info{Fore.WHITE}] {Fore.RESET}{message}")
-
-
-def print_title():
-    title = f"""
-{Fore.CYAN}┌──────────────────────────────────────────────────────────────────────────────────────┐
-{Fore.CYAN}│{Fore.RESET}  ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ {Fore.BLUE}██████╗ ██╗   ██╗{Fore.CYAN}   │
-{Fore.CYAN}│{Fore.RESET}  ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗{Fore.BLUE}██╔══██╗╚██╗ ██╔╝{Fore.CYAN}   │
-{Fore.CYAN}│{Fore.RESET}  ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝{Fore.BLUE}██████╔╝ ╚████╔╝{Fore.CYAN}    │
-│{Fore.RESET}  ██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗{Fore.BLUE}██╔═══╝   ╚██╔╝     {Fore.CYAN}│
-│{Fore.RESET}  ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║{Fore.BLUE}██║        ██║      {Fore.CYAN}│
-│{Fore.RESET}  ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝{Fore.BLUE}╚═╝        ╚═╝      {Fore.CYAN}│
-{Fore.CYAN}└──────────────────────────────────────────────────────────────────────────────────────┘
-{Fore.GREEN}Developed by @Kqzz#0001 on Discord {Fore.BLUE}| Discord server: https://discord.gg/jZm4qNF
-{Fore.GREEN}THIS SNIPER IS 100% FREE ON GITHUB{Fore.RESET}"""
-    print(title)
-
-
 def menu(options):
     i = 1
     # loop through options and print
@@ -65,23 +47,6 @@ def menu(options):
             return choice - 1
         except (ValueError, IndexError):
             print("please enter a valid option")
-
-
-def custom_input(message):
-    print(f"{Fore.WHITE}[{Fore.BLUE}input{Fore.WHITE}] {Fore.RESET}", end='')
-    input_return = input(message)
-    return input_return
-
-
-def check_resp(status):
-    if str(status)[0] == str(2):
-        return True
-    else:
-        return False
-
-
-def resp_error(message):
-    print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
 
 
 async def mojang_timing(target, block_snipe):

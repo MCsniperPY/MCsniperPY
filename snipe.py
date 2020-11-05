@@ -10,10 +10,6 @@ try:
     from bs4 import BeautifulSoup
     import sys
     import requests
-    try:
-        import webbrowser
-    except Exception:
-        pass
 except ImportError:
     print("You are missing the required modules | Please refer to the usage on how to install")
     quit()
@@ -175,7 +171,7 @@ async def nx_timing(target, block_snipe):
     now = datetime.utcnow()
     block_snipe_words = ["snipe", "block"]
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"https://api-v2.statz.xyz//check/{target}") as r:
+        async with session.get(f"https://api.nathan.cx/check/{target}") as r:
             resp_json = await r.json()
             if resp_json["status"] == "soon":
                 snipe_time = datetime.strptime(resp_json()["drop_time"], "%Y-%m-%dT%H:%M:%S.000Z")
@@ -216,8 +212,8 @@ async def time_snipe(target, block_snipe):
             resp_error(f"failed to time snipe | retrying | {e}")
             try:
                 timing = await nx_timing(target, block_snipe)
-            except Exception:
-                resp_error("failed to time snipe | retrying")
+            except Exception as e:
+                resp_error(f"failed to time snipe | retrying | {e}")
                 try:
                     timing = await mojang_timing(target, block_snipe)
                 except Exception:

@@ -9,6 +9,8 @@ except ImportError:
 init()
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
+sent_reqs = 0
+
 
 def print_title():
     title = f"""

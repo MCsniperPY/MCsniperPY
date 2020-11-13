@@ -98,7 +98,7 @@ async def mojang_timing(target, block_snipe):
             except Exception:
                 print(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} Cannot snipe name \"{target}\" | It is either blocked, invalid, or has had no previous owners.")
                 time.sleep(2)
-                quit()
+                return
             async with session.get(f"https://api.mojang.com/user/profiles/{resp_json['id']}/names") as r:
                 old_owner = await r.json()
                 previous_names = len(old_owner)
@@ -353,7 +353,7 @@ class Account:
                     logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] | Blocked {Fore.CYAN}{target_username}{Fore.WHITE} on {self.email} | {Fore.GREEN}{response.status}{Fore.WHITE} @ {Fore.CYAN}{now}{Fore.RESET}")
                     asyncio.get_event_loop().stop()
                 else:
-                    logging.info(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
+                    logging.info(f"{Fore.WHITE}[{Fore.RED}fail{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
 
@@ -372,7 +372,7 @@ class Account:
                         await self.authenticate(session, 1, 1)
                     asyncio.get_event_loop().stop()
                 else:
-                    logging.info(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
+                    logging.info(f"{Fore.WHITE}[{Fore.RED}fail{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
         except AttributeError:
             print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
 

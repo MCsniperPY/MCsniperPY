@@ -11,6 +11,10 @@ If you decide to use any code from this project your project **must** be open so
 Join my [discord](https://discord.gg/jZm4qNF) server for the instructions on usage.
 Also, check out the [wiki](https://github.com/Kqzz/MCsniperPY/wiki) for usage steps. **The wiki is still under construction.**
 
+## ⚠ warnings ⚠
+- Use this at your own risk. This *can* get your account permanantly locked by mojang. It is very rare and won't happen if you know what you're doing.
+- You cannot use more than 3 accounts, with security questions, per IP address.
+
 ## More info
 
 If you find any bugs please report them in my discord. There are still many which we are still finding and removing. Also, please refer to the wiki for the config file!

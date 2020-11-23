@@ -14,7 +14,7 @@ If you decide to use any code from this project your project **must** be open so
 
 ## ⚠ warnings ⚠
 - Use this at your own risk. This *can* get your account permanantly locked by mojang. It is very rare and won't happen if you know what you're doing.
-- You cannot use more than 3 accounts, with security questions, per IP address.
+- If your accounts have security questions you cannot use more than 3 per IP address. This makes getting names very difficult so please avoid using accounts with security questions.
 - **DO NOT USE A CUSTOM DELAY OF BELOW 40 IN MOST CASES. Refer to the [FAQ page](https://github.com/Kqzz/MCsniperPY/wiki/FAQ) on the wiki for info on custom delay.**
 
 ## More info

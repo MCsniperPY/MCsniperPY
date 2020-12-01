@@ -88,40 +88,6 @@ def resp_error(message):
     print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
 
 
-async def mojang_timing(target, block_snipe):
-    block_snipe_words = ["snipe", "block"]
-    async with aiohttp.ClientSession() as session:
-        old_name_time = int(time.time() - 3456000)
-        async with session.get(f"https://api.mojang.com/users/profiles/minecraft/{target}?at={old_name_time}") as r:
-            try:
-                resp_json = await r.json()
-            except Exception:
-                print(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} Cannot snipe name \"{target}\" | It is either blocked, invalid, or has had no previous owners.")
-                time.sleep(2)
-                return
-            async with session.get(f"https://api.mojang.com/user/profiles/{resp_json['id']}/names") as r:
-                old_owner = await r.json()
-                previous_names = len(old_owner)
-                snipe_time = (old_owner[previous_names - 1]["changedToAt"] / 1000) + 3196800
-                if snipe_time > time.time() + 172800:
-                    try:
-                        snipe_time = (old_owner[previous_names - 2]["changedToAt"] / 1000) + 3196800
-                    except KeyError:
-                        resp_error(f"\"{target}\" is unavailable | The sniper cannot claim unavailable names")
-                if snipe_time < time.time():
-                    print(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} \"{target}\" is available | The sniper cannot claim available names with this timing system")
-                    custom_info("replace \"timing_system:api\" with \"timing_system:namemc\" in config.txt for turboing a name")
-                    time.sleep(2)
-                    quit()
-                wait_time = snipe_time - time.time()
-                if wait_time >= 60 and wait_time <= 3600:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60, 1)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
-                elif wait_time >= 3600:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600, 2)} hours | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
-                else:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time)} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
-                return snipe_time
-
 
 async def namemc_timing(target, block_snipe):
     now = datetime.utcnow()
@@ -167,56 +133,17 @@ async def namemc_timing(target, block_snipe):
         return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
 
 
-async def nx_timing(target, block_snipe):
-    now = datetime.utcnow()
-    block_snipe_words = ["snipe", "block"]
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"https://api.nathan.cx/check/{target}") as r:
-            resp_json = await r.json()
-            if resp_json["status"] == "soon":
-                snipe_time = datetime.strptime(resp_json()["drop_time"], "%Y-%m-%dT%H:%M:%S.000Z")
-            elif resp_json["status"] == "taken":
-                resp_error(f"\"{target}\" is taken already. The sniper cannot claim names that are taken.")
-                # time.sleep(2)
-                # quit()
-            if resp_json["status"] == "":
-                custom_info(f"{target} is available now. If you would like to turbo the name see below.")
-                snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
-                snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
-                wait_time = snipe_time - now
-                wait_time = wait_time.seconds
-                if wait_time >= 60:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                else:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                return snipe_time.timestamp()
-
 
 async def time_snipe(target, block_snipe):
     if config.timing == "api":
         try:
-            timing = await mojang_timing(target, block_snipe)
-        except Exception:
-            try:
-                timing = await nx_timing(target, block_snipe)
-            except Exception:
-                try:
-                    timing = await namemc_timing(target, block_snipe)
+            timing = await namemc_timing(target, block_snipe)
                 except Exception:
                     print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     elif config.timing == "namemc":
         try:
             timing = await namemc_timing(target, block_snipe)
-        except Exception as e:
-            resp_error(f"failed to time snipe | retrying | {e}")
-            try:
-                timing = await nx_timing(target, block_snipe)
-            except Exception as e:
-                resp_error(f"failed to time snipe | retrying | {e}")
-                try:
-                    timing = await mojang_timing(target, block_snipe)
-                except Exception:
+        except Exception:
                     print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     else:
         print("Failed to detect timing system | using default")
@@ -360,7 +287,7 @@ class Account:
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
         try:
-            async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
+            async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth) as response:
                 now = datetime.now()
                 global sent_reqs
                 sent_reqs += 1

@@ -228,12 +228,14 @@ class Account:
             if check_resp(r.status):
                 resp_json = await r.json()
                 if resp_json == []:
-                    logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.GREEN} signed in to {self.email}{Fore.RESET}")
                     async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers={"Authorization":"Bearer " + self.access_token}) as ncE:
                         ncjson = await ncE.json()
-                        if ncjson['nameChangeAllowed'] == False:
-                            logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {self.email} is not eligible for a name change!")
-                            self.failed_auth = True
+                        try:
+                            if ncjson['nameChangeAllowed'] == False:
+                                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {self.email} is not eligible for a name change!")
+                                self.failed_auth = True
+                        except:
+                            logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Logged into {self.email} successfully!")
                 else:
                     try:
                         for x in range(3):

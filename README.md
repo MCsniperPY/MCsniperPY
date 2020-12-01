@@ -1,5 +1,5 @@
 ![MCsniperPY](https://i.imgur.com/qdr2ZHD.png)
-[![Discord Server](https://img.shields.io/discord/734794891258757160?label=Discord)](https://discord.gg/jZm4qNF)
+[![Discord Server](https://img.shields.io/discord/734794891258757160?label=Discord)](https://discord.gg/pFQQwNkuc3)
 ## An easy to use, fast, and async name sniper written in python.
 
 ## IMPORTANT
@@ -8,7 +8,7 @@ If you decide to use any code from this project your project **must** be open so
 
 ## Usage
 
-- Join my [discord](https://discord.gg/jZm4qNF) server for the instructions on usage.
+- Join my [discord](https://discord.gg/pFQQwNkuc3) server for the instructions on usage.
 - Also, check out the [wiki](https://github.com/Kqzz/MCsniperPY/wiki) for usage steps. **The wiki is still under construction and may be fragmented / not contain all the necessary info.**
 - **[config file usage](https://github.com/Kqzz/MCsniperPY/wiki/config)**
 

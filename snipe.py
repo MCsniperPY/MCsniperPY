@@ -278,10 +278,11 @@ class Account:
             with open("success.txt", "a") as f:
                 f.write(f"{self.email}:{self.password} - {target_username}\n")
             if config.change_skin:
-                files = {"model": config.skin_model, "url": config.skin}
+                payload = {"variant": config.skin_model}
+                files=[('file', open(f'/{config.skin}','rb'))]
                 auth = self.auth
-                auth["Content-Type"] = "application/x-www-form-urlencoded"
-                with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as r:
+                #auth["Content-Type"] = "multipart/form-data"
+                with session.post(f"https://api.minecraftservices.com/minecraft/profile/skins", headers=self.auth, data=payload, files= files) as r:
                     if r.status_code == 204 or r.status_code == 200:
                         logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
                     else:

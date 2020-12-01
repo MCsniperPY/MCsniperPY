@@ -21,3 +21,5 @@ If you decide to use any code from this project your project **must** be open so
 ## More info
 
 If you find any bugs please report them in my discord. There are still many which we are still finding and removing. Also, please refer to the wiki for the config file!
+
+If you're looking to develop a sniper [this](https://github.com/AlvinoNguyen/MCsniperPY) branch of the sniper has much cleaner code though it is slightly outdated.

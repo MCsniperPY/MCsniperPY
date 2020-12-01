@@ -51,24 +51,7 @@ def print_title():
     print(title)
 
 
-def menu(options):
-    i = 1
-    # loop through options and print
-    custom_info(f"select a number 1 - {len(options)}")
-    for option in options:
-        print(f"{i}). {option}")
-        i += 1
-    # main function loop
-    # Doesn't end until a correct answer is given
-    while True:
-        try:
-            # takes an input using readchar's readkey function
-            choice = int(input("> "))
-            options[choice - 1]
-            # returns the option the user selected by list index
-            return choice - 1
-        except (ValueError, IndexError):
-            print("please enter a valid option")
+
 
 
 def custom_input(message):
@@ -86,6 +69,7 @@ def check_resp(status):
 
 def resp_error(message):
     print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
+
 
 
 
@@ -134,31 +118,24 @@ async def namemc_timing(target, block_snipe):
 
 
 
+
 async def time_snipe(target, block_snipe):
     if config.timing == "api":
         try:
             timing = await namemc_timing(target, block_snipe)
-                except Exception:
-                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+        except Exception:
+            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     elif config.timing == "namemc":
         try:
             timing = await namemc_timing(target, block_snipe)
         except Exception:
-                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     else:
         print("Failed to detect timing system | using default")
         try:
-            timing = await mojang_timing(target, block_snipe)
+            timing = await namemc_timing(target, block_snipe)
         except Exception:
-            print("failed to time snipe | retrying")
-            try:
-                timing = await nx_timing(target, block_snipe)
-            except Exception:
-                print("failed to time snipe | retrying")
-                try:
-                    timing = await namemc_timing(target, block_snipe)
-                except Exception:
-                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     return timing
 
 
@@ -219,8 +196,10 @@ class Account:
         self.password = password
         self.questions = questions
         self.got_name = False
+        self.user_agent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/" \
+             "84.0.4147.135 Safari/537.3"
         self.failed_auth = False
-        self.authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
+        self.authenticate_json = {"username": self.email, "password": self.password}
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
 
     async def authenticate(self, session, sleep_time, block_snipe):
@@ -268,31 +247,16 @@ class Account:
                 logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} something went wrong with authentication for {self.email}! | {r.status}")
                 self.failed_auth = True
 
-    async def block_req(self, session, ctarget_username):
-        await asyncio.sleep(0)
-        try:
-            async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
-                global sent_reqs
-                sent_reqs += 1
-                now = datetime.now()
-                await response.read()
-                if response.status == 204:
-                    logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] | Blocked {Fore.CYAN}{target_username}{Fore.WHITE} on {self.email} | {Fore.GREEN}{response.status}{Fore.WHITE} @ {Fore.CYAN}{now}{Fore.RESET}")
-                    asyncio.get_event_loop().stop()
-                else:
-                    logging.info(f"{Fore.WHITE}[{Fore.RED}fail{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
-        except AttributeError:
-            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
 
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
         try:
-            async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth) as response:
+            async with session.put(f"https://api.minecraftservices.com/minecraft/profile/name/{target_username}", headers={"Authorization":"Bearer " + self.access_token, "User-Agent":"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type":"application/json"}) as response:
                 now = datetime.now()
                 global sent_reqs
                 sent_reqs += 1
                 await response.read()
-                if response.status == 204:
+                if response.status == 204 or response.status == 200:
                     logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] | Sniped {Fore.CYAN}{target_username}{Fore.WHITE} on {self.email} | {Fore.GREEN}{response.status}{Fore.WHITE} @ {Fore.CYAN}{now}{Fore.RESET}")
                     self.got_name = True
                     if config.change_skin:
@@ -356,7 +320,7 @@ class Account:
 
 
 def gather_info():
-    block_snipe = menu(options=["Snipe name", "Block name"])
+    block_snipe = 0
     target_username = custom_input(f"What name would you like to {['snipe', 'block'][block_snipe]}: ")
     try:
         delay = int(custom_input("Custom delay in ms: "))

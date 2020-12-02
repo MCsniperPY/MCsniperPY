@@ -51,9 +51,6 @@ def print_title():
     print(title)
 
 
-
-
-
 def custom_input(message):
     print(f"{Fore.WHITE}[{Fore.BLUE}input{Fore.WHITE}] {Fore.RESET}", end='')
     input_return = input(message)
@@ -69,8 +66,6 @@ def check_resp(status):
 
 def resp_error(message):
     print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
-
-
 
 
 async def namemc_timing(target, block_snipe):
@@ -115,8 +110,6 @@ async def namemc_timing(target, block_snipe):
         else:
             custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
         return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
-
-
 
 
 async def time_snipe(target, block_snipe):
@@ -228,15 +221,15 @@ class Account:
             if check_resp(r.status):
                 resp_json = await r.json()
                 if resp_json == []:
-                    async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers={"Authorization":"Bearer " + self.access_token}) as ncE:
+                    async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers={"Authorization": "Bearer " + self.access_token}) as ncE:
                         ncjson = await ncE.json()
                         try:
-                            if ncjson['nameChangeAllowed'] == False:
+                            if ncjson['nameChangeAllowed'] is False:
                                 logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {self.email} is not eligible for a name change!")
                                 self.failed_auth = True
                             else:
                                 logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Logged into {self.email} successfully!")
-                        except:
+                        except Exception:
                             logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Logged into {self.email} successfully!")
                 else:
                     try:
@@ -256,11 +249,10 @@ class Account:
                 logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} something went wrong with authentication for {self.email}! | {r.status}")
                 self.failed_auth = True
 
-
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
         try:
-            async with session.put(f"https://api.minecraftservices.com/minecraft/profile/name/{target_username}", headers={"Authorization":"Bearer " + self.access_token, "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0", "Content-Type":"application/json"}) as response:
+            async with session.put(f"https://api.minecraftservices.com/minecraft/profile/name/{target_username}", headers={"Authorization": "Bearer " + self.access_token, "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0", "Content-Type": "application/json"}) as response:
                 now = datetime.now()
                 global sent_reqs
                 sent_reqs += 1
@@ -283,10 +275,8 @@ class Account:
                 f.write(f"{self.email}:{self.password} - {target_username}\n")
             if config.change_skin:
                 payload = {"variant": str(config.skin_model)}
-                files=[('file', open(str(config.skin),'rb'))]
-                auth = self.auth
-                #auth["Content-Type"] = "multipart/form-data"
-                with session.post(f"https://api.minecraftservices.com/minecraft/profile/skins", headers=self.auth, data=payload, files= files) as r:
+                files = [('file', open(str(config.skin), 'rb'))]
+                with session.post(f"https://api.minecraftservices.com/minecraft/profile/skins", headers=self.auth, data=payload, files=files) as r:
                     if r.status_code == 204 or r.status_code == 200:
                         logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
                     else:
@@ -313,21 +303,6 @@ class Account:
             except AttributeError as e:
                 custom_info(f"No custom announcement detected | {e}")
                 custom_info("type >generate in #bot-commands in the discord to announce your snipes")
-
-
-
-# async def get_name_of_the_week():
-#     async with aiohttp.ClientSession() as session:
-#         async with session.get("https://announcements-api.herokuapp.com/api/v1/nameoftheweek") as r:
-#             name_json = await r.json()
-#             name = name_json["name"]
-#             custom_info(f"Opening {name} in namemc!")
-#             try:
-#                 webbrowser.open_new_tab(f"https://namemc.com/name/{name}")
-#                 custom_input("press enter to quit: ")
-#             except Exception:
-#                 print("failed to open name!")
-#                 custom_input("press enter to quit: ")
 
 
 def gather_info():
@@ -451,7 +426,6 @@ class session:
                 acc.authenticate(session, self.accounts.index(acc) * (config.auth_delay / 1000), self.block_snipe) for acc in self.accounts
             ]
             await asyncio.wait(coros)
-            
 
 
 if __name__ == '__main__':

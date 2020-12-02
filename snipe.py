@@ -21,7 +21,7 @@ times = []
 global sent_reqs
 sent_reqs = 0
 default_config = """timing_system:api
-skin:https://namemc.com/skin/4e45a59795a252c3
+skin:PATH WITH FORWARD SLASHES (no quote marks)
 skin_model:slim
 change_skin:false
 snipe_reqs:8
@@ -218,6 +218,7 @@ class Account:
                             custom_info(f"{self.email} is unpaid and cannot snipe names. {Fore.RED}YOU ARE SNIPING. This will fail.{Fore.RESET}")
                 self.auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 self.access_token = resp_json["accessToken"]
+                print(self.access_token)
             else:
                 resp_error(f"invalid credentials | {self.email}")
                 self.failed_auth = True
@@ -282,7 +283,7 @@ class Account:
                 f.write(f"{self.email}:{self.password} - {target_username}\n")
             if config.change_skin:
                 payload = {"variant": str(config.skin_model)}
-                files=[('file', open(f'/{config.skin}','rb'))]
+                files=[('file', open(str(config.skin),'rb'))]
                 auth = self.auth
                 #auth["Content-Type"] = "multipart/form-data"
                 with session.post(f"https://api.minecraftservices.com/minecraft/profile/skins", headers=self.auth, data=payload, files= files) as r:

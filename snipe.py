@@ -11,7 +11,7 @@ try:
     import sys
     import requests
 except ImportError:
-    print("You are missing the required modules | Please refer to the usage on how to install")
+    print("You are missing the required modules | Please refer to the usage on how to install!")
     quit()
 
 init()
@@ -196,11 +196,10 @@ class Account:
         self.password = password
         self.questions = questions
         self.got_name = False
-        self.user_agent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/" \
-             "84.0.4147.135 Safari/537.3"
+        self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
         self.failed_auth = False
         self.authenticate_json = {"username": self.email, "password": self.password}
-        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
+        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0", "Content-Type": "application/json"}
 
     async def authenticate(self, session, sleep_time, block_snipe):
         await asyncio.sleep(sleep_time)
@@ -234,6 +233,8 @@ class Account:
                             if ncjson['nameChangeAllowed'] == False:
                                 logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {self.email} is not eligible for a name change!")
                                 self.failed_auth = True
+							else:
+								logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Logged into {self.email} successfully!")
                         except:
                             logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Logged into {self.email} successfully!")
                 else:
@@ -258,7 +259,7 @@ class Account:
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
         try:
-            async with session.put(f"https://api.minecraftservices.com/minecraft/profile/name/{target_username}", headers={"Authorization":"Bearer " + self.access_token, "User-Agent":"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type":"application/json"}) as response:
+            async with session.put(f"https://api.minecraftservices.com/minecraft/profile/name/{target_username}", headers={"Authorization":"Bearer " + self.access_token, "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0", "Content-Type":"application/json"}) as response:
                 now = datetime.now()
                 global sent_reqs
                 sent_reqs += 1
@@ -280,7 +281,7 @@ class Account:
             with open("success.txt", "a") as f:
                 f.write(f"{self.email}:{self.password} - {target_username}\n")
             if config.change_skin:
-                payload = {"variant": config.skin_model}
+                payload = {"variant": str(config.skin_model)}
                 files=[('file', open(f'/{config.skin}','rb'))]
                 auth = self.auth
                 #auth["Content-Type"] = "multipart/form-data"
@@ -311,6 +312,7 @@ class Account:
             except AttributeError as e:
                 custom_info(f"No custom announcement detected | {e}")
                 custom_info("type >generate in #bot-commands in the discord to announce your snipes")
+
 
 
 # async def get_name_of_the_week():
@@ -418,7 +420,7 @@ class session:
                 loop.run_until_complete(self.run_auth())
                 for acc in accounts:
                     if acc.failed_auth:
-                        # logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
                         accounts.remove(acc)
                 if len(accounts) == 0:
                     logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] you have 0 accounts available to snipe on! | quitting program...")
@@ -448,6 +450,7 @@ class session:
                 acc.authenticate(session, self.accounts.index(acc) * (config.auth_delay / 1000), self.block_snipe) for acc in self.accounts
             ]
             await asyncio.wait(coros)
+            
 
 
 if __name__ == '__main__':

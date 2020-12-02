@@ -11,7 +11,7 @@ try:
     import sys
     import requests
 except ImportError:
-    print("You are missing the required modules | Please refer to the usage on how to install")
+    print("You are missing the required modules | Please refer to the usage on how to install!")
     quit()
 
 init()
@@ -21,7 +21,7 @@ times = []
 global sent_reqs
 sent_reqs = 0
 default_config = """timing_system:api
-skin:https://namemc.com/skin/4e45a59795a252c3
+skin:PATH WITH FORWARD SLASHES (no quote marks)
 skin_model:slim
 change_skin:false
 snipe_reqs:8
@@ -51,24 +51,7 @@ def print_title():
     print(title)
 
 
-def menu(options):
-    i = 1
-    # loop through options and print
-    custom_info(f"select a number 1 - {len(options)}")
-    for option in options:
-        print(f"{i}). {option}")
-        i += 1
-    # main function loop
-    # Doesn't end until a correct answer is given
-    while True:
-        try:
-            # takes an input using readchar's readkey function
-            choice = int(input("> "))
-            options[choice - 1]
-            # returns the option the user selected by list index
-            return choice - 1
-        except (ValueError, IndexError):
-            print("please enter a valid option")
+
 
 
 def custom_input(message):
@@ -88,39 +71,6 @@ def resp_error(message):
     print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
 
 
-async def mojang_timing(target, block_snipe):
-    block_snipe_words = ["snipe", "block"]
-    async with aiohttp.ClientSession() as session:
-        old_name_time = int(time.time() - 3456000)
-        async with session.get(f"https://api.mojang.com/users/profiles/minecraft/{target}?at={old_name_time}") as r:
-            try:
-                resp_json = await r.json()
-            except Exception:
-                print(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} Cannot snipe name \"{target}\" | It is either blocked, invalid, or has had no previous owners.")
-                time.sleep(2)
-                return
-            async with session.get(f"https://api.mojang.com/user/profiles/{resp_json['id']}/names") as r:
-                old_owner = await r.json()
-                previous_names = len(old_owner)
-                snipe_time = (old_owner[previous_names - 1]["changedToAt"] / 1000) + 3196800
-                if snipe_time > time.time() + 172800:
-                    try:
-                        snipe_time = (old_owner[previous_names - 2]["changedToAt"] / 1000) + 3196800
-                    except KeyError:
-                        resp_error(f"\"{target}\" is unavailable | The sniper cannot claim unavailable names")
-                if snipe_time < time.time():
-                    print(f"{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} \"{target}\" is available | The sniper cannot claim available names with this timing system")
-                    custom_info("replace \"timing_system:api\" with \"timing_system:namemc\" in config.txt for turboing a name")
-                    time.sleep(2)
-                    quit()
-                wait_time = snipe_time - time.time()
-                if wait_time >= 60 and wait_time <= 3600:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60, 1)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
-                elif wait_time >= 3600:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600, 2)} hours | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
-                else:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time)} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {datetime.fromtimestamp(snipe_time)} (utc)")
-                return snipe_time
 
 
 async def namemc_timing(target, block_snipe):
@@ -167,71 +117,25 @@ async def namemc_timing(target, block_snipe):
         return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
 
 
-async def nx_timing(target, block_snipe):
-    now = datetime.utcnow()
-    block_snipe_words = ["snipe", "block"]
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"https://api.nathan.cx/check/{target}") as r:
-            resp_json = await r.json()
-            if resp_json["status"] == "soon":
-                snipe_time = datetime.strptime(resp_json()["drop_time"], "%Y-%m-%dT%H:%M:%S.000Z")
-            elif resp_json["status"] == "taken":
-                resp_error(f"\"{target}\" is taken already. The sniper cannot claim names that are taken.")
-                # time.sleep(2)
-                # quit()
-            if resp_json["status"] == "":
-                custom_info(f"{target} is available now. If you would like to turbo the name see below.")
-                snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
-                snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
-                wait_time = snipe_time - now
-                wait_time = wait_time.seconds
-                if wait_time >= 60:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                else:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                return snipe_time.timestamp()
 
 
 async def time_snipe(target, block_snipe):
     if config.timing == "api":
         try:
-            timing = await mojang_timing(target, block_snipe)
+            timing = await namemc_timing(target, block_snipe)
         except Exception:
-            try:
-                timing = await nx_timing(target, block_snipe)
-            except Exception:
-                try:
-                    timing = await namemc_timing(target, block_snipe)
-                except Exception:
-                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     elif config.timing == "namemc":
         try:
             timing = await namemc_timing(target, block_snipe)
-        except Exception as e:
-            resp_error(f"failed to time snipe | retrying | {e}")
-            try:
-                timing = await nx_timing(target, block_snipe)
-            except Exception as e:
-                resp_error(f"failed to time snipe | retrying | {e}")
-                try:
-                    timing = await mojang_timing(target, block_snipe)
-                except Exception:
-                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+        except Exception:
+            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     else:
         print("Failed to detect timing system | using default")
         try:
-            timing = await mojang_timing(target, block_snipe)
+            timing = await namemc_timing(target, block_snipe)
         except Exception:
-            print("failed to time snipe | retrying")
-            try:
-                timing = await nx_timing(target, block_snipe)
-            except Exception:
-                print("failed to time snipe | retrying")
-                try:
-                    timing = await namemc_timing(target, block_snipe)
-                except Exception:
-                    print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
+            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
     return timing
 
 
@@ -292,9 +196,10 @@ class Account:
         self.password = password
         self.questions = questions
         self.got_name = False
+        self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
         self.failed_auth = False
-        self.authenticate_json = {"agent": {"name": "Minecraft", "version": 1}, "username": self.email, "password": self.password}
-        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.3", "Content-Type": "application/json"}
+        self.authenticate_json = {"username": self.email, "password": self.password}
+        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0", "Content-Type": "application/json"}
 
     async def authenticate(self, session, sleep_time, block_snipe):
         await asyncio.sleep(sleep_time)
@@ -313,6 +218,7 @@ class Account:
                             custom_info(f"{self.email} is unpaid and cannot snipe names. {Fore.RED}YOU ARE SNIPING. This will fail.{Fore.RESET}")
                 self.auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 self.access_token = resp_json["accessToken"]
+                print(self.access_token)
             else:
                 resp_error(f"invalid credentials | {self.email}")
                 self.failed_auth = True
@@ -322,7 +228,16 @@ class Account:
             if check_resp(r.status):
                 resp_json = await r.json()
                 if resp_json == []:
-                    logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.GREEN} signed in to {self.email}{Fore.RESET}")
+                    async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers={"Authorization":"Bearer " + self.access_token}) as ncE:
+                        ncjson = await ncE.json()
+                        try:
+                            if ncjson['nameChangeAllowed'] == False:
+                                logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {self.email} is not eligible for a name change!")
+                                self.failed_auth = True
+                            else:
+                                logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Logged into {self.email} successfully!")
+                        except:
+                            logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] Logged into {self.email} successfully!")
                 else:
                     try:
                         for x in range(3):
@@ -341,31 +256,16 @@ class Account:
                 logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}]{Fore.RESET} {self.email} something went wrong with authentication for {self.email}! | {r.status}")
                 self.failed_auth = True
 
-    async def block_req(self, session, ctarget_username):
-        await asyncio.sleep(0)
-        try:
-            async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
-                global sent_reqs
-                sent_reqs += 1
-                now = datetime.now()
-                await response.read()
-                if response.status == 204:
-                    logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] | Blocked {Fore.CYAN}{target_username}{Fore.WHITE} on {self.email} | {Fore.GREEN}{response.status}{Fore.WHITE} @ {Fore.CYAN}{now}{Fore.RESET}")
-                    asyncio.get_event_loop().stop()
-                else:
-                    logging.info(f"{Fore.WHITE}[{Fore.RED}fail{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
-        except AttributeError:
-            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
 
     async def snipe_req(self, session, target_username):
         await asyncio.sleep(0)
         try:
-            async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
+            async with session.put(f"https://api.minecraftservices.com/minecraft/profile/name/{target_username}", headers={"Authorization":"Bearer " + self.access_token, "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0", "Content-Type":"application/json"}) as response:
                 now = datetime.now()
                 global sent_reqs
                 sent_reqs += 1
                 await response.read()
-                if response.status == 204:
+                if response.status == 204 or response.status == 200:
                     logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] | Sniped {Fore.CYAN}{target_username}{Fore.WHITE} on {self.email} | {Fore.GREEN}{response.status}{Fore.WHITE} @ {Fore.CYAN}{now}{Fore.RESET}")
                     self.got_name = True
                     if config.change_skin:
@@ -382,10 +282,11 @@ class Account:
             with open("success.txt", "a") as f:
                 f.write(f"{self.email}:{self.password} - {target_username}\n")
             if config.change_skin:
-                files = {"model": config.skin_model, "url": config.skin}
+                payload = {"variant": str(config.skin_model)}
+                files=[('file', open(str(config.skin),'rb'))]
                 auth = self.auth
-                auth["Content-Type"] = "application/x-www-form-urlencoded"
-                with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/skin", headers=self.auth, data=files) as r:
+                #auth["Content-Type"] = "multipart/form-data"
+                with session.post(f"https://api.minecraftservices.com/minecraft/profile/skins", headers=self.auth, data=payload, files= files) as r:
                     if r.status_code == 204 or r.status_code == 200:
                         logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} changed skin of {self.email}")
                     else:
@@ -414,6 +315,7 @@ class Account:
                 custom_info("type >generate in #bot-commands in the discord to announce your snipes")
 
 
+
 # async def get_name_of_the_week():
 #     async with aiohttp.ClientSession() as session:
 #         async with session.get("https://announcements-api.herokuapp.com/api/v1/nameoftheweek") as r:
@@ -429,7 +331,7 @@ class Account:
 
 
 def gather_info():
-    block_snipe = menu(options=["Snipe name", "Block name"])
+    block_snipe = 0
     target_username = custom_input(f"What name would you like to {['snipe', 'block'][block_snipe]}: ")
     try:
         delay = int(custom_input("Custom delay in ms: "))
@@ -519,7 +421,7 @@ class session:
                 loop.run_until_complete(self.run_auth())
                 for acc in accounts:
                     if acc.failed_auth:
-                        # logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
                         accounts.remove(acc)
                 if len(accounts) == 0:
                     logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] you have 0 accounts available to snipe on! | quitting program...")
@@ -549,6 +451,7 @@ class session:
                 acc.authenticate(session, self.accounts.index(acc) * (config.auth_delay / 1000), self.block_snipe) for acc in self.accounts
             ]
             await asyncio.wait(coros)
+            
 
 
 if __name__ == '__main__':

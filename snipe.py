@@ -1,17 +1,22 @@
 try:
+    from os import path, system
     import aiohttp
     import logging
     from colorama import Fore, init
     from datetime import datetime, timezone
     import os
     import asyncio
-    from os import path
     import time
     from bs4 import BeautifulSoup
     import sys
     import requests
 except ImportError:
-    print("You are missing the required modules | Please refer to the usage on how to install!")
+    print("Trying to install the required modules! THIS MAY DISPLAY LARGE ERRORS!\nPlease try to run this script again once all of the modules have been successfully installed.\n\n")
+    input("press enter to start installing... ")
+    system("py -m pip install -r requirements.txt")
+    system("python -m pip install -r requirements.txt")
+    system("python3 -m pip install -r requirements.txt")
+    input("\n\ndone installing modules! please restart the script now. Press enter to continue... ")
     quit()
 
 init()
@@ -211,7 +216,6 @@ class Account:
                             custom_info(f"{self.email} is unpaid and cannot snipe names. {Fore.RED}YOU ARE SNIPING. This will fail.{Fore.RESET}")
                 self.auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 self.access_token = resp_json["accessToken"]
-                print(self.access_token)
             else:
                 resp_error(f"invalid credentials | {self.email}")
                 self.failed_auth = True

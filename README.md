@@ -14,7 +14,7 @@ If you decide to use any code from this project your project **must** be open so
 
 ## Linux easy installation
 
-Run `bash -c "curl -sLo install.sh https://gist.githubusercontent.com/Kqzz/f1a4d88fd0323a6d3a4c7e44efc97545/raw/install.sh && chmod +x install.sh && ./install.sh"` in your terminal to install the sniper. To run it again just type `./install.sh`. 
+Run `bash -c "curl -sLo mcsniperpy.sh https://raw.githubusercontent.com/MCsniperPY/MCsniperPY/master/install.sh && chmod +x mcsniperpy.sh && ./mcsniperpy.sh"` in your terminal to install the sniper. To run it again just type `./mcsniperpy.sh`. 
 
 
 ## ⚠ warnings ⚠

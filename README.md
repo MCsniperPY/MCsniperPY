@@ -12,6 +12,11 @@ If you decide to use any code from this project your project **must** be open so
 - Also, check out the [wiki](https://github.com/Kqzz/MCsniperPY/wiki) for usage steps. **The wiki is still under construction and may be fragmented / not contain all the necessary info.**
 - **[config file usage](https://github.com/Kqzz/MCsniperPY/wiki/config)**
 
+## Linux easy installation
+
+Run `bash -c "curl -sLo install.sh https://gist.githubusercontent.com/Kqzz/f1a4d88fd0323a6d3a4c7e44efc97545/raw/install.sh && chmod +x install.sh && ./install.sh"` in your terminal to install the sniper. To run it again just type `./install.sh`. 
+
+
 ## ⚠ warnings ⚠
 - Use this at your own risk. This *can* get your account permanantly locked by mojang. It is very rare and won't happen if you know what you're doing.
 - If your accounts have security questions you cannot use more than 3 per IP address. This makes getting names very difficult so please avoid using accounts with security questions.

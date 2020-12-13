@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.INFO, format='%(message)s')
 times = []
 global sent_reqs
 sent_reqs = 0
-default_config = """timing_system:api
+default_config = """timing_system:namemc
 skin:PATH WITH FORWARD SLASHES (no quote marks)
 skin_model:slim
 change_skin:false
@@ -118,23 +118,12 @@ async def namemc_timing(target, block_snipe):
 
 
 async def time_snipe(target, block_snipe):
-    if config.timing == "api":
-        try:
-            timing = await namemc_timing(target, block_snipe)
-        except Exception:
-            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
-    elif config.timing == "namemc":
-        try:
-            timing = await namemc_timing(target, block_snipe)
-        except Exception:
-            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
-    else:
-        print("Failed to detect timing system | using default")
-        try:
-            timing = await namemc_timing(target, block_snipe)
-        except Exception:
-            print(f"{Fore.WHITE}[{Fore.RED}{Fore.RED}]{Fore.RESET} Failed to time snipe")
-    return timing
+    try:
+        return await namemc_timing(target, block_snipe)
+    except Exception:
+        print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Failed to time snipe!")
+        time.sleep(3)
+        quit()
 
 
 class Config:
@@ -269,8 +258,8 @@ class Account:
                     asyncio.get_event_loop().stop()
                 else:
                     logging.info(f"{Fore.WHITE}[{Fore.RED}fail{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
-        except AttributeError:
-            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
+        except AttributeError as e:
+            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe! | {e}')
 
     def webhook_skin_write_file(self, block_snipe):
         time.sleep(1)

@@ -78,7 +78,7 @@ async def namemc_timing(target, block_snipe):
     block_snipe_words = ["snipe", "block"]
     async with aiohttp.ClientSession() as session:
         try:
-            async with session.get(f"https://namemc.com/search?q={target}") as page:
+            async with session.get(f"https://namemc.com/search?q={target}", ssl=False) as page:
                 # page = requests.get(namemc_url)
                 soup = BeautifulSoup(await page.text(), 'html.parser')
                 snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
@@ -278,7 +278,8 @@ class Account:
             else:
                 custom_info(f"not changing skin | {self.email}")
             for hook in config.webhooks:
-                with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
+                searches = requests.get(f"https://api.nathan.cx/searches/{target_username}").json()["searches"]
+                with session.post(hook, json={"embeds": [{"title": "New Snipe 🎉", "description": f"Sniped `{target_username}` with {searches} searches using [MCsniperPY](https://github.com/Kqzz/MCsniperPY)!", "color": 65395}]}) as r:
                     if r.status_code == 200 or r.status_code == 204:
                         logging.info(f"{Fore.WHITE}[{Fore.GREEN}success{Fore.WHITE}]{Fore.RESET} sent webhook of snipe!")
                     else:

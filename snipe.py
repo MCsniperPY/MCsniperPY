@@ -96,7 +96,7 @@ async def namemc_timing(target, block_snipe):
                     resp_error("invalid time format")
                     raise ValueError
                 wait_time = snipe_time - now
-                wait_time = wait_time.seconds
+                wait_time = wait_time.total_seconds()
                 if wait_time >= 60:
                     custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
                 else:
@@ -107,7 +107,7 @@ async def namemc_timing(target, block_snipe):
             quit()
 
         wait_time = snipe_time - now
-        wait_time = wait_time.seconds
+        wait_time = wait_time.total_seconds()
         if wait_time >= 60:
             custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
         elif wait_time >= 3600:

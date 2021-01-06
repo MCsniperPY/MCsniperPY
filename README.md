@@ -1,7 +1,41 @@
-![MCsniperPY](https://i.imgur.com/qdr2ZHD.png)
-[![Discord Server](https://img.shields.io/discord/734794891258757160?label=Discord)](https://discord.gg/pFQQwNkuc3)
-## An easy to use, fast, and async name sniper written in python.
+<h1 align="center">
+	<img
+		width="500"
+		alt="MCsniperPY"
+		src="https://i.imgur.com/hl7h1ta.png?sanitize=true">
+</h1>
 
+<h3 align="center">
+	A Fast, async, and open source Minecraft name sniper.
+</h3>
+
+<p align="center">
+	<strong>
+		<a href="https://mcsniperpy.github.io/">Website</a>
+		•
+		<a href="https://">Usage</a>
+	
+</p>
+<p align="center">
+	<a href="https://github.com/MCsniperPY/MCsniperPY">
+	<img
+		alt="GitHub Stars"
+		src="https://img.shields.io/github/stars/MCsniperPY/MCsniperPY?color=%2370a1d2&label=Stars%20%E2%AD%90"></a>
+	<a href="https://python.org/download"><img
+		alt="Python Versions"
+		src="https://img.shields.io/badge/Python%20Versions%20%F0%9F%90%8D-3.7%20%7C%203.8-%2370a1d2"></a>
+		<a href="https://mcsniperpy.github.io/discord"><img src="https://img.shields.io/discord/734794891258757160?color=%2370a1d2&label=Discord&logo=discord&logoColor=white"></a>
+</p>
+
+<p align="center">
+	<img src="https://i.imgur.com/5PUNwfR.gif" width="550">
+</p>
+
+## Overview
+
+- **Asynchronous**  • MCsniperPY is asynchronous meaning it tends to be faster and more efficient than multithreaded name snipers
+- **Open source** • MCsniperPY is open source, meaning you can look at everything that goes on behind the scenes to get you a name. This means you can be sure it doesn't steal your account.
+- **Fast** • MCsniperPY is fast, but not so fast that your requests run out instantly.
 ## IMPORTANT
 
 If you decide to use any code from this project your project **must** be open source. Also, if you if you modify this I would appreciate the changes being documented and the source code shared on GitHub.

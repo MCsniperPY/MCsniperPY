@@ -1,7 +1,3 @@
-# This project is done
-
-MCsniperPY is done being developed.
-
 ![MCsniperPY](https://i.imgur.com/qdr2ZHD.png)
 [![Discord Server](https://img.shields.io/discord/734794891258757160?label=Discord)](https://discord.gg/pFQQwNkuc3)
 ## An easy to use, fast, and async name sniper written in python.

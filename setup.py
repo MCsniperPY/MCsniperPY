@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="MCsniperPY",
     version='0.1',
-    py_modules=['mcspy'],
+    py_modules=['mcsniperpy'],
     install_requires=[
         'typer',
         'aiohttp',

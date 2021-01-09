@@ -1,9 +1,15 @@
+import logs_manager as log
 import typer
-from snipe import test
+from logs_manager import Color
+
+app = typer.Typer()
+color = Color(True)
+
+
+@app.command()
+def run(name: str = typer.Argument(...)):
+    log.info(f"{color.blue} Welcome to MCsniperPY!")
 
 
 def cli():
-    def main(sad: bool = True):
-        test()
-
-    typer.run(main)
+    app()

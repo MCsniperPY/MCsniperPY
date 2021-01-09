@@ -51,7 +51,7 @@ def print_title():
 │{Fore.RESET}  ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║{Fore.BLUE}██║        ██║      {Fore.CYAN}│
 │{Fore.RESET}  ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝{Fore.BLUE}╚═╝        ╚═╝      {Fore.CYAN}│
 {Fore.CYAN}└──────────────────────────────────────────────────────────────────────────────────────┘
-{Fore.GREEN}Developed by @Kqzz#0001 on Discord {Fore.BLUE}| Discord server: https://discord.gg/jZm4qNF
+{Fore.GREEN}Developed by @Kqzz#0001 on Discord {Fore.BLUE}| Website: https://mcsniperpy.github.io
 {Fore.GREEN}THIS SNIPER IS 100% FREE ON GITHUB{Fore.RESET}"""
     print(title)
 

@@ -9,9 +9,9 @@
 	MCsniperPY-RECODE
 </h3>
 
-<h2>
+<h3 align="center">
     A Fast, async, and open source Minecraft name sniper.
-</h2>
+</h3>
 
 <p align="center">
 	<strong>

@@ -1,6 +1,7 @@
 import logs_manager as log
 import sys
 import utils
+from config import Config
 
 if __name__ == "__main__":
     log.on_load()
@@ -12,3 +13,6 @@ if __name__ == "__main__":
         sys.exit(0)
 
     log.info(f"{len(accounts)} account(s) have been loaded from file.")
+
+    config = Config()
+    log.info("Loaded config")

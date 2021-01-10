@@ -20,8 +20,10 @@ def debug(message):
     print(f"{Fore.WHITE}[{Fore.LIGHTCYAN_EX}debug{Fore.WHITE}] {message}")
 
 
-def custom_input(message):
-    print(f"{Fore.WHITE}[{Fore.CYAN}input{Fore.WHITE}] {message}:", end=" ")
+def custom_input(message) -> input:
+    i = input(f"{Fore.WHITE}[{Fore.CYAN}input{Fore.WHITE}] {message}")
+    return i
+
 
 
 def on_load():

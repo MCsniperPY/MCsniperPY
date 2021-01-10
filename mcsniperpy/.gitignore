@@ -1,0 +1,11 @@
+already_setup
+config.json
+.vscode
+build
+accounts.txt
+__pycache__
+venv
+.idea
+alternate-accs.txt
+webhook.txt
+success.txt

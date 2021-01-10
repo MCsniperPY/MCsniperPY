@@ -1,5 +1,5 @@
-from account import Account
-import logs_manager as log
+from util.classes.account import Account
+import util.logs_manager as log
 import sys
 
 

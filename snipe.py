@@ -1,22 +1,19 @@
-import datetime
 import time
-
-import datetime
 
 import datetime as datetime
 from dateutil.relativedelta import relativedelta
 
-import logs_manager as log
+from util import logs_manager as log
 import sys
-import utils
-from config import Config
-import naming_system as name
+import util.utils as util
+from util.classes.config import Config
+import util.naming_system as name
 
 if __name__ == "__main__":
     log.on_load()
     log.info("Loading accounts from file.")
 
-    accounts = utils.get_accounts()
+    accounts = util.get_accounts()
     if len(accounts) == 0:
         log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
         sys.exit(0)

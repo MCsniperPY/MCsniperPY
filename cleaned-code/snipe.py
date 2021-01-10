@@ -1,8 +1,8 @@
-from utils import *
+from util import *
 from timing import *
 from account import Account
 from config import Config
-import utils
+import util
 
 try:
     import aiohttp
@@ -181,9 +181,9 @@ class session:
                     if acc.got_name:
                         time.sleep(2)
                         acc.webhook_skin_write_file(self.block_snipe)
-                rq_sec = utils.sent_reqs / elapsed_time
+                rq_sec = util.sent_reqs / elapsed_time
                 times.append(rq_sec)
-                logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec (ESTIMATE) {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {utils.sent_reqs} requests")
+                logging.info(f"{Fore.GREEN}{str(sum(times))[0:13]}{Fore.CYAN} rqs/sec (ESTIMATE) {Fore.WHITE}|{Fore.CYAN} Took {Fore.WHITE}{str(elapsed_time)[0:8]}{Fore.CYAN} seconds{Fore.RESET} | {util.sent_reqs} requests")
                 try:
                     if len(sys.argv) < 3:
                         custom_input("press enter to quit: ")

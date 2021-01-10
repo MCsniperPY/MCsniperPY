@@ -1,10 +1,10 @@
-from utils import *
+from util import *
 
 import asyncio
 from datetime import datetime, timezone
 import logging
 import time
-import utils
+import util
 
 try:
     from colorama import Fore, init
@@ -84,7 +84,7 @@ class Account:
         await asyncio.sleep(0)
         try:
             async with session.put(f"https://api.mojang.com/user/profile/agent/minecraft/name/{target_username}", headers=self.auth) as response:
-                utils.sent_reqs += 1
+                util.sent_reqs += 1
                 now = datetime.now()
                 await response.read()
                 if response.status == 204:
@@ -100,7 +100,7 @@ class Account:
         try:
             async with session.post(f"https://api.mojang.com/user/profile/{self.uuid}/name", headers=self.auth, json={"name": target_username, "password": self.password}) as response:
                 now = datetime.now()
-                utils.sent_reqs += 1
+                util.sent_reqs += 1
                 await response.read()
                 if response.status == 204:
                     logging.info(f"{Fore.WHITE}[{Fore.GREEN}SUCCESS{Fore.WHITE}] | Sniped {Fore.CYAN}{target_username}{Fore.WHITE} on {self.email} | {Fore.GREEN}{response.status}{Fore.WHITE} @ {Fore.CYAN}{now}{Fore.RESET}")

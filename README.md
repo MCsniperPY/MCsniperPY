@@ -4,7 +4,6 @@
 		alt="MCsniperPY"
 		src="https://i.imgur.com/hl7h1ta.png?sanitize=true">
 </h1>
-<<<<<<< HEAD
 
 <h3 align="center">
 	A Fast, async, and open source Minecraft name sniper.

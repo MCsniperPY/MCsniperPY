@@ -2,11 +2,10 @@ from datetime import datetime
 import sys
 import requests
 from bs4 import BeautifulSoup
-import logs_manager as log
+import util.logs_manager as log
 
 
 def namemc(name):
-    now = datetime.now()
     r = requests.get(f"https://namemc.com/search?q={name}")
 
     try:

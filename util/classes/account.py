@@ -1,7 +1,3 @@
-import aiohttp
-import logs_manager as log
-
-
 class Account:
     """
     Represents an account in MCsniperPY

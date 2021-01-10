@@ -1,0 +1,4 @@
+aiohttp
+colorama
+bs4
+requests

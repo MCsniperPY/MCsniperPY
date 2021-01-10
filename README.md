@@ -36,8 +36,6 @@
 - **Asynchronous**  • MCsniperPY is asynchronous meaning it tends to be faster and more efficient than multithreaded name snipers
 - **Open source** • MCsniperPY is open source, meaning you can look at everything that goes on behind the scenes to get you a name. This means you can be sure it doesn't steal your account.
 - **Fast** • MCsniperPY is fast, but not so fast that your requests run out instantly.
-=======
->>>>>>> 9ce367c45daab14ac2500623da2e7559c6f1ecc8
 
 <h3 align="center">
 	A Fast, async, and open source Minecraft name sniper.

@@ -9,7 +9,7 @@ def get_accounts() -> list:
     accounts = []
     directory = dirname(dirname(dirname(abspath(__file__))))
     try:
-        f = open(directory + '/accounts.txt', 'r')
+        f = open(directory + '/data/accounts.txt', 'r')
     except FileNotFoundError:
         log.error('File accounts.txt not found, create one and put accounts in.')
         sys.exit(0)
@@ -36,4 +36,11 @@ def get_accounts() -> list:
             accounts.append(account)
             continue
 
+    f.close()
     return accounts
+
+
+def get_writable_account(account):
+    if len(account.security_questions) == 0:
+        return account.email + ":" + account.password
+    return account.email + ":" + account.password + ":".join(account.security_questions)

@@ -1,3 +1,5 @@
+from os.path import dirname, abspath
+
 import typer
 import logging
 import datetime
@@ -45,8 +47,15 @@ def main(username: str, delay: int, debug: bool = False):
     drop_time_datetime = datetime.datetime.fromtimestamp(droptime)
     rd = relativedelta(datetime.datetime.now(), drop_time_datetime)
 
+    bad_accounts = []
+    good_accounts = []
+
     for acc in accounts:
-        acc.authenticate()
+        if acc.authenticate():
+            good_accounts.append(acc)
+            continue
+        bad_accounts.append(acc)
+
         time.sleep(auth_delay / 1000)
 
     log.info(

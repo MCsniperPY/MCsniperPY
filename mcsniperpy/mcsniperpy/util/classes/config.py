@@ -1,6 +1,10 @@
+from os.path import dirname, abspath
+
+
 class Config:
     def __init__(self):
-        with open("config.txt", "r") as f:
+        directory = dirname(dirname(dirname(dirname(abspath(__file__)))))
+        with open(directory + "/data/config.txt", "r") as f:
             global config
             config = {}
 

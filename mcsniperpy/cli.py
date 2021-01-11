@@ -12,8 +12,6 @@ from util import naming_system as name
 
 
 def main(username: str, delay: int, debug: bool = False):
-    print(f"Hello {username} {delay}")
-
     if debug:
         logging.basicConfig(format=log.debug("%(message)s"), level=logging.DEBUG)
 
@@ -43,15 +41,19 @@ def main(username: str, delay: int, debug: bool = False):
         log.error("Failed to get droptime.")
         sys.exit(0)
 
-    login_time = droptime - int(config.get("auth_delay"))
-    login_time_datetime = datetime.datetime.fromtimestamp(login_time)
-    rd = relativedelta(datetime.datetime.now(), login_time_datetime)
+    auth_delay = int(config.get("auth_delay"))
+    drop_time_datetime = datetime.datetime.fromtimestamp(droptime)
+    rd = relativedelta(datetime.datetime.now(), drop_time_datetime)
+
+    for acc in accounts:
+        acc.authenticate()
+        time.sleep(auth_delay / 1000)
+
     log.info(
-        f"Logging in at {login_time_datetime}. ({-rd.hours} hour(s), {-rd.minutes} minute(s) and {-rd.seconds} second(s))")
+        f"Sniping at {drop_time_datetime}. ({-rd.hours} hour(s), {-rd.minutes} minute(s) and {-rd.seconds} second(s))")
 
-    while datetime.datetime.now().timestamp() < login_time:
+    while datetime.datetime.now().timestamp() < droptime:
         time.sleep(1)
-
 
 
 if __name__ == "__main__":

@@ -1,3 +1,7 @@
+import requests
+import util.logs_manager as log
+
+
 class Account:
     """
     Represents an account in MCsniperPY
@@ -23,3 +27,31 @@ class Account:
         #         headers={}
         #     )
         # )
+
+    def mojang_auth(self):
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+        }
+
+        r = requests.post("https://authserver.mojang.com/authenticate", headers=headers, json={
+            "username": self.email,
+            "password": self.password
+        })
+
+        if r.status_code != 200:
+            log.error(f"{self.email} has an incorrect password.")
+            return False
+
+        try:
+            bearer = r.json()['accessToken']
+            log.info(f"{self.email} logged in successfully.")
+        except:
+            log.error(f"{self.email} failed to get bearer token.")
+            return False
+
+        return True
+
+    def authenticate(self):
+        # eventually do ms auth here too
+        logged_in = self.mojang_auth()
+        return logged_in

@@ -3,11 +3,12 @@ import time
 import datetime as datetime
 from dateutil.relativedelta import relativedelta
 
-from util import logs_manager as log
+from mcsniperpy.util import logs_manager as log
 import sys
-import util.utils as util
-from util.classes.config import Config
-import util.naming_system as name
+import mcsniperpy.util.utils as util
+from mcsniperpy.util import Config
+import mcsniperpy.util.naming_system as name
+
 
 if __name__ == "__main__":
     log.on_load()

@@ -1,0 +1,9 @@
+timing_system:namemc
+skin:PATH WITH FORWARD SLASHES (no quote marks)
+skin_model:slim
+change_skin:false
+snipe_reqs:6
+block_reqs:3
+auth_delay:500
+max_accs:30
+auto_link_namemc:false NOT IMPLEMENTED

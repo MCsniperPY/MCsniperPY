@@ -30,6 +30,8 @@ USER_AGENTS = [
     'Chrome/47.0.2526.111 Safari/537.36',
     'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0',
 ]
+
+
 # https://github.com/N0taN3rd/userAgentLists/blob/9b99634d90aac404422109f80a0f273ebc1907c5/useragents.py#L28
 
 

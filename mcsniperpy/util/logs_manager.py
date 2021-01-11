@@ -17,7 +17,7 @@ def error(message):
 
 
 def debug(message):
-    print(f"{Fore.WHITE}[{Fore.LIGHTCYAN_EX}debug{Fore.WHITE}] {message}")
+    return(f"{Fore.WHITE}[{Fore.LIGHTCYAN_EX}debug{Fore.WHITE}] %(message)s")
 
 
 def custom_input(message) -> input:

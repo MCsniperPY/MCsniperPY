@@ -2,7 +2,7 @@ from datetime import datetime
 import sys
 import requests
 from bs4 import BeautifulSoup
-import util.logs_manager as log
+from . import logs_manager as log
 
 
 def namemc(name):

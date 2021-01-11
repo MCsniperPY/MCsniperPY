@@ -1,5 +1,5 @@
 import requests
-import util.logs_manager as log
+from .. import logs_manager as log
 
 
 class Account:

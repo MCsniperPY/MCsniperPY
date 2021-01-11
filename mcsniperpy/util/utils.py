@@ -1,13 +1,15 @@
-from util.classes.account import Account
-import util.logs_manager as log
+from .classes.account import Account
+from . import logs_manager as log
 import sys
+from os.path import dirname, abspath
+import os
 
 
 def get_accounts() -> list:
     accounts = []
-
+    directory = dirname(dirname(dirname(abspath(__file__))))
     try:
-        f = open('accounts.txt', 'r')
+        f = open(directory + '/accounts.txt', 'r')
     except FileNotFoundError:
         log.error('File accounts.txt not found, create one and put accounts in.')
         sys.exit(0)

@@ -7,7 +7,9 @@ setup(
     install_requires=[
         'typer',
         'aiohttp',
-        'colorama'
+        'colorama',
+        'requests',
+        'python-dateutil'
     ],
     entry_points='''
         [console_scripts]

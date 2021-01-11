@@ -63,6 +63,12 @@
 	<img src="https://i.imgur.com/5PUNwfR.gif" width="550">
 </p>
 
+## Contributors
+
+<ul>
+    <li><a href="https://github.com/sneakers">james</a> - account auth</li>
+</ul>
+
 ## Table of Contents
 
 <ul>
@@ -72,7 +78,7 @@
     <li><a href="#Delays">Delays</a></li>
     <li><a href="#Running-the-sniper">Running the sniper</a></li>
     <li><a href="#Understanding-the-logs">Understanding the logs</a></li>
-  </ul>
+</ul>
 
 ## Installing
 

@@ -80,6 +80,9 @@
 
 Run `bash -c "curl -sLo mcsniperpy.sh https://raw.githubusercontent.com/MCsniperPY/MCsniperPY/master/install.sh && chmod +x mcsniperpy.sh && ./mcsniperpy.sh"` in your terminal to install the sniper. To run it again just type `./mcsniperpy.sh`.
 
+
+### Windows installation
+
 You will have to have a few things installed before running the sniper. This installation guide assumes that you are on a 64bit Windows system.
 
 First, you will need to install Python. It's recommended to use either version `3.8.5` or `3.8.6`. You must use a Python version above `3.0`. 

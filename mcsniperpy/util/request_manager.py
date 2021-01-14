@@ -41,14 +41,16 @@ class RequestManager:
         self.session = session
         self.ua = random.choice(USER_AGENTS)
 
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         async with self.session.get(*args, **kwargs) as response:
             return response
 
-    def post(self, *args, **kwargs):
+    async def post(self, *args, **kwargs):
         async with self.session.post(*args, **kwargs) as response:
             return response
 
-    def put(self, *args, **kwargs):
+    async def put(self, *args, **kwargs):
         async with self.session.put(*args, **kwargs) as response:
             return response
+
+

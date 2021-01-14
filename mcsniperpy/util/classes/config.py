@@ -4,11 +4,13 @@ from os.path import abspath, dirname
 class Config:
     def __init__(self):
         directory = dirname(dirname(dirname(dirname(abspath(__file__)))))
+
         with open(directory + "/data/config.txt", "r") as f:
-            global config
             config = {}
 
             for line in f.readlines():
+                if line.startswith("#"):
+                    continue
                 line = line.rstrip()
                 line = line.split(':')
 
@@ -17,5 +19,6 @@ class Config:
 
                 config[key] = value
 
-    def get(self, value):
-        return config[value]
+
+def get(value):
+    return config[value]

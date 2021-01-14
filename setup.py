@@ -2,14 +2,15 @@ from setuptools import setup
 
 setup(
     name="MCsniperPY",
-    version='0.1',
+    version='0.15',
     py_modules=['mcsniperpy'],
     install_requires=[
         'typer',
         'aiohttp',
         'colorama',
         'requests',
-        'python-dateutil'
+        'python-dateutil',
+        'bs4'
     ],
     entry_points='''
         [console_scripts]

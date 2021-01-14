@@ -1,6 +1,9 @@
-import requests
-from .. import logs_manager as log
 import logging
+
+import aiohttp
+
+from .. import logs_manager as log
+from .. import request_manager
 
 
 class Account:
@@ -22,20 +25,18 @@ class Account:
         self.security_questions = security_questions
         # acc_type is to be used for Microsoft or Mojang authentication
         self.acc_type = acc_type  # Not implemented | Create a PR with microsoft authentication if you would like to
-        # self.session = RequestManager(
-        #     aiohttp.ClientSession(
-        #         connector=aiohttp.TCPConnector(limit=300),
-        #         headers={}
-        #     )
-        # )
+        self.session = request_manager.RequestManager(
+            aiohttp.ClientSession(
+                connector=aiohttp.TCPConnector(limit=300),
+                headers={}
+            )
+        )
+
         self.bearer = ""
 
-    def mojang_auth(self):
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
-        }
+    async def mojang_auth(self):
 
-        r = requests.post("https://authserver.mojang.com/authenticate", headers=headers, json={
+        r = await self.session.post("https://authserver.mojang.com/authenticate", headers=headers, json={
             "username": self.email,
             "password": self.password
         })

@@ -248,4 +248,4 @@ When the sniper sends requests to a server, it returns a HTTP Status Code. Mojan
 | 500| Minecraft API issue|
 
 
-
+Thanks to [sneakers](https://github.com/sneakers) for writing these docs!

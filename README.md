@@ -234,7 +234,7 @@ When you attempt to snipe a name, you are given information about the requests t
 
 `[fail/success] [http status code] @ [timestamp]`
 
-The timestamp is the time that you sent the request to Mojang's servers.
+The timestamp is the time that you got a response from mojang about your request
 
 ### HTTP Status Codes
 

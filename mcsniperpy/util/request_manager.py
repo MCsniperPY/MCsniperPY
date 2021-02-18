@@ -43,14 +43,24 @@ class RequestManager:
 
     async def get(self, *args, **kwargs):
         async with self.session.get(*args, **kwargs) as response:
-            return response
+            try:
+                json_resp = await response.json()
+            except Exception:
+                json_resp = None
+            return response, await response.text(), json_resp
 
     async def post(self, *args, **kwargs):
         async with self.session.post(*args, **kwargs) as response:
-            return response
+            try:
+                json_resp = await response.json()
+            except Exception:
+                json_resp = None
+            return response, await response.text(), json_resp
 
     async def put(self, *args, **kwargs):
         async with self.session.put(*args, **kwargs) as response:
-            return response
-
-
+            try:
+                json_resp = await response.json()
+            except Exception:
+                json_resp = None
+            return response, await response.text(), json_resp

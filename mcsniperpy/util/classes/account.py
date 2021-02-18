@@ -2,7 +2,7 @@ import logging
 
 import aiohttp
 
-from .. import logs_manager as log
+from ..logs_manager import Logger as log
 from .. import request_manager
 
 

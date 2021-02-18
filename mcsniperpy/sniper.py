@@ -1,7 +1,10 @@
+import asyncio
+
 import aiohttp
 
 from .util import request_manager
 from .util import utils as util
+from .util.classes.config import BackConfig
 
 
 class Sniper:
@@ -9,7 +12,7 @@ class Sniper:
                  colorer,
                  logger):
         self.color = colorer
-        self.logger = logger
+        self.log = logger
         self.session = request_manager.RequestManager(
             aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(limit=300),
@@ -17,35 +20,52 @@ class Sniper:
             )
         )
 
-    def run(self):
-        color = self.color
-        log = self.logger
+        self.target = str()  # target username
+        self.offset = int()  # Time offset (e.g., 400 = snipe the name 400ms early)
 
-        log.info(f"{color.white}Hey, {color.red}hii.")
+        self.back_config = None  # util.classes.config.BackConfig
 
-        log.info("Loading accounts from file.")
+        self.data = None
+
+    @property
+    def initialized(self):
+        return self.config.init_path != ""
+
+    def init(self):
+        if self.initilized:
+            self.log.debug("Already initialized")
+        else:
+            self.log.debug("Not initialized")
+
+    def run(self, target=None, offset=None):
+
+        if target is None:
+            self.target = self.log.input("Target Username:")
+
+        if offset is None:
+            self.offset = self.log.input("Time Offset:")
+
+        self.log.info(f"{self.color.white}Hey, {self.color.red}hii.")
+
+        self.config = BackConfig()
+        self.log.debug("loaded config")
+
+        self.log.debug("Loading accounts from file.")
 
         accounts = util.get_accounts()
         if len(accounts) == 0:
-            log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
+            self.log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
             sys.exit(0)
 
-        log.info(f"{len(accounts)} account(s) have been loaded from file.")
+        self.log.info(f"{len(accounts)} account(s) have been loaded from file.")
 
-        config = Config()
-        log.debug("Loaded config")
+        self.log.info(f"Sniping username: {username}")
+        self.log.info(f"Delay (ms): {delay}")
 
-        log.info(f"Sniping username: {username}")
-        log.info(f"Delay (ms): {delay}")
-
-        droptime = None  # droptime = epoch
-
-        naming_system = config.get("timing_system")
-        if naming_system == "namemc":
-            droptime = name.namemc(username)
+        droptime = name.namemc(username)
 
         if droptime is None:
-            log.error("Failed to get droptime.")
+            self.log.error("Failed to get droptime.")
             sys.exit(0)
 
         auth_delay = int(config.get("auth_delay"))
@@ -56,8 +76,10 @@ class Sniper:
             acc.authenticate()
             time.sleep(auth_delay / 1000)
 
-        log.info(
-            f"Sniping at {drop_time_datetime}. ({-rd.hours} hour(s), {-rd.minutes} minute(s) and {-rd.seconds} second(s))")
-
         while datetime.datetime.now().timestamp() < droptime:
             time.sleep(1)
+
+        self.on_shutdown()
+
+    def on_shutdown(self):
+        asyncio.get_event_loop().run_until_complete(self.session.session.close())

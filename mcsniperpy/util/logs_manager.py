@@ -1,116 +1,132 @@
-import shutil
-
 import colorama
 from colorama import init
 
-init()
+init(autoreset=True)
 logs = []
 
 
 class Color:
+    red = colorama.Fore.RED
+    l_red = colorama.Fore.LIGHTRED_EX
+    green = colorama.Fore.GREEN
+    l_green = colorama.Fore.LIGHTGREEN_EX
+    yellow = colorama.Fore.YELLOW
+    l_yellow = colorama.Fore.LIGHTYELLOW_EX
+    blue = colorama.Fore.BLUE
+    l_blue = colorama.Fore.LIGHTBLUE_EX
+    magenta = colorama.Fore.MAGENTA
+    l_magenta = colorama.Fore.LIGHTMAGENTA_EX
+    cyan = colorama.Fore.CYAN
+    l_cyan = colorama.Fore.LIGHTCYAN_EX
+    white = colorama.Fore.WHITE
 
-    def __init__(self, color=True):
-        if color:
-            self.red = colorama.Fore.RED
-            self.l_red = colorama.Fore.LIGHTRED_EX
-            self.green = colorama.Fore.GREEN
-            self.l_green = colorama.Fore.LIGHTGREEN_EX
-            self.yellow = colorama.Fore.YELLOW
-            self.l_yellow = colorama.Fore.LIGHTYELLOW_EX
-            self.blue = colorama.Fore.BLUE
-            self.l_blue = colorama.Fore.LIGHTBLUE_EX
-            self.magenta = colorama.Fore.MAGENTA
-            self.l_magenta = colorama.Fore.LIGHTMAGENTA_EX
-            self.cyan = colorama.Fore.CYAN
-            self.l_cyan = colorama.Fore.LIGHTCYAN_EX
-            self.white = colorama.Fore.WHITE
-        else:
-            self.disable()
+    @classmethod
+    def disable(cls):
+        cls.red = ""
+        cls.l_red = ""
+        cls.green = ""
+        cls.l_green = ""
+        cls.yellow = ""
+        cls.l_yellow = ""
+        cls.blue = ""
+        cls.l_blue = ""
+        cls.magenta = ""
+        cls.l_magenta = ""
+        cls.cyan = ""
+        cls.l_cyan = ""
+        cls.white = ""
 
-    def disable(self):
-        self.red = ""
-        self.l_red = ""
-        self.green = ""
-        self.l_green = ""
-        self.yellow = ""
-        self.l_yellow = ""
-        self.blue = ""
-        self.l_blue = ""
-        self.magenta = ""
-        self.l_magenta = ""
-        self.cyan = ""
-        self.l_cyan = ""
-        self.white = ""
-
-    def enable(self):
-        self.red = colorama.Fore.RED
-        self.l_red = colorama.Fore.LIGHTRED_EX
-        self.green = colorama.Fore.GREEN
-        self.l_green = colorama.Fore.LIGHTGREEN_EX
-        self.yellow = colorama.Fore.YELLOW
-        self.l_yellow = colorama.Fore.LIGHTYELLOW_EX
-        self.blue = colorama.Fore.BLUE
-        self.l_blue = colorama.Fore.LIGHTBLUE_EX
-        self.magenta = colorama.Fore.MAGENTA
-        self.l_magenta = colorama.Fore.LIGHTMAGENTA_EX
-        self.cyan = colorama.Fore.CYAN
-        self.l_cyan = colorama.Fore.LIGHTCYAN_EX
-        self.white = colorama.Fore.WHITE
+    @classmethod
+    def enable(cls):
+        cls.red = colorama.Fore.RED
+        cls.l_red = colorama.Fore.LIGHTRED_EX
+        cls.green = colorama.Fore.GREEN
+        cls.l_green = colorama.Fore.LIGHTGREEN_EX
+        cls.yellow = colorama.Fore.YELLOW
+        cls.l_yellow = colorama.Fore.LIGHTYELLOW_EX
+        cls.blue = colorama.Fore.BLUE
+        cls.l_blue = colorama.Fore.LIGHTBLUE_EX
+        cls.magenta = colorama.Fore.MAGENTA
+        cls.l_magenta = colorama.Fore.LIGHTMAGENTA_EX
+        cls.cyan = colorama.Fore.CYAN
+        cls.l_cyan = colorama.Fore.LIGHTCYAN_EX
+        cls.white = colorama.Fore.WHITE
 
 
 class Logger:
+    logs = []
 
-    def __init__(self):
-        self.info_enabled = True
-        self.warn_enabled = True
-        self.error_enabled = True
-        self.success_enabled = True
-        self.debug_enabled = True
+    info_enabled = True
+    warn_enabled = True
+    error_enabled = True
+    success_enabled = True
+    debug_enabled = False
 
-    def info(self, message):
-        if self.info_enabled:
-            print(f"{colorama.Fore.WHITE}[{colorama.Fore.CYAN}info{colorama.Fore.WHITE}] {message}")
+    @classmethod
+    def info(cls, message):
 
-    def warn(self, message):
-        if self.warn_enabled:
-            print(f"{colorama.Fore.WHITE}[{colorama.Fore.YELLOW}warn{colorama.Fore.WHITE}] {message}")
+        formatted = f"{Color.white}[{Color.cyan}info{Color.white}] {message}"
 
-    def error(self, message):
-        if self.error_enabled:
-            print(f"{colorama.Fore.WHITE}[{colorama.Fore.RED}error{colorama.Fore.WHITE}] {message}")
+        if cls.info_enabled:
+            print(formatted)
 
-    def success(self, message):
-        if self.succcess_enabled:
-            print(f"{colorama.Fore.WHITE}[{colorama.Fore.GREEN}success{colorama.Fore.WHITE}] {message}")
+    @classmethod
+    def warn(cls, message):
 
-    def debug(self, message):
-        if self.debug_enabled:
-            print(f"{colorama.Fore.WHITE}[{colorama.Fore.LIGHTCYAN_EX}debug{colorama.Fore.WHITE}] {message}")
+        formatted = f"{Color.white}[{Color.yellow}warn{Color.white}] {message}"
 
-    def custom_input(self, message) -> str:
-        print(f"{colorama.Fore.WHITE}[{colorama.Fore.CYAN}input{colorama.Fore.WHITE}] {message}", end=" ")
+        if cls.warn_enabled:
+            print(formatted)
+
+        cls.logs.append(formatted)
+
+    @classmethod
+    def error(cls, message):
+
+        formatted = f"{Color.white}[{Color.red}error{Color.white}] {message}"
+
+        if cls.error_enabled:
+            print(formatted)
+
+        cls.logs.append(formatted)
+
+    @classmethod
+    def success(cls, message):
+
+        formatted = f"{Color.white}[{Color.green}success{Color.white}] {message}"
+
+        if cls.succcess_enabled:
+            print(f"{Color.white}[{Color.green}success{Color.white}] {message}")
+
+        cls.logs.append(formatted)
+
+    @classmethod
+    def debug(cls, message):
+
+        formatted = f"{Color.white}[{Color.l_cyan}debug{Color.white}] {message}"
+
+        if cls.debug_enabled:
+            print(formatted)
+
+        cls.logs.append(formatted)
+
+    @classmethod
+    def input(cls, message) -> str:
+
+        formatted = f"{Color.white}[{Color.cyan}input{Color.white}] {message}"
+
+        print(formatted, end=" ")
         i = input()
+
+        cls.logs.append(formatted + " " + i)
+
         return i
 
-    def shutdown(self):
+    @classmethod
+    def shutdown(cls):
         # Does nothing.
         # Could be used to:
         # send all logs to a discord channel,
         # send logs to a file uploading service to check back on later,
         # etc...
         pass
-
-
-def on_load():
-    width = shutil.get_terminal_size().columns
-    print(f"""{color.cyan}███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ ██████╗ ██╗   ██╗
-████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝
-██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝██████╔╝ ╚████╔╝ 
-██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗██╔═══╝   ╚██╔╝  
-██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║██║        ██║   
-╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝        ╚═╝   
-""".center(width))
-    print(f"{color.cyan}Created by Kqzz#0001".center(width))
-    print(f"Git: github.com/MCSniperPY | Discord: https://mcsniperpy.github.io/discord".center(width))
-
-    # print("[+] You are on the latest version [+]".center(width))

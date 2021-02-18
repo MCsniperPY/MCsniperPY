@@ -10,7 +10,8 @@ setup(
         'colorama',
         'requests',
         'python-dateutil',
-        'bs4'
+        'bs4',
+        'toml'
     ],
     entry_points='''
         [console_scripts]

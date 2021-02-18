@@ -1,1 +1,0 @@
-put your accounts in this file in the format email:password or email:password:answer:answer:answer

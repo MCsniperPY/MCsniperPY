@@ -5,11 +5,11 @@ from os.path import dirname, abspath
 import os
 
 
-def get_accounts() -> list:
+def get_accounts(path) -> list:
     accounts = []
 
-    directory = dirname(dirname(__file__))
-    log.debug("grabbed accounts dir")
+    directory = os.path.join(path, "accounts.txt")
+    log.debug(f"grabbed accounts dir | {directory}")
 
     try:
         f = open(directory + '/data/accounts.txt', 'r')
@@ -45,3 +45,8 @@ def get_accounts() -> list:
 
     log.debug("parsed all accounts")
     return accounts
+
+
+def close(code) -> None:
+    log.input(f"Press enter to exit:")
+    sys.exit(code)

@@ -51,6 +51,11 @@ def ping(iterations: int = typer.Option(5)):
     asyncio.get_event_loop().run_until_complete(ping_tester.ping_test(iterations))
 
 
+@app.command()
+def init():
+    sniper.init()
+
+
 def cli():
     try:
         app()

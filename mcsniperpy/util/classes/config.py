@@ -49,5 +49,27 @@ or
 email:pass
 
 you can separate those accounts by a new line if you would like to use multiple accounts.""")
-    
+
+    with open(os.path.join(config['sniper']['init_path'], "config.ini"), "w+") as f:
+        user_config = configparser.ConfigParser(allow_no_value=True)
+        user_config['sniper'] = {
+            'timing_system': 'namemc',
+            'auto_claim_namemc': 'no',
+            'snipe_requests': '3',
+        }
+
+        user_config['accounts'] = {
+            'max_accounts': '30',
+            'authentication_delay': '500'
+        }
+
+        user_config['skin'] = {
+            'change_skin_on_snipe': 'no',
+            'skin_change_type': 'url',
+            'skin': ''
+        }
+
+        user_config.set('skin', '; skin_change_type can be url, path, or username. refer to docs for more info.')
+
+        user_config.write(f)
     log.info("successfully initialized sniper")

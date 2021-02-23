@@ -27,12 +27,6 @@ async def check(url: str, iterations: int):
 
     pings = []
 
-    # for _ in typer.progressbar(
-    #         range(iterations),
-    #         colour='blue',
-    #         ncols=60,
-    #         bar_format='|{bar}|'
-    # ):
     with typer.progressbar(range(iterations),
                            fill_char="█",
                            empty_char=" ",

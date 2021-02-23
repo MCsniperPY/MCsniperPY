@@ -2,11 +2,14 @@ import asyncio
 import urllib.parse
 from time import perf_counter
 
+from tqdm import tqdm
+import typer
+
 from .logs_manager import Color as color
 from .logs_manager import Logger as log
 
 
-async def check(url: str):
+async def check(url: str, iterations: int):
     async def x():
         try:
             uri = urllib.parse.urlparse(url)
@@ -24,14 +27,29 @@ async def check(url: str):
 
     pings = []
 
-    for _ in range(5):
-        pings.append(await x())
-        await asyncio.sleep(0.01)
+    # for _ in typer.progressbar(
+    #         range(iterations),
+    #         colour='blue',
+    #         ncols=60,
+    #         bar_format='|{bar}|'
+    # ):
+    with typer.progressbar(range(iterations),
+                           fill_char="█",
+                           empty_char=" ",
+                           color=10,
+                           show_eta=False,
+                           bar_template="%(label)s  %(bar)s  %(info)s"
+                           ) as progress:
+        for _ in progress:
+            pings.append(await x())
+            await asyncio.sleep(0.01)
 
+    print()
     log.info(f"Host {color.l_cyan}» {color.blue}{urllib.parse.urlparse(url).hostname}")
     log.info(f"Ping {color.l_cyan}» {color.blue}{sum(pings) / 5}ms")
 
 
-async def ping_test():
-    await check("https://api.minecraftservices.com/minecraft")
+async def ping_test(iterations):
+    print()
+    await check("https://api.minecraftservices.com/minecraft", iterations)
     # await check("https://api.mojang.com") ### Literally useless lol

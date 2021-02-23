@@ -47,8 +47,8 @@ def snipe(username: str = typer.Argument(None),
 
 
 @app.command()
-def ping():
-    asyncio.get_event_loop().run_until_complete(ping_tester.ping_test())
+def ping(iterations: int = typer.Option(5)):
+    asyncio.get_event_loop().run_until_complete(ping_tester.ping_test(iterations))
 
 
 def cli():

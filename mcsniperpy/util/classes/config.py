@@ -30,7 +30,8 @@ class BackConfig:
 class Config:
 
     def __init__(self, dir):
-        pass
+        user_config = configparser.ConfigParser(allow_no_value=True)
+
 
 
 def population_back_config():

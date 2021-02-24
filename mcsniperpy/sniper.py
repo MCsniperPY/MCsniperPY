@@ -77,7 +77,7 @@ class Sniper:
             self.log.error("Failed to get droptime.")
             sys.exit(0)
 
-        auth_delay = int(config.get("auth_delay"))
+        auth_delay = int(self.config.get("auth_delay"))
         drop_time_datetime = datetime.datetime.fromtimestamp(droptime)
         rd = relativedelta(datetime.datetime.now(), drop_time_datetime)
 

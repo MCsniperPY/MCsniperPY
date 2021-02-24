@@ -42,7 +42,7 @@ class Sniper:
     def run(self, target=None, offset=None):
 
         self.config = BackConfig()
-        print(self.config.init_path)
+        self.log.debug(f"Using sniping path of {self.config.init_path}")
 
         if target is None:
             self.log.debug('No username detected')

@@ -43,7 +43,7 @@ def snipe(username: str = typer.Argument(None),
 
     startup()
 
-    sniper.run(username, offset)
+    asyncio.get_event_loop().run_until_complete(sniper.run(username, offset))
 
 
 @app.command()

@@ -39,7 +39,7 @@ class Sniper:
 
         population_back_config()
 
-    def run(self, target=None, offset=None):
+    async def run(self, target=None, offset=None):
 
         self.config = BackConfig()
         self.log.debug(f"Using sniping path of {self.config.init_path}")

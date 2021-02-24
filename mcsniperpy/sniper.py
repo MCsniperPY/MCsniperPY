@@ -73,7 +73,6 @@ class Sniper:
 
         droptime = await api_timing(target, self.session)
 
-        droptime = name.namemc(username)
 
         if droptime is None:
             self.log.error("Failed to get droptime.")

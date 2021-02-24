@@ -70,4 +70,4 @@ def cli():
     print("done")
 
 
-sniper.on_shutdown()
+# sniper.on_shutdown()

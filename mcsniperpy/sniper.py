@@ -83,8 +83,8 @@ class Sniper:
         rd = relativedelta(datetime.datetime.now(), drop_time_datetime)
 
         for acc in accounts:
-            acc.authenticate()
-            time.sleep(auth_delay / 1000)
+            await acc.fully_authenticate()
+            await asyncio.sleep(auth_delay / 1000)
 
         while datetime.datetime.now().timestamp() < droptime:
             time.sleep(1)

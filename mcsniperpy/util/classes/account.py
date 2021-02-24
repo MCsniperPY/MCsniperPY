@@ -7,105 +7,144 @@ from .. import request_manager
 
 
 class Account:
-    """
-    Represents an account in MCsniperPY
-    available attributes:
-    `email` str
-    `password` str
-    `security_questions` list of str
-    `acc_type` str (mojang or microsoft)
-    """
+    def __init__(self, email, password, *sqs, **kwargs):
+        if kwargs.get('acc_type') == 'microsoft':
+            log.error('MCsniperPY does not support Microsoft accounts at the moment.')
+        self.email = email  # email
+        self.password = password  # password
+        self.sqs = sqs  # security question answers
 
-    def __init__(self, email, password, security_questions=None, acc_type="mojang"):
-        if security_questions is None:
-            security_questions = []
+        self.questions = []  # Actual questions
+        self.answer_ids = []  # IDS of the security question answers
 
-        self.email = email
-        self.password = password
-        self.security_questions = security_questions
-        # acc_type is to be used for Microsoft or Mojang authentication
-        self.acc_type = acc_type  # Not implemented | Create a PR with microsoft authentication if you would like to
-        self.session = request_manager.RequestManager(
-            aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=300),
-                headers={}
-            )
-        )
+        self.username = ""  # Totally useless lol
 
         self.bearer = ""
+        self.headers = {"Authorization": "Bearer TOKEN"}
 
-    async def mojang_auth(self):
+        self.snipe_data = ("PUT /minecraft/profile/name/NAME HTTP/1.1\r\n"
+                           "Host: api.minecraftservices.com\r\n"
+                           "Authorization: Bearer TOKEN\r\n"
+                           "\r\n").encode()
 
-        r = await self.session.post("https://authserver.mojang.com/authenticate", headers=headers, json={
-            "username": self.email,
-            "password": self.password
-        })
+    def encode_snipe_data(self, name):
+        self.snipe_data = (f"PUT /minecraft/profile/name/{name} HTTP/1.1\r\n"
+                           "Host: api.minecraftservices.com\r\n"
+                           f"Authorization: Bearer {self.bearer}\r\n"
+                           "\r\n").encode()
 
-        logging.debug(f"{self.email} : {r.content}")
+    async def authenticate(self) -> bool:
+        resp, resp_json, _ = await session.post(
+            "https://authserver.mojang.com/authenticate",
+            json={
+                "agent": {
+                    "name": "Minecraft",
+                    "version": 1
+                },
+                "username": self.email,
+                "password": self.password,
+                "requestUser": "false"
+            },
+            headers={"Content-Type": "application/json"}
+        )
 
-        if r.status_code != 200:
-            log.error(f"{self.email} has an incorrect password.")
+        if resp.status == 200:
+            self.headers["Authorization"] = f"Bearer {resp_json['accessToken']}"  # authorization header
+            self.bearer = resp_json['accessToken']
+            return True
+        else:
             return False
 
-        try:
-            self.bearer = r.json()['accessToken']
-        except:
-            log.error(f"{self.email} failed to get bearer token.")
+    async def get_questions(self) -> None:
+        resp, resp_json, _ = await session.get(
+            "https://api.mojang.com/user/security/challenges",
+            headers=self.headers
+        )
+
+        self.answer_ids = [question["answer"]["id"] for question in resp_json]
+        self.questions = [question["question"]["question"] for question in resp_json]
+
+        if resp.status == 200:
+            return
+        else:
+            print(f"[err] failed to get security questions for {self.email}")
+
+    @property
+    async def need_sqs(self):
+        resp, _, _ = await session.get(
+            "https://api.mojang.com/user/security/location",
+            headers=self.headers
+        )
+
+        return resp.status == 403
+
+    async def submit_questions(self):
+
+        if self.sqs == ():
+            print(f"[err] security questions for {self.email} not provided!")
             return False
 
-        r = requests.get("https://api.mojang.com/user/security/challenges", headers={
-            "Authorization": "Bearer " + self.bearer
-        })
+        resp, _, _ = await session.post(
+            "https://api.mojang.com/user/security/location",
+            headers=self.headers,
+            json=[
+                {
+                    "id": self.answer_ids[0],
+                    "answer": self.sqs[0]
+                },
+                {
+                    "id": self.answer_ids[1],
+                    "answer": self.sqs[1]
+                },
+                {
+                    "id": self.answer_ids[2],
+                    "answer": self.sqs[2]
+                }
+            ]
+        )
 
-        if len(r.content) > 3:  # Need security questions
-            if len(self.security_questions) == 0:
-                log.error(f"{self.email} needs security questions and none were provided.")
-                return False
+        # Yes, that's kinda ugly lol. whatever.
 
-            answers = []
-            resp_json = r.json()
-            logging.debug(f"{resp_json}")
-
-            try:
-                for x in range(3):
-                    answers.append({"id": resp_json[x]["answer"]["id"], "answer": self.security_questions[x]})
-            except Exception as e:
-                print(e)
-                log.error(f"{self.email} didn't have enough security questions provided.")
-                return False
-
-            logging.debug(f"{answers}")
-            r = requests.post("https://api.mojang.com/user/security/location", headers={
-                "Authorization": "Bearer " + self.bearer
-            }, json=answers)
-
-            if r.status_code != 204:
-                logging.debug(f"{r.status_code}")
-                log.error(f"{self.email} has incorrect security questions.")
-                return False
-
-        if not self.check_name_change():
-            log.error(f"{self.email} can't change username.")
+        if resp.status == 204:
+            return True
+        else:
+            print(f"[err] security questions for {self.email} are incorrect!")
             return False
 
-        log.success(f"{self.email} logged in successfully.")
-        return True
+    async def fully_authenticate(self):
+        if not await self.authenticate():
+            print(f"[err] failed to auth {self.email}")
+            return
 
-    def authenticate(self):
-        # eventually do ms auth here too
-        logged_in = self.mojang_auth()
-        return logged_in
+        if not await self.need_sqs:
+            print(f"[success] authed {self.email}")
+        else:
+            await self.get_questions()
+            if await self.submit_questions():
+                print(f"[success] authed {self.email} with security questions")
+            else:
+                print(f"[err] failed to authenticate {self.email}")
 
-    def check_name_change(self) -> bool:
-        r = requests.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers={
-            "Authorization": "Bearer " + self.bearer
-        })
+    async def snipe(self, name, snipe_session):
+        reader, writer = await asyncio.open_connection("api.minecraftservices.com", 443, ssl=True)
 
-        r = r.json()
-        try:
-            if not r['nameChangeAllowed']:
-                return False
-        except:  # will probably only happen with non premium accounts
-            return False
+        writer.write(self.snipe_data)
 
-        return True
+        await writer.drain()
+
+        resp = await reader.read(12)
+        status = int(resp[9:12])
+        writer.close()
+        await writer.wait_closed()
+        print("[%s] %s @ %.10f" % (name, status, time.time()))
+        return status == 204, self.email
+        # Simpler code 🔽
+        # async with snipe_session.put("https://api.minecraftservices.com/minecraft/profile/name/%s" % "blah",
+        #                              headers={
+        #                                  "Authorization": "Bearer %s" % self.bearer, "Content-Type": "application/json"
+        #                              }) as r:
+        #     print("[%s] %s @ %5f" % (name, r.status, time.time()))
+        #     if r.status == 204:
+        #         return True, self.email
+        #     else:
+        #         return False, None

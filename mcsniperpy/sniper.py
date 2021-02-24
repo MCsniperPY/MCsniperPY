@@ -64,7 +64,7 @@ class Sniper:
 
         self.log.debug("Loading accounts from file.")
 
-        accounts = util.get_accounts(self.config.init_path)
+        accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
         if len(accounts) == 0:
             self.log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
             sys.exit(0)
@@ -72,7 +72,6 @@ class Sniper:
         self.log.info(f"{len(accounts)} account(s) have been loaded from file.")
 
         droptime = await api_timing(target, self.session)
-
 
         if droptime is None:
             self.log.error("Failed to get droptime.")

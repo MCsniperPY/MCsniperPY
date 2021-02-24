@@ -51,10 +51,14 @@ class Sniper:
         if target is None:
             self.log.debug('No username detected')
             self.target = self.log.input("Target Username:")
+        else:
+            self.log.info(f"Sniping username: {target}")
 
         if offset is None:
             self.log.debug('no offset detected')
             self.offset = self.log.input("Time Offset:")
+        else:
+            self.log.info(f"Delay (ms): {offset}")
 
         self.log.debug("Loading accounts from file.")
 
@@ -65,8 +69,7 @@ class Sniper:
 
         self.log.info(f"{len(accounts)} account(s) have been loaded from file.")
 
-        self.log.info(f"Sniping username: {username}")
-        self.log.info(f"Delay (ms): {delay}")
+        droptime = await api_timing(target, self.session)
 
         droptime = name.namemc(username)
 

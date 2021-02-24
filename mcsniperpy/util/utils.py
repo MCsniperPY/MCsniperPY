@@ -4,46 +4,24 @@ import sys
 from os.path import dirname, abspath
 import os
 
+from typing import List
 
-def get_accounts(path) -> list:
-    accounts = []
+def parse_accs(file_path) -> List[Account]:
+    accounts = list()
+    log.debug(f'File path: {file_path}')
+    if os.path.isfile(file_path):
+        lines = [line.strip().split(":") for line in open(file_path).readlines()]
+    else:
+        log.error("accounts.txt file not found!")
+    # ^ reads every line from a file and splits into a :
+    for line in lines:
 
-    directory = os.path.join(path, "accounts.txt")
-    log.debug(f"grabbed accounts dir | {directory}")
+        if len(line) in (2, 5):
+            accounts.append(Account(*line))
+        else:
+            print(f"[err] accounts.txt invalid account on line {lines.index(line) + 1}")
 
-    try:
-        f = open(directory + '/data/accounts.txt', 'r')
-        log.debug("opened accounts.txt")
-    except FileNotFoundError:
-        log.error('File accounts.txt not found, create one and put accounts in.')
-        sys.exit(0)
-
-    for account in f:
-        account = account.strip().split(':')
-        log.debug("parsed account into split string")
-        if len(account) == 5:
-            account = Account(
-                email=account[0],
-                password=account[1],
-                security_questions=[
-                    account[2], account[3], account[4]
-                ]
-            )
-
-            accounts.append(account)
-            log.debug("parsed into account object")
-            continue
-        elif len(account) == 2:
-            account = Account(
-                email=account[0],
-                password=account[1]
-            )
-
-            accounts.append(account)
-            log.debug("parsed into account object")
-            continue
-
-    log.debug("parsed all accounts")
+    log.debug("loaded accounts from file")
     return accounts
 
 

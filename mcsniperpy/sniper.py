@@ -27,6 +27,7 @@ class Sniper:
         self.offset = int()  # Time offset (e.g., 400 = snipe the name 400ms early)
 
         self.config = None  # util.classes.config.BackConfig
+        self.user_config = None  # util.classes.config.Config
 
         self.data = None
 

@@ -2,7 +2,6 @@ import asyncio
 import urllib.parse
 from time import perf_counter
 
-from tqdm import tqdm
 import typer
 
 from .logs_manager import Color as color

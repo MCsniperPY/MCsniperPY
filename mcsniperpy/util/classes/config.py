@@ -29,9 +29,12 @@ class BackConfig:
 
 class Config:
 
-    def __init__(self, dir):
+    def __init__(self, config_path):
+        log.debug(f'config path: {config_path}')
         user_config = configparser.ConfigParser(allow_no_value=True)
+        user_config.read(config_path)
 
+        self.config = user_config
 
 
 def population_back_config():

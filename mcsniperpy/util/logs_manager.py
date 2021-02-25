@@ -19,6 +19,7 @@ class Color:
     cyan = colorama.Fore.CYAN
     l_cyan = colorama.Fore.LIGHTCYAN_EX
     white = colorama.Fore.WHITE
+    reset = colorama.Fore.RESET
 
     @classmethod
     def disable(cls):
@@ -35,6 +36,7 @@ class Color:
         cls.cyan = ""
         cls.l_cyan = ""
         cls.white = ""
+        cls.reset = ""
 
     @classmethod
     def enable(cls):
@@ -51,6 +53,7 @@ class Color:
         cls.cyan = colorama.Fore.CYAN
         cls.l_cyan = colorama.Fore.LIGHTCYAN_EX
         cls.white = colorama.Fore.WHITE
+        cls.reset = colorama.Fore.RESET
 
 
 class Logger:

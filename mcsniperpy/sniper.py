@@ -1,4 +1,7 @@
 import asyncio
+import datetime
+from datetime import datetime
+from dateutil import relativedelta
 
 import aiohttp
 
@@ -48,7 +51,7 @@ class Sniper:
         self.config = BackConfig()
         self.log.debug(f"Using sniping path of {self.config.init_path}")
 
-        self.user_config = Config(self.config.init_path)
+        self.user_config = Config(os.path.join(self.config.init_path, 'config.ini'))
 
         if target is None:
             self.log.debug('No username detected')
@@ -77,16 +80,16 @@ class Sniper:
             self.log.error("Failed to get droptime.")
             sys.exit(0)
 
-        auth_delay = int(self.config.get("auth_delay"))
-        drop_time_datetime = datetime.datetime.fromtimestamp(droptime)
-        rd = relativedelta(datetime.datetime.now(), drop_time_datetime)
+        auth_delay = self.user_config.config['accounts'].getint('authentication_delay')
+        drop_time_datetime = datetime.fromtimestamp(droptime)
+        rd = relativedelta.relativedelta(datetime.now(), drop_time_datetime)
 
         for acc in accounts:
-            await acc.fully_authenticate()
+            await acc.fully_authenticate(session=self.session)
             await asyncio.sleep(auth_delay / 1000)
 
-        while datetime.datetime.now().timestamp() < droptime:
-            time.sleep(1)
+        while datetime.now().timestamp() < droptime:
+            await asyncio.sleep(1)
 
         self.on_shutdown()
 

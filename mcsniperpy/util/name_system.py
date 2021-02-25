@@ -31,6 +31,6 @@ async def api_timing(username: str, session: RequestManager) -> int:  # Returns 
     if resp_json.get("error", None) is None:
         return resp_json['droptime']
     else:
-        log.error(f"failed to parse droptime for {color.l_cyan}{username} through Kqzz's MC API")
+        log.error(f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through Kqzz's MC API")
         log.error(f"{resp_json['error']} | {resp.status}")
         close(0)

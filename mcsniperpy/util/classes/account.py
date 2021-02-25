@@ -33,7 +33,7 @@ class Account:
                            f"Authorization: Bearer {self.bearer}\r\n"
                            "\r\n").encode()
 
-    async def authenticate(self) -> bool:
+    async def authenticate(self, session) -> bool:
         resp, resp_json, _ = await session.post(
             "https://authserver.mojang.com/authenticate",
             json={
@@ -55,7 +55,7 @@ class Account:
         else:
             return False
 
-    async def get_questions(self) -> None:
+    async def get_questions(self, session) -> None:
         resp, resp_json, _ = await session.get(
             "https://api.mojang.com/user/security/challenges",
             headers=self.headers
@@ -67,10 +67,9 @@ class Account:
         if resp.status == 200:
             return
         else:
-            print(f"[err] failed to get security questions for {self.email}")
+            log.error(f"failed to get security questions for {self.email}")
 
-    @property
-    async def need_sqs(self):
+    async def need_sqs(self, session) -> bool:
         resp, _, _ = await session.get(
             "https://api.mojang.com/user/security/location",
             headers=self.headers
@@ -78,10 +77,10 @@ class Account:
 
         return resp.status == 403
 
-    async def submit_questions(self):
+    async def submit_questions(self, session):
 
         if self.sqs == ():
-            print(f"[err] security questions for {self.email} not provided!")
+            log.error(f"security questions for {self.email} not provided!")
             return False
 
         resp, _, _ = await session.post(
@@ -108,24 +107,24 @@ class Account:
         if resp.status == 204:
             return True
         else:
-            print(f"[err] security questions for {self.email} are incorrect!")
+            log.error(f"security questions for {self.email} are incorrect!")
             return False
 
-    async def fully_authenticate(self):
-        if not await self.authenticate():
-            print(f"[err] failed to auth {self.email}")
+    async def fully_authenticate(self, session):
+        if not await self.authenticate(session):
+            log.error(f"failed to auth {self.email}")
             return
 
-        if not await self.need_sqs:
+        if not await self.need_sqs(session):
             print(f"[success] authed {self.email}")
         else:
-            await self.get_questions()
-            if await self.submit_questions():
+            await self.get_questions(session)
+            if await self.submit_questions(session):
                 print(f"[success] authed {self.email} with security questions")
             else:
-                print(f"[err] failed to authenticate {self.email}")
+                log.error(f"failed to authenticate {self.email}")
 
-    async def snipe(self, name, snipe_session):
+    async def snipe(self, name):
         reader, writer = await asyncio.open_connection("api.minecraftservices.com", 443, ssl=True)
 
         writer.write(self.snipe_data)

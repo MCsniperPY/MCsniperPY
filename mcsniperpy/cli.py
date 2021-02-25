@@ -67,7 +67,4 @@ def cli():
             sniper.log.error(f"{tb.tb_frame.f_code.co_filename}:{tb.tb_lineno}")
             tb = tb.tb_next
 
-    print("done")
-
-
-# sniper.on_shutdown()
+    sniper.on_shutdown()

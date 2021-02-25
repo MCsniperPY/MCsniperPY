@@ -8,7 +8,7 @@ from typing import List
 
 def parse_accs(file_path) -> List[Account]:
     accounts = list()
-    log.debug(f'File path: {file_path}')
+    log.debug(f'accounts path: {file_path}')
     if os.path.isfile(file_path):
         lines = [line.strip().split(":") for line in open(file_path).readlines()]
     else:

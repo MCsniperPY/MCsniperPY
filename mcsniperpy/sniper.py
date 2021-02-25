@@ -33,6 +33,8 @@ class Sniper:
 
         self.data = None
 
+        self.accounts = []  # list of Accounts
+
     @property
     def initialized(self):
         return self.config.init_path != ""
@@ -66,12 +68,15 @@ class Sniper:
 
         self.log.debug("Loading accounts from file.")
 
-        accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
-        if len(accounts) == 0:
+        self.accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
+        if len(self.accounts) == 0:
             self.log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
             sys.exit(0)
 
-        self.log.info(f"{len(accounts)} account(s) have been loaded from file.")
+        if len(self.accounts) == 0:
+            self.log.info(f"{len(self.accounts)} account has been loaded from file.")
+        else:
+            self.log.info(f"{len(self.accounts)} accounts have been loaded from file.")
 
         droptime = await api_timing(target, self.session)
 
@@ -83,12 +88,12 @@ class Sniper:
         drop_time_datetime = datetime.fromtimestamp(droptime)
         rd = relativedelta.relativedelta(datetime.now(), drop_time_datetime)
 
-        for acc in accounts:
-            await acc.fully_authenticate(session=self.session)
-            await asyncio.sleep(auth_delay / 1000)
+        await asyncio.gather(*[acc.fully_authenticate(session=self.session) for acc in self.accounts])
 
         while datetime.now().timestamp() < droptime:
-            await asyncio.sleep(1)
+            await asyncio.sleep(.01)
+
+        await asyncio.gather(*[acc.snipe(target) for acc in self.accounts])
 
         self.on_shutdown()
 

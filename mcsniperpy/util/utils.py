@@ -1,10 +1,10 @@
-import os
-import sys
-from typing import List
-
 from .classes.account import Account
 from .logs_manager import Logger as log
+import sys
+from os.path import dirname, abspath
+import os
 
+from typing import List
 
 def parse_accs(file_path) -> List[Account]:
     accounts = list()

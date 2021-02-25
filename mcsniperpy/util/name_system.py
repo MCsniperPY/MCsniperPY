@@ -1,10 +1,12 @@
 from datetime import datetime
-
+import sys
+import requests
 from bs4 import BeautifulSoup
-
 from .logs_manager import Logger as log, Color as color
-from .request_manager import RequestManager
 from .utils import close
+from .request_manager import RequestManager
+
+import sys
 
 
 async def namemc_timing(username: str, session: RequestManager) -> float:

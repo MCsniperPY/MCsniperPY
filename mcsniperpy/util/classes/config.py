@@ -1,6 +1,7 @@
-import configparser
 import os
 from os.path import dirname
+
+import configparser
 
 from ..logs_manager import Logger as log
 from ..utils import close

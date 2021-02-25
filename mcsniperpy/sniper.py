@@ -1,16 +1,15 @@
 import asyncio
 import datetime
+import os.path
 from datetime import datetime
-from dateutil import relativedelta
 
 import aiohttp
+from dateutil import relativedelta
 
 from .util import request_manager
 from .util import utils as util
 from .util.classes.config import BackConfig, population_back_config, Config
-from .util.name_system import api_timing, namemc_timing
-
-import os.path
+from .util.name_system import api_timing
 
 
 class Sniper:

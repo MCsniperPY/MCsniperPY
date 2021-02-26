@@ -126,6 +126,20 @@ class Logger:
         return i
 
     @classmethod
+    def yes_or_no(cls, message):
+        i = str()
+        while True:
+            i = cls.input(message).lower()
+            if i in ("yes", "y"):
+                return True
+            elif i in ("no", "n"):
+                return False
+            else:
+                cls.error(f"{i} is not a valid answer. please answer yes or no.")
+
+
+
+    @classmethod
     def shutdown(cls):
         # Does nothing.
         # Could be used to:

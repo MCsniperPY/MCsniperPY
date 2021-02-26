@@ -1,7 +1,6 @@
+import configparser
 import os
 from os.path import dirname
-
-import configparser
 
 from ..logs_manager import Logger as log
 from ..utils import close
@@ -44,8 +43,10 @@ def populate_configs():
     with open(os.path.join(dirname(dirname(dirname(__file__))), "data", "config.ini"), "w") as f:
         config.write(f)
 
-    with open(os.path.join(config['sniper']['init_path'], "accounts.txt"), "w") as f:
-        f.write("""Clear this file and write accounts in this format
+    if os.path.isfile(os.path.join(config['sniper']['init_path'], "accounts.txt")):
+        if log.yes_or_no('yes/no | overwrite current accounts file'):
+            with open(os.path.join(config['sniper']['init_path'], "accounts.txt"), "w") as f:
+                f.write("""Clear this file and write accounts in this format
 email:pass:answer:answer:answer
 
 or
@@ -54,26 +55,30 @@ email:pass
 
 you can separate those accounts by a new line if you would like to use multiple accounts.""")
 
-    with open(os.path.join(config['sniper']['init_path'], "config.ini"), "w+") as f:
-        user_config = configparser.ConfigParser(allow_no_value=True)
-        user_config['sniper'] = {
-            'timing_system': 'namemc',
-            'auto_claim_namemc': 'no',
-            'snipe_requests': '3',
-        }
+    if os.path.isfile(os.path.join(config['sniper']['init_path'], "config.ini")):
+        if log.yes_or_no('yes/no | overwrite current config file'):
+            with open(os.path.join(config['sniper']['init_path'], "config.ini"), "w") as f:
+                user_config = configparser.ConfigParser(allow_no_value=True)
+                user_config['sniper'] = {
+                    'timing_system': 'namemc',
+                    'auto_claim_namemc': 'no',
+                    'snipe_requests': '3',
+                }
 
-        user_config['accounts'] = {
-            'max_accounts': '30',
-            'authentication_delay': '500'
-        }
+                user_config['accounts'] = {
+                    'max_accounts': '30',
+                    'authentication_delay': '500',
+                    'start_authentication': '720'
+                }
 
-        user_config['skin'] = {
-            'change_skin_on_snipe': 'no',
-            'skin_change_type': 'url',
-            'skin': ''
-        }
+                user_config['skin'] = {
+                    'change_skin_on_snipe': 'no',
+                    'skin_change_type': 'url',
+                    'skin': ''
+                }
 
-        user_config.set('skin', '; skin_change_type can be url, path, or username. refer to docs for more info.')
+                user_config.set('skin', '; skin_change_type can be url, path, or username. refer to docs for more info.')
 
-        user_config.write(f)
+                user_config.write(f)
+
     log.info("successfully initialized sniper")

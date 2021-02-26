@@ -62,12 +62,7 @@ class Sniper:
         else:
             self.log.info(f"Delay (ms): {offset}")
 
-        self.log.debug("Loading accounts from file.")
-
         self.accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
-        if len(self.accounts) == 0:
-            self.log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
-            sys.exit(0)
 
         if len(self.accounts) == 0:
             self.log.info(f"{len(self.accounts)} account has been loaded from file.")

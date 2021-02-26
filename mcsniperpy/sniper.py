@@ -64,16 +64,7 @@ class Sniper:
 
         self.accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
 
-        if len(self.accounts) == 0:
-            self.log.info(f"{len(self.accounts)} account has been loaded from file.")
-        else:
-            self.log.info(f"{len(self.accounts)} accounts have been loaded from file.")
-
         droptime = await api_timing(target, self.session)
-
-        if droptime is None:
-            self.log.error("Failed to get droptime.")
-            sys.exit(0)
 
         auth_delay = self.user_config.config['accounts'].getint('authentication_delay')
         drop_time_datetime = datetime.fromtimestamp(droptime)

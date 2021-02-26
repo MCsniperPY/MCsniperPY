@@ -23,9 +23,15 @@ def parse_accs(file_path) -> List[Account]:
             log.error(f"accounts.txt invalid account on line {lines.index(line) + 1}")
 
     log.debug("loaded accounts from file")
+
     if len(accounts) == 0:
         log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
-        sys.exit(0)
+        close(0)
+
+    if len(self.accounts) == 1:
+        self.log.info(f"{len(self.accounts)} account has been loaded from file.")
+    else:
+        self.log.info(f"{len(self.accounts)} accounts have been loaded from file.")
     return accounts
 
 

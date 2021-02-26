@@ -60,7 +60,7 @@ class Sniper:
             self.log.debug('no offset detected')
             self.offset = self.log.input("Time Offset:")
         else:
-            self.log.info(f"Delay (ms): {offset}")
+            self.log.info(f"Offset (ms): {offset}")
 
         self.accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
 

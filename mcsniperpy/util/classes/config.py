@@ -37,7 +37,7 @@ class Config:
         self.config = user_config
 
 
-def population_back_config():
+def populate_configs():
     config = configparser.ConfigParser()
     config['sniper'] = {"init_path": os.getcwd()}
 

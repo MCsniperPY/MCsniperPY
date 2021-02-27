@@ -50,8 +50,7 @@ class Account:
             self.headers["Authorization"] = f"Bearer {resp_json['accessToken']}"  # authorization header
             self.bearer = resp_json['accessToken']
             return True
-        else:
-            return False
+        return False
 
     async def get_questions(self, session) -> None:
         resp, resp_json, _ = await session.get(
@@ -64,8 +63,7 @@ class Account:
 
         if resp.status == 200:
             return
-        else:
-            log.error(f"failed to get security questions for {self.email}")
+        log.error(f"failed to get security questions for {self.email}")
 
     async def need_sqs(self, session) -> bool:
         resp, _, _ = await session.get(
@@ -104,9 +102,8 @@ class Account:
 
         if resp.status == 204:
             return True
-        else:
-            log.error(f"security questions for {self.email} are incorrect!")
-            return False
+        log.error(f"security questions for {self.email} are incorrect!")
+        return False
 
     async def fully_authenticate(self, session):
         if not await self.authenticate(session):

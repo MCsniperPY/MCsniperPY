@@ -56,12 +56,12 @@ def ping(iterations: int = typer.Option(5)):
 @app.command()
 def init():
     sniper.init()
-    sniper.on_shutdown()
 
 
 def cli():
     try:
         app()
+        sniper.on_shutdown()
     except Exception as ex:
         tb = ex.__traceback__
         sniper.log.error(f"type: {type(ex).__name__}")
@@ -71,3 +71,7 @@ def cli():
             tb = tb.tb_next
 
     sniper.on_shutdown()
+
+
+if __name__ == '__name__':
+    cli()

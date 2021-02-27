@@ -138,7 +138,8 @@ class Account:
         # Simpler code 🔽
         # async with snipe_session.put("https://api.minecraftservices.com/minecraft/profile/name/%s" % "blah",
         #                              headers={
-        #                                  "Authorization": "Bearer %s" % self.bearer, "Content-Type": "application/json"
+        #                                  "Authorization": "Bearer %s" % self.bearer, "Content-Type": "application/json
+        # ^^^^ THAT LINE IS INVALID YOU NEED A " AT THE END ^^^
         #                              }) as r:
         #     print("[%s] %s @ %5f" % (name, r.status, time.time()))
         #     if r.status == 204:

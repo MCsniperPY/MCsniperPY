@@ -12,21 +12,50 @@ async def namemc_timing(username: str, session: RequestManager) -> float:
 
     if resp.status != 502:
         try:
-            soup = BeautifulSoup(r.content, 'html.parser')
-            snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
-            snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
-            return snipe_time.timestamp()
+            soup = BeautifulSoup(text, 'html.parser')
+
+            status_bar = soup.find(id="status-bar")
+            info = status_bar.find_all("div", class_="col-sm-6 my-1")
+
+            name_status = info[0].text.split("\n")[2].strip('*').lower()
+            pretty_username = f"{color.l_cyan}{username}{color.reset}"
+            pretty_status = f"{color.yellow if name_status == 'Unavailable' else color.green}{name_status}{color.reset}"
+
+            if name_status == 'unavailable':
+                log.error(f"failed to parse droptime for {pretty_username} through namemc")
+                log.info(
+                    f"the username {pretty_username} is {pretty_status} at the moment which is most likely your problem!"
+                )
+                close(1)
+            elif name_status == 'available':
+                log.info(f"failed to parse droptime for {pretty_username} through namemc")
+                log.info(
+                    f"the username {pretty_username} is {pretty_status} at the moment!"
+                )
+                log.info("go claim it without the sniper if possible.")
+                close(1)
+            elif name_status == 'available later':
+                snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
+                snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
+                log.info(f"sniping {pretty_username} at {snipe_time}")
+                return snipe_time.timestamp()
+            else:
+                log.error(f"well this is awkward. You shouldn't be able to get here, but you are.")
+                log.info(f"the status is {pretty_status}")
+                close(1)
         except Exception as e:  # Need to find all the cases why this is triggered
             log.error(e)
             log.error(f"Couldn't get droptime from namemc. Maybe the name isn't dropping?")
             close(0)
     else:
         log.error(f"failed to connect to {color.l_blue}namemc.com")
+        close(1)
 
 
 async def api_timing(username: str, session: RequestManager) -> int:  # Returns a unix timestamp
     resp, _, resp_json = await session.get(f"https://api.kqzz.me/api/namemc/droptime/{username}")
     if resp_json.get("error", None) is None:
+        log.info(f"sniping {color.cyan}{username}{color.reset} at {datetime.fromtimestamp(resp_json['droptime'])}")
         return resp_json['droptime']
     else:
         log.error(f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through Kqzz's MC API")

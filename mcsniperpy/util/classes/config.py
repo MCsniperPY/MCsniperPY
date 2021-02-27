@@ -62,7 +62,7 @@ you can separate those accounts by a new line if you would like to use multiple 
             with open(os.path.join(config['sniper']['init_path'], "config.ini"), "w") as f:
                 user_config = configparser.ConfigParser(allow_no_value=True)
                 user_config['sniper'] = {
-                    'timing_system': 'namemc',
+                    'timing_system': 'kqzz_api',
                     'auto_claim_namemc': 'no',
                     'snipe_requests': '3',
                 }

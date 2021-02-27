@@ -37,6 +37,8 @@ class Config:
 
 
 def populate_configs():
+    if not log.yes_or_no('yes/no | Are you sure you want to initialize your config in your cwd: '):
+        close(1)
     config = configparser.ConfigParser()
     config['sniper'] = {"init_path": os.getcwd()}
 
@@ -44,7 +46,7 @@ def populate_configs():
         config.write(f)
 
     if os.path.isfile(os.path.join(config['sniper']['init_path'], "accounts.txt")):
-        if log.yes_or_no('yes/no | overwrite current accounts file'):
+        if log.yes_or_no('yes/no | Overwrite current accounts file: '):
             with open(os.path.join(config['sniper']['init_path'], "accounts.txt"), "w") as f:
                 f.write("""Clear this file and write accounts in this format
 email:pass:answer:answer:answer
@@ -56,7 +58,7 @@ email:pass
 you can separate those accounts by a new line if you would like to use multiple accounts.""")
 
     if os.path.isfile(os.path.join(config['sniper']['init_path'], "config.ini")):
-        if log.yes_or_no('yes/no | overwrite current config file'):
+        if log.yes_or_no('yes/no | Overwrite current config file: '):
             with open(os.path.join(config['sniper']['init_path'], "config.ini"), "w") as f:
                 user_config = configparser.ConfigParser(allow_no_value=True)
                 user_config['sniper'] = {
@@ -77,7 +79,8 @@ you can separate those accounts by a new line if you would like to use multiple 
                     'skin': ''
                 }
 
-                user_config.set('skin', '; skin_change_type can be url, path, or username. refer to docs for more info.')
+                user_config.set('skin',
+                                '; skin_change_type can be url, path, or username. refer to docs for more info.')
 
                 user_config.write(f)
 

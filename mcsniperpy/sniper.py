@@ -52,32 +52,38 @@ class Sniper:
 
         if target is None:
             self.log.debug('No username detected')
-            self.target = self.log.input("Target Username:")
+            target = self.log.input("Target Username:")
         else:
             self.log.info(f"Sniping username: {target}")
 
         if offset is None:
             self.log.debug('no offset detected')
-            self.offset = self.log.input("Time Offset:")
+            offset = self.log.input("Time Offset:")
         else:
             self.log.info(f"Offset (ms): {offset}")
 
         self.accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
 
-        droptime = await api_timing(target, self.session)
+        timing_system = self.user_config.config['sniper'].get('timing_system', 'kqzz_api').lower()
+        if timing_system == 'kqzz_api':
+            droptime = await api_timing(target, self.session)
+        elif timing_system == 'namemc':
+            droptime = await namemc_timing(target, self.session)
+        else:
+            droptime = await api_timing(target, self.session)
 
-        auth_delay = self.user_config.config['accounts'].getint('authentication_delay')
-        drop_time_datetime = datetime.fromtimestamp(droptime)
-        rd = relativedelta.relativedelta(datetime.now(), drop_time_datetime)
 
+        start_auth = self.user_config.config['accounts'].getint('start_authentication', '720')
+
+        time_until_authentication = 0 if time.time() > (droptime - start_auth) else droptime - start_auth
+
+        await asyncio.sleep(time_until_authentication)
         await asyncio.gather(*[acc.fully_authenticate(session=self.session) for acc in self.accounts])
 
         while datetime.now().timestamp() < droptime:
-            await asyncio.sleep(.01)
+            await asyncio.sleep(.001)
 
-        await asyncio.gather(*[acc.snipe(target) for acc in self.accounts])
-
-        self.on_shutdown()
+        await asyncio.gather(*[acc.snipe(target) for _ in range(3) for acc in self.accounts])
 
     def on_shutdown(self):
-        asyncio.get_event_loop().run_until_complete(self.session.session.close())
+        asyncio.run(self.session.session.close())

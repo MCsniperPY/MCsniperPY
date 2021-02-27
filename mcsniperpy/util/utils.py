@@ -28,10 +28,32 @@ def parse_accs(file_path) -> List[Account]:
         log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
         close(0)
 
-    if len(self.accounts) == 1:
-        self.log.info(f"{len(self.accounts)} account has been loaded from file.")
+    if len(accounts) == 1:
+        log.info(f"{len(accounts)} account has been loaded from file.")
     else:
-        self.log.info(f"{len(self.accounts)} accounts have been loaded from file.")
+        log.info(f"{len(accounts)} accounts have been loaded from file.")
+    return accounts
+
+
+def parse_accs_string(accounts_string) -> List[Account]:
+    accounts = list()
+    for line in accounts_string.split('\n'):
+
+        if len(line) in (2, 5):
+            accounts.append(Account(*line))
+        else:
+            log.error(f"accounts.txt invalid account on line {lines.index(line) + 1}")
+
+    log.debug("loaded accounts from string")
+
+    if len(accounts) == 0:
+        log.error("No accounts were loaded from string. Please check accounts.txt and try again.")
+        close(0)
+
+    if len(accounts) == 1:
+        log.info(f"{len(accounts)} account has been loaded from string.")
+    else:
+        log.info(f"{len(accounts)} accounts have been loaded from string.")
     return accounts
 
 

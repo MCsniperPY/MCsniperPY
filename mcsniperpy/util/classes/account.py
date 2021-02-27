@@ -1,9 +1,7 @@
-import logging
-
-import aiohttp
+import asyncio
+import time
 
 from ..logs_manager import Logger as log
-from .. import request_manager
 
 
 class Account:

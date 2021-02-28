@@ -12,9 +12,8 @@ setup(
         'python-dateutil',
         'bs4'
     ],
-    entry_points='''
-        [console_scripts]
-        mcsniperpy=mcsniperpy.cli:cli
-    ''',
+    entry_points={
+        'console_scripts': ['mcsniperpy=mcsniperpy.cli:cli']
+    },
     python_requires='>=3.7'
 )

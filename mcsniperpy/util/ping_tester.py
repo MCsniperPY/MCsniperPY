@@ -12,7 +12,7 @@ async def check(url: str, iterations: int):
     async def x():
         try:
             uri = urllib.parse.urlparse(url)
-            reader, writer = await asyncio.open_connection(uri.hostname, 443, ssl=True)
+            reader, writer = await asyncio.open_connection(uri.hostname, 443, ssl=False)
             writer.write(f"GET {uri.path or '/'} HTTP/1.1\r\nHost:{uri.hostname}\r\n\r\n".encode())
 
             start = perf_counter()

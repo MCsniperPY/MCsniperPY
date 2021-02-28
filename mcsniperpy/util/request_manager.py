@@ -1,7 +1,6 @@
 import random
 
-"""
-All of this file is just to change ```py
+"""All of this file is just to change ```py
 async with session.method() as r:
 ```
 
@@ -9,9 +8,7 @@ to
 
 ```py
 r = await request_manager.method()
-```
-
-"""
+```"""
 
 USER_AGENTS = [
     'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:44.0) Gecko/20100101 Firefox/44.01',

@@ -37,7 +37,7 @@ async def namemc_timing(username: str, session: RequestManager) -> float:
             elif name_status == 'available later':
                 snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
                 snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
-                log.info(f"sniping {pretty_username} at {snipe_time}")
+                log.info(f"sniping {pretty_username} @ {snipe_time}")
                 return snipe_time.timestamp()
             else:
                 log.error(f"well this is awkward. You shouldn't be able to get here, but you are.")
@@ -55,7 +55,7 @@ async def namemc_timing(username: str, session: RequestManager) -> float:
 async def api_timing(username: str, session: RequestManager) -> int:  # Returns a unix timestamp
     resp, _, resp_json = await session.get(f"https://api.kqzz.me/api/namemc/droptime/{username}")
     if resp_json.get("error", None) is None:
-        log.info(f"sniping {color.cyan}{username}{color.reset} at {datetime.fromtimestamp(resp_json['droptime'])}")
+        log.info(f"sniping {color.cyan}{username}{color.reset} @ {datetime.fromtimestamp(resp_json['droptime'])}")
         return resp_json['droptime']
     else:
         log.error(f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through Kqzz's MC API")

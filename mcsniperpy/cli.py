@@ -61,7 +61,6 @@ def init():
 def cli():
     try:
         app()
-        sniper.on_shutdown()
     except Exception as ex:
         tb = ex.__traceback__
         sniper.log.error(f"type: {type(ex).__name__}")
@@ -69,8 +68,8 @@ def cli():
         while tb is not None:
             sniper.log.error(f"{tb.tb_frame.f_code.co_filename}:{tb.tb_lineno}")
             tb = tb.tb_next
-
-    sniper.on_shutdown()
+    finally:
+        sniper.on_shutdown()
 
 
 if __name__ == '__name__':

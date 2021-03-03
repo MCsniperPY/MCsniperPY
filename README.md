@@ -45,3 +45,13 @@
 ## Contributing
 
 MCsniperPY is looking for people to help code it! If you want to contribute something (not just code) refer to `CONTRIBUTING.md`.
+
+## Development install
+
+```shell
+git clone https://github.com/MCsniperPY/MCsniperPY.git
+git checkout recode
+pip install --editable .
+mcsniperpy --help
+# You can now edit code / add features / whatever
+```

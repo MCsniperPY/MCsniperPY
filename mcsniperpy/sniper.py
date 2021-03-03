@@ -1,8 +1,6 @@
 import asyncio
-import datetime
 import os.path
 import time
-from datetime import datetime
 
 import aiohttp
 
@@ -19,10 +17,7 @@ class Sniper:
         self.color = colorer
         self.log = logger
         self.session = request_manager.RequestManager(
-            aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=300),
-                headers={}
-            )
+            None  # aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=300),headers={})
         )
 
         self.target = str()  # target username
@@ -39,11 +34,17 @@ class Sniper:
     def initialized(self):
         return self.config.init_path != ""
 
-    def init(self):
+    @staticmethod
+    def init() -> None:
 
         populate_configs()
 
     async def run(self, target=None, offset=None):
+
+        self.session.session = aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(limit=300),
+            headers={}
+        )
 
         self.config = BackConfig()
         self.log.debug(f"Using sniping path of {self.config.init_path}")
@@ -53,18 +54,27 @@ class Sniper:
         if target is None:
             self.log.debug('No username detected')
             target = self.log.input("Target Username:")
+            if target is None:
+                self.log.error(f'invalid input "{target}".')
         else:
             self.log.info(f"Sniping username: {target}")
 
         if offset is None:
             self.log.debug('no offset detected')
             offset = self.log.input("Time Offset:")
+            if offset is None or not util.is_float(offset):
+                self.log.error(f'Invalid offset input: "{offset}"')
+                util.close(1)
+            else:
+                offset = float(offset)
         else:
             self.log.info(f"Offset (ms): {offset}")
 
         self.accounts = util.parse_accs(os.path.join(self.config.init_path, "accounts.txt"))
 
         timing_system = self.user_config.config['sniper'].get('timing_system', 'kqzz_api').lower()
+        start_auth = self.user_config.config['accounts'].getint('start_authentication', '720')
+
         if timing_system == 'kqzz_api':
             droptime = await api_timing(target, self.session)
         elif timing_system == 'namemc':
@@ -72,18 +82,43 @@ class Sniper:
         else:
             droptime = await api_timing(target, self.session)
 
+        req_count = self.user_config.config['sniper'].getint('snipe_requests', '3')
 
-        start_auth = self.user_config.config['accounts'].getint('start_authentication', '720')
+        await self.snipe(droptime, target, offset, req_count, start_auth)
+
+    async def snipe(self, droptime, target, offset, req_count, start_auth):
+
+        authentication_coroutines = [acc.fully_authenticate(session=self.session) for acc in self.accounts]
+        pre_snipe_coroutines = [acc.snipe_connect() for _ in range(req_count) for acc in self.accounts]  # For later use
 
         time_until_authentication = 0 if time.time() > (droptime - start_auth) else droptime - start_auth
-
         await asyncio.sleep(time_until_authentication)
-        await asyncio.gather(*[acc.fully_authenticate(session=self.session) for acc in self.accounts])
 
-        while datetime.now().timestamp() < droptime:
-            await asyncio.sleep(.001)
+        await asyncio.gather(*authentication_coroutines)
 
-        await asyncio.gather(*[acc.snipe(target) for _ in range(3) for acc in self.accounts])
+        for acc in self.accounts:
+            acc.encode_snipe_data(target)
+
+        time_until_connect = 0 if time.time() > (droptime - 20) else droptime - 20
+        await asyncio.sleep(time_until_connect)
+
+        await asyncio.gather(*pre_snipe_coroutines)
+
+        snipe_coroutines = [acc.snipe(acc.readers_writers[i][1]) for i in range(req_count) for acc in self.accounts]
+
+        while time.time() < droptime - offset / 1000:
+            await asyncio.sleep(0.00001)  # bad timing solution
+
+        await asyncio.gather(*snipe_coroutines)  # Sends the snipe requests
+        responses = await asyncio.gather(
+            *[acc.snipe_read(target, acc.readers_writers[i][0], acc.readers_writers[i][1]
+                             ) for i in range(req_count) for acc in self.accounts]
+        )  # Reads the responses
+
+        for is_success, email in responses:
+            print(f"{is_success}:{email}")
+
+        # async def snipe_read(self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
 
     def on_shutdown(self):
         asyncio.run(self.session.session.close())

@@ -1,6 +1,8 @@
 import asyncio
+import ssl
 import time
 
+from ..logs_manager import Color as color
 from ..logs_manager import Logger as log
 
 
@@ -24,6 +26,8 @@ class Account:
                            "Host: api.minecraftservices.com\r\n"
                            "Authorization: Bearer TOKEN\r\n"
                            "\r\n").encode()
+
+        self.readers_writers = []
 
     def encode_snipe_data(self, name):
         self.snipe_data = (f"PUT /minecraft/profile/name/{name} HTTP/1.1\r\n"
@@ -119,20 +123,26 @@ class Account:
             else:
                 log.error(f"failed to authenticate {self.email}")
 
-    async def snipe(self, name):
-        reader, writer = await asyncio.open_connection("api.minecraftservices.com", 443, ssl=True)
+    async def snipe_connect(self) -> None:
 
-        writer.write(self.snipe_data)
+        ssl_context = ssl.create_default_context(
+            ssl.Purpose.SERVER_AUTH,
+        )
+        ssl_context.check_hostname = False
+
+        reader, writer = await asyncio.open_connection("api.minecraftservices.com", 443, ssl=ssl.SSLContext(),
+                                                       ssl_handshake_timeout=5)
+        log.debug(f"Connected on account {self.email}")
+        writer.write(self.snipe_data[0:-2])
 
         await writer.drain()
+        self.readers_writers.append((reader, writer))
 
-        resp = await reader.read(12)
-        status = int(resp[9:12])
-        writer.close()
-        await writer.wait_closed()
-        print("[%s] %s @ %.10f" % (name, status, time.time()))
-        return status == 204, self.email
-        # Simpler code 🔽
+    async def snipe(self, writer):
+        writer.write(self.snipe_data[-2:])
+        await writer.drain()
+        log.info(f"sent request @ {time.time()}")
+        # Simpler code 🔽 encompasses all of these snipe* functions
         # async with snipe_session.put("https://api.minecraftservices.com/minecraft/profile/name/%s" % "blah",
         #                              headers={
         #                                  "Authorization": "Bearer %s" % self.bearer, "Content-Type": "application/json
@@ -143,3 +153,29 @@ class Account:
         #         return True, self.email
         #     else:
         #         return False, None
+
+    async def snipe_read(self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> (bool, str):
+        resp = await reader.read(12)
+        now = time.time()
+        status = int(resp[9:12])
+
+        writer.close()
+        await writer.wait_closed()
+
+        pretty_status = '%s%s%s' % (
+            {
+                401: color.l_red,
+                429: color.red,
+                204: color.l_green
+            }.get(status, color.red),
+            status,
+            color.reset
+        )
+        pretty_name = '%s%s%s' % (
+            color.l_cyan,
+            name,
+            color.reset
+        )
+
+        log.info("[%s] [%s] @ %.10f" % (pretty_name, pretty_status, now))
+        return 400 == 204, self.email

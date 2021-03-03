@@ -137,8 +137,6 @@ class Logger:
             else:
                 cls.error(f"{i} is not a valid answer. please answer yes or no.")
 
-
-
     @classmethod
     def shutdown(cls):
         # Does nothing.

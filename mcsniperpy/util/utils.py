@@ -6,6 +6,14 @@ from .classes.account import Account
 from .logs_manager import Logger as log
 
 
+def is_float(n):
+    try:
+        float(n)
+        return True
+    except ValueError:
+        return False
+
+
 def parse_accs(file_path) -> List[Account]:
     accounts = list()
     log.debug(f'accounts path: {file_path}')
@@ -37,7 +45,8 @@ def parse_accs(file_path) -> List[Account]:
 
 def parse_accs_string(accounts_string) -> List[Account]:
     accounts = list()
-    for line in accounts_string.split('\n'):
+    lines = accounts_string.split('\n')
+    for line in lines:
 
         if len(line) in (2, 5):
             accounts.append(Account(*line))

@@ -125,11 +125,6 @@ class Account:
 
     async def snipe_connect(self) -> None:
 
-        ssl_context = ssl.create_default_context(
-            ssl.Purpose.SERVER_AUTH,
-        )
-        ssl_context.check_hostname = False
-
         reader, writer = await asyncio.open_connection("api.minecraftservices.com", 443, ssl=ssl.SSLContext(),
                                                        ssl_handshake_timeout=5)
         log.debug(f"Connected on account {self.email}")

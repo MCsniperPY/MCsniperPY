@@ -30,10 +30,11 @@
 		src="https://img.shields.io/badge/Python%20Versions%20%F0%9F%90%8D-3.7%20%7C%203.8-%2370a1d2"></a>
 		<a href="https://mcsniperpy.github.io/discord"><img src="https://img.shields.io/discord/734794891258757160?color=%2370a1d2&label=Discord&logo=discord&logoColor=white"></a>
 		<a href="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/overview/recode"><img src="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/badge/recode" alt="CodeFactor" /></a>
+        <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/MCsniperPY?logo=python&logoColor=%2370a1d2">
 </p>
 
 <p align="center">
-	<img src="https://i.imgur.com/5PUNwfR.gif" width="550">
+	<img src="https://i.imgur.com/5PUNwfR.gif" width="550" alt="example">
 </p>
 
 ## Overview

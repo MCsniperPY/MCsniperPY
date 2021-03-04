@@ -121,4 +121,5 @@ class Sniper:
         # async def snipe_read(self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
 
     def on_shutdown(self):
-        asyncio.run(self.session.session.close())
+        if self.session.session is not None:
+            asyncio.run(self.session.session.close())

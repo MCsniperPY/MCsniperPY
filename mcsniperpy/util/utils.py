@@ -66,6 +66,12 @@ def parse_accs_string(accounts_string) -> List[Account]:
     return accounts
 
 
+def find_acc_by_email(email, accounts):
+    for acc in accounts:
+        if acc.email == email:
+            return acc
+
+
 def close(code) -> None:
     log.input(f"Press enter to exit:")
     sys.exit(code)

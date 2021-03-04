@@ -116,7 +116,10 @@ class Sniper:
         )  # Reads the responses
 
         for is_success, email in responses:
-            print(f"{is_success}:{email}")
+            if is_success:
+                success_acc = util.find_acc_by_email(email, self.accounts)
+                self.log.info(f'{self.color.white}[{self.color.l_green}success{self.color.white}]{self.color.reset} '
+                              f'sniped {self.target} onto {success_acc.email}')
 
         # async def snipe_read(self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
 

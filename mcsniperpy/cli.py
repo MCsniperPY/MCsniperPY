@@ -6,6 +6,7 @@ import typer
 from .sniper import Sniper
 from .util import logs_manager as log
 from .util import ping_tester
+from .util.name_system import next_name
 
 app = typer.Typer()
 
@@ -31,15 +32,19 @@ sniper = Sniper(
 
 
 @app.command()
-def snipe(username: str = typer.Argument(None),
-          offset: int = typer.Argument(None),
+def snipe(username: str = typer.Option(None),
+          offset: int = typer.Option(None),
           debug: bool = typer.Option(False),
-          color: bool = typer.Option(True)):
+          color: bool = typer.Option(True),
+          next_sorry: int = typer.Option(None, '--next')):
     if debug:
         sniper.log.debug_enabled = True
 
     if not color:
         sniper.color.disable()
+
+    if next_sorry is not None:
+        username = next_name(searches=next_sorry)
 
     startup()
 

@@ -35,6 +35,12 @@ class Account:
                            f"Authorization: Bearer {self.bearer}\r\n"
                            "\r\n").encode()
 
+    def encode_snipe_data_proxy(self, name):
+        self.snipe_data = (f"PUT https://api.minecraftservices.com/minecraft/profile/name/{name} HTTP/1.1\r\n"
+                           "Host: api.minecraftservices.com\r\n"
+                           f"Authorization: Bearer {self.bearer}\r\n"
+                           "\r\n").encode()
+
     async def authenticate(self, session) -> bool:
         resp, resp_json, _ = await session.post(
             "https://authserver.mojang.com/authenticate",

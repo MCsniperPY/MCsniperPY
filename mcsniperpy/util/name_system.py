@@ -1,5 +1,7 @@
+import asyncio
 from datetime import datetime
 
+import aiohttp
 from bs4 import BeautifulSoup
 
 from .logs_manager import Logger as log, Color as color
@@ -61,3 +63,15 @@ async def api_timing(username: str, session: RequestManager) -> int:  # Returns 
         log.error(f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through Kqzz's MC API")
         log.error(f"{resp_json['error']} | {resp.status}")
         close(0)
+
+
+def next_name(base_url: str = 'https://api.kqzz.me', searches: int = 0, loop=asyncio.get_event_loop()):
+    async def x():
+        async with aiohttp.ClientSession() as session:
+            resp = await session.get(base_url + '/api/namemc/upcoming?searches=' + str(searches))
+            upcoming_names = await resp.json()
+        if len(upcoming_names) > 0:
+            return upcoming_names[0]["name"]
+        return None
+
+    return loop.run_until_complete(x())

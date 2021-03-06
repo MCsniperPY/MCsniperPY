@@ -47,9 +47,9 @@ class Sniper:
         )
 
         self.config = BackConfig()
-        self.log.debug(f"Using sniping path of {self.config.init_path}")
+        self.log.debug(f"Using sniping path of {self.config.config['sniper'].get('init_path')}")
 
-        self.user_config = Config(os.path.join(self.config.init_path, 'config.ini'))
+        self.user_config = Config(os.path.join(self.config.config['sniper'].get('init_path'), 'config.ini'))
 
         if target is None:
             self.log.debug('No username detected')

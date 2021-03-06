@@ -7,6 +7,12 @@ from .logs_manager import Logger as log
 
 
 def is_float(n):
+    """Checks if a number is a valid float
+
+    Args:
+        n: number to check
+    Returns:
+        a boolean saying if n is a valid float"""
     try:
         float(n)
         return True
@@ -25,8 +31,10 @@ def parse_accs(file_path) -> List[Account]:
     # ^ reads every line from a file and splits into a :
     for line in lines:  # This variable cannot be referenced before assignment due to close()
 
-        if len(line) in (2, 5):
-            accounts.append(Account(*line))
+        if line[0].startswith('#'):
+            pass  # This triggers is the line is a "comment"
+        elif len(line) in (2, 5):
+            accounts.append(Account(*line))  # While this line is difficult to read, it creates an Account object.
         else:
             log.error(f"accounts.txt invalid account on line {lines.index(line) + 1}")
 

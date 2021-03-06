@@ -47,6 +47,16 @@
 
 MCsniperPY is looking for people to help code it! If you want to contribute something (not just code) refer to `CONTRIBUTING.md`.
 
+## Installation
+
+```shell
+# First, find your python prefix. for windows it's `py`, for everything else, it's `python3`
+YOURPYTHONPREFIX -m pip install mcsniperpy
+YOURPYTHONPREFIX -m mcsniperpy --help
+# MCsniperPY is now installed and can be run with:
+YOURPYTHONPREFIX -m mcsniperpy
+```
+
 ## Development install
 
 ```shell

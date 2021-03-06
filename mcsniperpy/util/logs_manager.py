@@ -129,7 +129,10 @@ class Logger:
     def yes_or_no(cls, message):
         i = str()
         while True:
-            i = cls.input(message).lower()
+            i = cls.input(
+                f"{Color.white}[{Color.green}yes{Color.white}/{Color.l_red}no{Color.reset}]{Color.reset} "
+                f"{message}"
+            ).lower()
             if i in ("yes", "y"):
                 return True
             elif i in ("no", "n"):

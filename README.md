@@ -17,7 +17,7 @@
 	<strong>
 		<a href="https://mcsniperpy.github.io/">Website</a>
 		•
-		<a href="https://docs.mcsniperpy.com">Usage</a>
+		<a href="https://docs.mcsniperpy.com">Docs</a>
 	</strong>
 </p>
 <p align="center">

@@ -32,7 +32,7 @@ class Sniper:
 
     @property
     def initialized(self):
-        return self.config.init_path != ""
+        return self.config.config['sniper'].get('init_path', '') != ''
 
     @staticmethod
     def init() -> None:

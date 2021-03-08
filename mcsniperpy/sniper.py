@@ -130,4 +130,5 @@ class Sniper:
     def on_shutdown(self):
         if self.session.session is not None:
             asyncio.run(self.session.session.close())
-        self.log.shutdown()
+        if self.log is not None:
+            self.log.shutdown()

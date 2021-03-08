@@ -9,14 +9,14 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name="MCsniperPY",
-    version='0.17.1',
+    version='0.17.3',
     description='Minecraft name sniper written in Python',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/MCsniperPY/MCsniperPY',
     author='Kqzz',
     license='MIT',
-    packages=['mcsniperpy', 'mcsniperpy.utils', 'mcsniperpy.utils.classes'],
+    packages=['mcsniperpy', 'mcsniperpy.util', 'mcsniperpy.utils.classes'],
     install_requires=[
         'typer',
         'aiohttp',

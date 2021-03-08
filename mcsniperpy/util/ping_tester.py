@@ -4,8 +4,8 @@ from time import perf_counter
 
 import typer
 
-from .logs_manager import Color as color
-from .logs_manager import Logger as log
+from mcsniperpy.util.logs_manager import Color as color
+from mcsniperpy.util.logs_manager import Logger as log
 
 
 async def check(url: str, iterations: int):

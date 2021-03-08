@@ -1,6 +1,5 @@
-from .sniper import Sniper
-from .util import logs_manager, ping_tester, request_manager, name_system, utils
-from .util import classes
-from .cli import cli
+from mcsniperpy.sniper import Sniper
+from mcsniperpy.util import logs_manager, ping_tester, request_manager, name_system, utils
+from mcsniperpy.cli import cli
 
-__all__ = ("classes", "sniper", "logs_manager", "ping_tester", "request_manager", "name_system", "utils", "cli")
+__all__ = ("Sniper", "logs_manager", "ping_tester", "request_manager", "name_system", "utils", "cli")

@@ -3,10 +3,10 @@ import shutil
 
 import typer
 
-from .sniper import Sniper
-from .util import logs_manager as log
-from .util import ping_tester
-from .util.name_system import next_name
+from mcsniperpy import Sniper
+from mcsniperpy.util import logs_manager as log
+from mcsniperpy.util import ping_tester
+from mcsniperpy.util.name_system import next_name
 
 app = typer.Typer()
 

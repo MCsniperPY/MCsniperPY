@@ -4,10 +4,10 @@ import time
 
 import aiohttp
 
-from .util import request_manager
-from .util import utils as util
-from .util.classes.config import BackConfig, populate_configs, Config
-from .util.name_system import api_timing, namemc_timing
+from mcsniperpy.util import request_manager
+from mcsniperpy.util import utils as util
+from mcsniperpy.util.classes.config import BackConfig, populate_configs, Config
+from mcsniperpy.util.name_system import api_timing, namemc_timing
 
 
 class Sniper:
@@ -121,7 +121,6 @@ class Sniper:
                 self.log.info(f'{self.color.white}[{self.color.l_green}success{self.color.white}]{self.color.reset} '
                               f'sniped {self.target} onto {success_acc.email}')
 
-        # async def snipe_read(self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
 
     def on_shutdown(self):
         if self.session.session is not None:

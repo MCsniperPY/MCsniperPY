@@ -2,8 +2,8 @@ import asyncio
 import ssl
 import time
 
-from ..logs_manager import Color as color
-from ..logs_manager import Logger as log
+from mcsniperpy.util.logs_manager import Color as color
+from mcsniperpy.util.logs_manager import Logger as log
 
 
 class Account:

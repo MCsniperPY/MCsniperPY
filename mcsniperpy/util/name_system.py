@@ -4,9 +4,9 @@ from datetime import datetime
 import aiohttp
 from bs4 import BeautifulSoup
 
-from .logs_manager import Logger as log, Color as color
-from .request_manager import RequestManager
-from .utils import close
+from mcsniperpy.util.logs_manager import Logger as log, Color as color
+from mcsniperpy.util.request_manager import RequestManager
+from mcsniperpy.util.utils import close
 
 
 async def namemc_timing(username: str, session: RequestManager) -> float:

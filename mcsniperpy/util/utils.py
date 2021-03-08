@@ -2,8 +2,8 @@ import os
 import sys
 from typing import List
 
-from .classes.account import Account
-from .logs_manager import Logger as log
+from mcsniperpy.util.classes.account import Account
+from mcsniperpy.util.logs_manager import Logger as log
 
 
 def is_float(n):

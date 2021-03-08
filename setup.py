@@ -16,7 +16,7 @@ setup(
     url='https://github.com/MCsniperPY/MCsniperPY',
     author='Kqzz',
     license='MIT',
-    packages=['mcsniperpy', 'mcsniperpy.util', 'mcsniperpy.util.classes'],
+    packages=find_packages(where='./'),
     install_requires=[
         'typer',
         'aiohttp',

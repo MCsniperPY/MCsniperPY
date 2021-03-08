@@ -1,14 +1,17 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+import pathlib
 
-with open("README.md", "r") as f:
-    long_description = f.read()
+here = pathlib.Path(__file__).parent.resolve()
+
+# Get the long description from the README file
+long_description = (here / 'README.md').read_text(encoding='utf-8')
+
 
 setup(
     name="MCsniperPY",
     long_description=long_description,
     long_description_content_type="text/markdown",
     version='0.16.6',
-    py_modules=['mcsniperpy'],
     packages=['mcsniperpy'],
     license='MIT',
     author='Kqzz',

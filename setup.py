@@ -11,7 +11,7 @@ setup(
     name="MCsniperPY",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version='0.16.6',
+    version='0.16.7',
     packages=['mcsniperpy'],
     license='MIT',
     author='Kqzz',

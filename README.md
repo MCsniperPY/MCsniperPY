@@ -1,9 +1,11 @@
-<h1 align="center">
+<p align="center">
 	<img
 		width="500"
 		alt="MCsniperPY"
 		src="https://i.imgur.com/hl7h1ta.png?sanitize=true">
-</h1>
+</p>
+
+---
 
 <h3 align="center">
 	A Fast, async, and open source Minecraft name sniper.

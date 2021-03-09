@@ -42,7 +42,7 @@ class Account:
                            "\r\n").encode()
 
     async def authenticate(self, session) -> bool:
-        resp, resp_json, _ = await session.post(
+        resp, _, resp_json = await session.post(
             "https://authserver.mojang.com/authenticate",
             json={
                 "agent": {
@@ -63,7 +63,7 @@ class Account:
         return False
 
     async def get_questions(self, session) -> None:
-        resp, resp_json, _ = await session.get(
+        resp, _, resp_json = await session.get(
             "https://api.mojang.com/user/security/challenges",
             headers=self.headers
         )

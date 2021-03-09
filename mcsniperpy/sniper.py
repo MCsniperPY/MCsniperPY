@@ -73,7 +73,7 @@ class Sniper:
         self.accounts = util.parse_accs(os.path.join(self.config.config['sniper'].get('init_path'), "accounts.txt"))
 
         timing_system = self.user_config.config['sniper'].get('timing_system', 'kqzz_api').lower()
-        start_auth = self.user_config.config['accounts'].getint('start_authentication', '720')
+        start_auth = self.user_config.config['accounts'].getint('start_authentication', '720') * 60
 
         if timing_system == 'kqzz_api':
             droptime = await api_timing(target, self.session)

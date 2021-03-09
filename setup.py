@@ -9,7 +9,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name="MCsniperPY",
-    version='0.17.3',
+    version='0.17.4',
     description='Minecraft name sniper written in Python',
     long_description=long_description,
     long_description_content_type="text/markdown",

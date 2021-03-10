@@ -91,7 +91,8 @@ class Sniper:
         authentication_coroutines = [acc.fully_authenticate(session=self.session) for acc in self.accounts]
         pre_snipe_coroutines = [acc.snipe_connect() for _ in range(req_count) for acc in self.accounts]  # For later use
 
-        time_until_authentication = 0 if time.time() > (droptime - start_auth) else (droptime - start_auth) - time.time()
+        now = time.time()
+        time_until_authentication = 0 if now > (droptime - start_auth) else (droptime - start_auth) - now
 
         self.log.debug(f'authorizing accounts in {time_until_authentication} seconds.')
 
@@ -102,7 +103,8 @@ class Sniper:
         for acc in self.accounts:
             acc.encode_snipe_data(target)
 
-        time_until_connect = 0 if time.time() > (droptime - 20) else (droptime - 20) - time.time()
+        now = time.time()
+        time_until_connect = 0 if now > (droptime - 20) else (droptime - 20) - now
 
         self.log.debug(f'Connecting in {time_until_connect} seconds.')
 

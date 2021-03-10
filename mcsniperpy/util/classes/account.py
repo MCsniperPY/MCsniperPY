@@ -159,16 +159,16 @@ class Account:
         resp = await reader.read(12)
         now = time.time()
         status = int(resp[9:12])
+        is_success = status < 300
 
         writer.close()
         await writer.wait_closed()
 
         pretty_status = '%s%s%s' % (
             {
-                401: color.l_red,
-                429: color.red,
-                204: color.l_green
-            }.get(status, color.red),
+                False: color.l_red,
+                True: color.l_green
+            }.get(is_success, color.l_red),
             status,
             color.reset
         )
@@ -179,4 +179,4 @@ class Account:
         )
 
         log.info("[%s] [%s] @ %.10f" % (pretty_name, pretty_status, now))
-        return 400 == 204, self.email
+        return is_success, self.email

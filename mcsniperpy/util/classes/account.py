@@ -121,11 +121,11 @@ class Account:
             return
 
         if not await self.need_sqs(session):
-            print(f"[success] authed {self.email}")
+            log.info(f"{color.white}[{color.l_green}success{color.white}]{color.reset} authenticated {self.email}")
         else:
             await self.get_questions(session)
             if await self.submit_questions(session):
-                print(f"[success] authed {self.email} with security questions")
+                log.info(f"{color.white}[{color.l_green}success{color.white}]{color.reset} authed {self.email} with security questions")
             else:
                 log.error(f"failed to authenticate {self.email}")
 

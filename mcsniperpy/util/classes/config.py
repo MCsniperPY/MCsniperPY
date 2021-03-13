@@ -82,6 +82,11 @@ def create_user_config() -> configparser.ConfigParser:
         'skin': ''
     }
 
+    user_config['announce'] = {
+        'announce_snipe': 'no',
+        'announcement_code': ''
+    }
+
     user_config.set('skin',
                     '; skin_change_type can be url, path, or username. refer to docs for more info.')
 

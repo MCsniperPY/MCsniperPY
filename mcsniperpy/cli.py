@@ -7,6 +7,7 @@ from mcsniperpy import Sniper
 from mcsniperpy.util import logs_manager as log
 from mcsniperpy.util import ping_tester
 from mcsniperpy.util.name_system import next_name
+from mcsniperpy.util.offset_calculator import OffsetCalculator
 
 app = typer.Typer()
 

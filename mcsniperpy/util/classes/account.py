@@ -139,10 +139,11 @@ class Account:
         await writer.drain()
         self.readers_writers.append((reader, writer))
 
-    async def snipe(self, writer):
+    async def snipe(self, writer: asyncio.StreamWriter, do_log: bool = True) -> None:
         writer.write(self.snipe_data[-2:])
         await writer.drain()
-        log.info(f"sent request @ {time.time()}")
+        if do_log:
+            log.info(f"sent request @ {time.time()}")
         # Simpler code 🔽 encompasses all of these snipe* functions
         # async with snipe_session.put("https://api.minecraftservices.com/minecraft/profile/name/%s" % "blah",
         #                              headers={
@@ -155,7 +156,9 @@ class Account:
         #     else:
         #         return False, None
 
-    async def snipe_read(self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> (bool, str):
+    async def snipe_read(
+            self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter, do_log: bool = True) -> (
+            bool, str, float):
         resp = await reader.read(12)
         now = time.time()
         status = int(resp[9:12])
@@ -164,19 +167,20 @@ class Account:
         writer.close()
         await writer.wait_closed()
 
-        pretty_status = '%s%s%s' % (
-            {
-                False: color.l_red,
-                True: color.l_green
-            }.get(is_success, color.l_red),
-            status,
-            color.reset
-        )
-        pretty_name = '%s%s%s' % (
-            color.l_cyan,
-            name,
-            color.reset
-        )
+        if do_log:
+            pretty_status = '%s%s%s' % (
+                {
+                    False: color.l_red,
+                    True: color.l_green
+                }.get(is_success, color.l_red),
+                status,
+                color.reset
+            )
+            pretty_name = '%s%s%s' % (
+                color.l_cyan,
+                name,
+                color.reset
+            )
 
-        log.info("[%s] [%s] @ %.10f" % (pretty_name, pretty_status, now))
-        return is_success, self.email
+            log.info("[%s] [%s] @ %.10f" % (pretty_name, pretty_status, now))
+        return is_success, self.email, now

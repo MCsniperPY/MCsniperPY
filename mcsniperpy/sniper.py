@@ -8,7 +8,7 @@ from mcsniperpy.util import request_manager
 from mcsniperpy.util import utils as util
 from mcsniperpy.util.classes.config import BackConfig, populate_configs, Config
 from mcsniperpy.util.name_system import api_timing, namemc_timing
-
+from mcsniperpy.util import announce
 
 class Sniper:
     def __init__(self,
@@ -74,6 +74,8 @@ class Sniper:
 
         timing_system = self.user_config.config['sniper'].get('timing_system', 'kqzz_api').lower()
         start_auth = self.user_config.config['accounts'].getint('start_authentication', '720') * 60
+        do_announce = self.user_config.config['announce'].getboolean('announce_snipe', 'no')
+        announce_code = self.user_config.config['announce'].getboolean('announce_code', '')
 
         if timing_system == 'kqzz_api':
             droptime = await api_timing(target, self.session)
@@ -84,9 +86,9 @@ class Sniper:
 
         req_count = self.user_config.config['sniper'].getint('snipe_requests', '3')
 
-        await self.snipe(droptime, target, offset, req_count, start_auth)
+        await self.snipe(droptime, target, offset, req_count, start_auth, do_announce, announce_code)
 
-    async def snipe(self, droptime, target, offset, req_count, start_auth):
+    async def snipe(self, droptime, target, offset, req_count, start_auth, do_announce, announce_code):
 
         authentication_coroutines = [acc.fully_authenticate(session=self.session) for acc in self.accounts]
         pre_snipe_coroutines = [acc.snipe_connect() for _ in range(req_count) for acc in self.accounts]  # For later use
@@ -123,11 +125,17 @@ class Sniper:
                              ) for i in range(req_count) for acc in self.accounts]
         )  # Reads the responses
 
-        for is_success, email in responses:
+        for is_success, email, _ in responses:
             if is_success:
                 success_acc = util.find_acc_by_email(email, self.accounts)
                 self.log.info(f'{self.color.white}[{self.color.l_green}success{self.color.white}]{self.color.reset} '
                               f'sniped {self.target} onto {success_acc.email}')
+                if do_announce:
+                    await announce.announce(
+                        username=target,
+                        authorization=announce_code,
+                        session=self.session
+                    )
 
     def on_shutdown(self):
         if self.session.session is not None:

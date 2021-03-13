@@ -4,6 +4,7 @@ from typing import List
 
 from mcsniperpy.util.classes.account import Account
 from mcsniperpy.util.logs_manager import Logger as log
+from mcsniperpy.util.request_manager import RequestManager
 
 
 def is_float(n):
@@ -55,6 +56,7 @@ def parse_accs_string(accounts_string) -> List[Account]:
     accounts = list()
     lines = accounts_string.split('\n')
     for line in lines:
+        line = line.split(":")
 
         if len(line) in (2, 5):
             accounts.append(Account(*line))
@@ -67,10 +69,6 @@ def parse_accs_string(accounts_string) -> List[Account]:
         log.error("No accounts were loaded from string. Please check accounts.txt and try again.")
         close(0)
 
-    if len(accounts) == 1:
-        log.info(f"{len(accounts)} account has been loaded from string.")
-    else:
-        log.info(f"{len(accounts)} accounts have been loaded from string.")
     return accounts
 
 
@@ -83,3 +81,15 @@ def find_acc_by_email(email, accounts):
 def close(code) -> None:
     log.input(f"Press enter to exit:")
     sys.exit(code)
+
+
+async def upcoming(
+        session: RequestManager,
+        length: int = 3,
+        length_op: str = '',
+        searches: int = 0,
+        url: str = "https://api.kqzz.me/api/namemc/upcoming"
+):
+    full_url = f"{url}?length_op={length_op}&length={length}&searches={searches}"
+    resp, _, resp_json = await session.get(full_url)
+    return resp_json

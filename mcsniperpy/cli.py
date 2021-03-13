@@ -32,11 +32,15 @@ sniper = Sniper(
 
 
 @app.command()
-def snipe(username: str = typer.Option(None),
-          offset: int = typer.Option(None),
-          debug: bool = typer.Option(False),
-          color: bool = typer.Option(True),
-          next_sorry: int = typer.Option(None, '--next')):
+def snipe(username: str = typer.Option(None, help="The username to attempt a snipe on"),
+          offset: int = typer.Option(None, help="The offset you want to use for the target username."),
+          debug: bool = typer.Option(False, help="Enable debug mode."),
+          color: bool = typer.Option(True, help="Colored terminal output"),
+          next_sorry: int = typer.Option(None, '--next', help='Snipe the next available username.'
+                                         ' It is not recommended to use this!')):
+    """
+    Snipe a minecraft username!
+    """
     if debug:
         sniper.log.debug_enabled = True
 
@@ -53,13 +57,31 @@ def snipe(username: str = typer.Option(None),
 
 
 @app.command()
-def ping(iterations: int = typer.Option(5)):
+def ping(iterations: int = typer.Option(5, help='How many times to ping Mojang\'s servers.')):
+    """
+    Test your ping to Mojang's servers
+    """
     asyncio.get_event_loop().run_until_complete(ping_tester.ping_test(iterations))
     sniper.on_shutdown()
 
 
 @app.command()
+def offset_test(accuracy: int = typer.Option(20, help="How accurate do you want your offset to be?"),
+                aim_for: float = typer.Option(.15, help="What time do you want to aim for?")):
+    """
+    Find the optimal offset for you. Note: this is not entirely accurate since it does not compensate for api lag caused\
+ by other snipers
+    """
+    offset_calc = OffsetCalculator(accuracy=accuracy, aim_for=aim_for)
+    asyncio.get_event_loop().run_until_complete(offset_calc.run())
+
+
+@app.command()
 def init():
+    """
+    Initialize MCsniperPY to be able to snipe names. This is an essential step before sniping. Please read the docs for\
+ more info. https://docs.mcsnierpy.com
+    """
     sniper.init()
 
 

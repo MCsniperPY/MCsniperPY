@@ -64,7 +64,7 @@ YOURPYTHONPREFIX -m mcsniperpy
 ## Development install
 
 ```shell
-# You need git and python installed for this. 
+# You need git, python, and pip installed for this to work
 git clone https://github.com/MCsniperPY/MCsniperPY.git
 cd ./MCSniperPY
 git checkout recode

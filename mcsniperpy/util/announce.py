@@ -11,7 +11,7 @@ async def announce(
 ) -> bool:
     headers = {"Authorization": authorization}
     json = {"name": username}
-    resp, resp_json, _ = await session.post(full_url, json=json, headers=headers)
+    resp, _, resp_json = await session.post(full_url, json=json, headers=headers)
     if resp.status < 300:
         log.info(f'{color.white}[{color.l_green}success{color.white}]{color.reset}')
         return True

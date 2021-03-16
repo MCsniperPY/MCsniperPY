@@ -64,10 +64,11 @@ YOURPYTHONPREFIX -m mcsniperpy
 ## Development install
 
 ```shell
+# You need git and python installed for this. 
 git clone https://github.com/MCsniperPY/MCsniperPY.git
 cd ./MCSniperPY
 git checkout recode
-YOURPYTHONPREFIX -m pip install --editable .
-YOURPYTHONPREFIX -m mcsniperpy --help
+YOURPYTHONCOMMAND -m pip install --editable .
+YOURPYTHONCOMMAND -m mcsniperpy --help
 # You can now edit code / add features / whatever
 ```

@@ -6,7 +6,7 @@
 </h1>
 
 <h3 align="center">
-	MCsniperPY-RECODE
+	MCsniperPY
 </h3>
 
 <h3 align="center">

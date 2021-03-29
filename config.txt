@@ -5,5 +5,5 @@ change_skin:false
 snipe_reqs:3
 block_reqs:3
 auth_delay:500
-max_accs:30
+max_accs:2
 auto_link_namemc:false NOT IMPLEMENTED

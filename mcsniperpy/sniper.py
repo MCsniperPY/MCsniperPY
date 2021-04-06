@@ -10,6 +10,7 @@ from mcsniperpy.util.classes.config import BackConfig, populate_configs, Config
 from mcsniperpy.util.name_system import api_timing, namemc_timing
 from mcsniperpy.util import announce
 
+
 class Sniper:
     def __init__(self,
                  colorer,
@@ -30,6 +31,28 @@ class Sniper:
 
         self.accounts = []  # list of Accounts
 
+        # sniper
+
+        self.timing_system = "kqzz_api"
+        self.auto_claim_namemc = False
+        self.snipe_requests = 3
+
+        # accounts
+
+        self.max_accounts = 30
+        self.authentication_delay = 500
+        self.start_authentication = 720
+
+        # skin
+
+        self.change_skin_on_snipe = False
+        self.skin_change_type = "url"
+        self.skin = ""
+
+        # announce
+        self.do_announce = False
+        self.announce_code = ""
+
     @property
     def initialized(self):
         return self.config.config['sniper'].get('init_path', '') != ''
@@ -38,6 +61,30 @@ class Sniper:
     def init() -> None:
 
         populate_configs()
+
+    def get_config_values(self):
+        # sniper
+
+        self.timing_system = self.user_config.config['sniper'].get('timing_system', 'kqzz_api').lower()
+        self.auto_claim_namemc = self.user_config.config['sniper'].getboolean("auto_claim_namemc", "no")
+        self.snipe_requests = self.user_config.config['sniper'].getint("snipe_requests", "3")
+
+        # accounts
+
+        self.max_accounts = self.user_config.config["accounts"].getint("max_accounts", "30")
+        self.authentication_delay =  self.user_config.config["accounts"].getint("authentication_delay", "500")
+        self.start_authentication = self.user_config.config["accounts"].getint("start_authentication", "720")
+
+        # skin
+
+        self.change_skin_on_snipe = self.user_config.config["skin"].getboolean("change_skin_on_snipe", "no")
+        self.skin_change_type = self.user_config.config["skin"].get("skin_change_type", "url")
+        self.skin = self.user_config.config["skin"].get("skin", "")
+
+        # announce
+        self.do_announce = self.user_config.config['announce'].getboolean('announce_snipe', 'no')
+        self.announce_code = self.user_config.config['announce'].getboolean('announce_code', '')
+
 
     async def run(self, target=None, offset=None):
 
@@ -142,3 +189,4 @@ class Sniper:
             asyncio.run(self.session.session.close())
         if self.log is not None:
             self.log.shutdown()
+

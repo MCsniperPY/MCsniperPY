@@ -119,29 +119,26 @@ class Sniper:
 
         self.accounts = util.parse_accs(os.path.join(self.config.config['sniper'].get('init_path'), "accounts.txt"))
 
-        timing_system = self.user_config.config['sniper'].get('timing_system', 'kqzz_api').lower()
-        start_auth = self.user_config.config['accounts'].getint('start_authentication', '720') * 60
-        do_announce = self.user_config.config['announce'].getboolean('announce_snipe', 'no')
-        announce_code = self.user_config.config['announce'].getboolean('announce_code', '')
+        droptime = await {
+            "kqzz_api": api_timing,
+            "namemc": namemc_timing
+        }.get(self.timing_system, "kqzz_api")(target, self.session)
 
-        if timing_system == 'kqzz_api':
-            droptime = await api_timing(target, self.session)
-        elif timing_system == 'namemc':
-            droptime = await namemc_timing(target, self.session)
-        else:
-            droptime = await api_timing(target, self.session)
+        await self.snipe(
+            droptime,
+            target,
+            offset
+        )
 
-        req_count = self.user_config.config['sniper'].getint('snipe_requests', '3')
-
-        await self.snipe(droptime, target, offset, req_count, start_auth, do_announce, announce_code)
-
-    async def snipe(self, droptime, target, offset, req_count, start_auth, do_announce, announce_code):
+    async def snipe(self, droptime, target, offset):
 
         authentication_coroutines = [acc.fully_authenticate(session=self.session) for acc in self.accounts]
-        pre_snipe_coroutines = [acc.snipe_connect() for _ in range(req_count) for acc in self.accounts]  # For later use
+        pre_snipe_coroutines = [
+            acc.snipe_connect() for _ in range(self.req_count) for acc in self.accounts
+        ]  # For later use
 
         now = time.time()
-        time_until_authentication = 0 if now > (droptime - start_auth) else (droptime - start_auth) - now
+        time_until_authentication = 0 if now > (droptime - self.start_auth) else (droptime - self.start_auth) - now
 
         self.log.debug(f'authorizing accounts in {time_until_authentication} seconds.')
 
@@ -161,7 +158,7 @@ class Sniper:
 
         await asyncio.gather(*pre_snipe_coroutines)
 
-        snipe_coroutines = [acc.snipe(acc.readers_writers[i][1]) for i in range(req_count) for acc in self.accounts]
+        snipe_coroutines = [acc.snipe(acc.readers_writers[i][1]) for i in range(self.req_count) for acc in self.accounts]
 
         while time.time() < droptime - offset / 1000:
             await asyncio.sleep(0.00001)  # bad timing solution
@@ -169,7 +166,7 @@ class Sniper:
         await asyncio.gather(*snipe_coroutines)  # Sends the snipe requests
         responses = await asyncio.gather(
             *[acc.snipe_read(target, acc.readers_writers[i][0], acc.readers_writers[i][1]
-                             ) for i in range(req_count) for acc in self.accounts]
+                             ) for i in range(self.req_count) for acc in self.accounts]
         )  # Reads the responses
 
         for is_success, email, _ in responses:
@@ -177,10 +174,10 @@ class Sniper:
                 success_acc = util.find_acc_by_email(email, self.accounts)
                 self.log.info(f'{self.color.white}[{self.color.l_green}success{self.color.white}]{self.color.reset} '
                               f'sniped {self.target} onto {success_acc.email}')
-                if do_announce:
+                if self.do_announce:
                     await announce.announce(
                         username=target,
-                        authorization=announce_code,
+                        authorization=self.announce_code,
                         session=self.session
                     )
 

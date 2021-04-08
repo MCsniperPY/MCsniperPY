@@ -12,7 +12,7 @@ from mcsniperpy.util.logs_manager import Logger as log
 
 
 class OffsetCalculator:
-    def __init__(self, req_count=1, accuracy=20, aim_for=.15, do_log=True):
+    def __init__(self, req_count=2, accuracy=20, aim_for=.15, do_log=True):
         self.session = request_manager.RequestManager(
             None  # aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=300),headers={})
         )

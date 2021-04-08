@@ -144,7 +144,7 @@ class Account:
         await writer.drain()
         if do_log:
             log.info(f"sent request @ {time.time()}")
-        # Simpler code 🔽 encompasses all of these snipe* functions
+        # Aiohttp code example 🔽 encompasses all of these snipe* functions
         # async with snipe_session.put("https://api.minecraftservices.com/minecraft/profile/name/%s" % "blah",
         #                              headers={
         #                                  "Authorization": "Bearer %s" % self.bearer, "Content-Type": "application/json
@@ -184,3 +184,4 @@ class Account:
 
             log.info("[%s] [%s] @ %.10f" % (pretty_name, pretty_status, now))
         return is_success, self.email, now
+

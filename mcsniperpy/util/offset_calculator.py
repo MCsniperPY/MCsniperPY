@@ -12,7 +12,7 @@ from mcsniperpy.util.logs_manager import Logger as log
 
 
 class OffsetCalculator:
-    def __init__(self, req_count=3, accuracy=20, aim_for=.15):
+    def __init__(self, req_count=1, accuracy=20, aim_for=.15, do_log=True):
         self.session = request_manager.RequestManager(
             None  # aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=300),headers={})
         )
@@ -29,6 +29,8 @@ class OffsetCalculator:
         self.offset = -100
         self.accuracy = accuracy
 
+        self.do_log = do_log
+
     async def run(self):
 
         self.session.session = aiohttp.ClientSession(headers={})
@@ -36,19 +38,20 @@ class OffsetCalculator:
         while True:
             droptime = math.floor(time.time() + 3)
             self.accounts = util.parse_accs_string("email:pass")
-            log.info(f"testing offset {self.offset} in {round(droptime - time.time())} seconds")
-            res = await self.offset_test(droptime, 'test', self.offset, 3)
+            if self.do_log:
+                log.info(f"testing offset {self.offset} in {round(droptime - time.time())} seconds")
+            res = await self.offset_test(droptime, 'test', self.offset)
             if res is not True:
                 self.offset += res
+            else:
+                return self.offset
 
-    async def offset_test(self, droptime, target, offset, req_count):
+    async def offset_test(self, droptime, target, offset):
 
-        pre_snipe_coroutines = [acc.snipe_connect() for _ in range(req_count) for acc in self.accounts]  # For later use
+        pre_snipe_coroutines = [acc.snipe_connect() for _ in range(self.req_count) for acc in self.accounts]  # For later use
 
         now = time.time()
         time_until_connect = 0 if now > (droptime - 20) else (droptime - 20) - now
-
-        self.log.debug(f'Connecting in {time_until_connect} seconds.')
 
         await asyncio.sleep(time_until_connect)
 
@@ -60,13 +63,19 @@ class OffsetCalculator:
 
         while time.time() < droptime - offset / 1000:
             await asyncio.sleep(0.00001)  # bad timing solution but it's fairly accurate
-        # According to my tests this was .0004 seconds late while the other method (asyncio.sleep) was .004 seoncds late.
+        # According to my tests this was .0004 seconds late while the other method (asyncio.sleep) was .004 seconds late
 
+        start = time.perf_counter()
         await asyncio.gather(*snipe_coroutines)  # Sends the snipe requests
+        end = time.perf_counter()
+
         responses = await asyncio.gather(
-            *[acc.snipe_read(target, acc.readers_writers[i][0], acc.readers_writers[i][1], do_log=True  # ugly code lol
-                             ) for i in range(req_count) for acc in self.accounts]
+            *[acc.snipe_read(target, acc.readers_writers[i][0], acc.readers_writers[i][1], do_log=self.do_log
+                             ) for i in range(self.req_count) for acc in self.accounts]
         )  # Reads the responses
+        # I swear I didn't try to make it ugly
+
+        print(self.req_count / (end - start))
 
         target_time = droptime + self.aim_for  # Find the actual target time
 
@@ -74,7 +83,8 @@ class OffsetCalculator:
 
         diff = -(target_time - average_time) * 1000
         if self.accuracy > diff > 0:
-            log.info(f"{color.white}[{color.green}success{color.white}]{color.reset} {offset} is a good offset!")
+            if self.do_log:
+                log.info(f"{color.white}[{color.green}success{color.white}]{color.reset} {offset} is a good offset!")
             return True
         else:
             return round(diff)

@@ -75,6 +75,7 @@ def offset_test(accuracy: int = typer.Option(20, help="How accurate do you want 
     """
     offset_calc = OffsetCalculator(accuracy=accuracy, aim_for=aim_for)
     asyncio.get_event_loop().run_until_complete(offset_calc.run())
+    offset_calc.on_shutdown()
 
 
 @app.command()

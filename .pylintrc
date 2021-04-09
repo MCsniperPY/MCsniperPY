@@ -1,0 +1,14 @@
+[MESSAGES CONTROL]
+disable=
+    locally-disabled,
+    locally-enabled,
+    logging-format-interpolation,
+    no-init,
+    too-few-public-methods,
+    too-many-instance-attributes,  # <-- Ensure at least this entry.
+    fixme,
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    too-many-arguments
+

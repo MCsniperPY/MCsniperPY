@@ -2,14 +2,16 @@ import asyncio
 import ssl
 import time
 
+from typing import Tuple
+
 from mcsniperpy.util.logs_manager import Color as color
 from mcsniperpy.util.logs_manager import Logger as log
 
 
 class Account:
     def __init__(self, email, password, *sqs, **kwargs):
-        if kwargs.get('acc_type') == 'microsoft':
-            log.error('MCsniperPY does not support Microsoft accounts at the moment.')
+        if kwargs.get("acc_type") == "microsoft":
+            log.error("MCsniperPY does not support Microsoft accounts at the moment.")
         self.email = email  # email
         self.password = password  # password
         self.sqs = sqs  # security question answers
@@ -22,50 +24,54 @@ class Account:
         self.bearer = ""
         self.headers = {"Authorization": "Bearer TOKEN"}
 
-        self.snipe_data = ("PUT /minecraft/profile/name/NAME HTTP/1.1\r\n"
-                           "Host: api.minecraftservices.com\r\n"
-                           "Authorization: Bearer TOKEN\r\n"
-                           "\r\n").encode()
+        self.snipe_data = (
+            "PUT /minecraft/profile/name/NAME HTTP/1.1\r\n"
+            "Host: api.minecraftservices.com\r\n"
+            "Authorization: Bearer TOKEN\r\n"
+            "\r\n"
+        ).encode()
 
         self.readers_writers = []
 
     def encode_snipe_data(self, name):
-        self.snipe_data = (f"PUT /minecraft/profile/name/{name} HTTP/1.1\r\n"
-                           "Host: api.minecraftservices.com\r\n"
-                           f"Authorization: Bearer {self.bearer}\r\n"
-                           "\r\n").encode()
+        self.snipe_data = (
+            f"PUT /minecraft/profile/name/{name} HTTP/1.1\r\n"
+            "Host: api.minecraftservices.com\r\n"
+            f"Authorization: Bearer {self.bearer}\r\n"
+            "\r\n"
+        ).encode()
 
     def encode_snipe_data_proxy(self, name):
-        self.snipe_data = (f"PUT https://api.minecraftservices.com/minecraft/profile/name/{name} HTTP/1.1\r\n"
-                           "Host: api.minecraftservices.com\r\n"
-                           f"Authorization: Bearer {self.bearer}\r\n"
-                           "\r\n").encode()
+        self.snipe_data = (
+            f"PUT https://api.minecraftservices.com/minecraft/profile/name/{name} HTTP/1.1\r\n"
+            "Host: api.minecraftservices.com\r\n"
+            f"Authorization: Bearer {self.bearer}\r\n"
+            "\r\n"
+        ).encode()
 
     async def authenticate(self, session) -> bool:
         resp, _, resp_json = await session.post(
             "https://authserver.mojang.com/authenticate",
             json={
-                "agent": {
-                    "name": "Minecraft",
-                    "version": 1
-                },
+                "agent": {"name": "Minecraft", "version": 1},
                 "username": self.email,
                 "password": self.password,
-                "requestUser": "false"
+                "requestUser": "false",
             },
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
         if resp.status == 200:
-            self.headers["Authorization"] = f"Bearer {resp_json['accessToken']}"  # authorization header
-            self.bearer = resp_json['accessToken']
+            self.headers[
+                "Authorization"
+            ] = f"Bearer {resp_json['accessToken']}"  # authorization header
+            self.bearer = resp_json["accessToken"]
             return True
         return False
 
     async def get_questions(self, session) -> None:
         resp, _, resp_json = await session.get(
-            "https://api.mojang.com/user/security/challenges",
-            headers=self.headers
+            "https://api.mojang.com/user/security/challenges", headers=self.headers
         )
 
         self.answer_ids = [question["answer"]["id"] for question in resp_json]
@@ -77,8 +83,7 @@ class Account:
 
     async def need_sqs(self, session) -> bool:
         resp, _, _ = await session.get(
-            "https://api.mojang.com/user/security/location",
-            headers=self.headers
+            "https://api.mojang.com/user/security/location", headers=self.headers
         )
 
         return resp.status == 403
@@ -93,19 +98,10 @@ class Account:
             "https://api.mojang.com/user/security/location",
             headers=self.headers,
             json=[
-                {
-                    "id": self.answer_ids[0],
-                    "answer": self.sqs[0]
-                },
-                {
-                    "id": self.answer_ids[1],
-                    "answer": self.sqs[1]
-                },
-                {
-                    "id": self.answer_ids[2],
-                    "answer": self.sqs[2]
-                }
-            ]
+                {"id": self.answer_ids[0], "answer": self.sqs[0]},
+                {"id": self.answer_ids[1], "answer": self.sqs[1]},
+                {"id": self.answer_ids[2], "answer": self.sqs[2]},
+            ],
         )
 
         # Yes, that's kinda ugly lol. whatever.
@@ -121,18 +117,29 @@ class Account:
             return
 
         if not await self.need_sqs(session):
-            log.info(f"{color.white}[{color.l_green}success{color.white}]{color.reset} authenticated {self.email}")
+            log.info(
+                f"{color.white}[{color.l_green}success{color.white}]"
+                f"{color.reset} authenticated {self.email}"
+            )
         else:
             await self.get_questions(session)
             if await self.submit_questions(session):
-                log.info(f"{color.white}[{color.l_green}success{color.white}]{color.reset} authed {self.email} with security questions")
+                log.info(
+                    f"{color.white}[{color.l_green}success{color.white}]"
+                    f"{color.reset} authenticated {self.email}"
+                    " with security questions"
+                )
             else:
                 log.error(f"failed to authenticate {self.email}")
 
     async def snipe_connect(self) -> None:
 
-        reader, writer = await asyncio.open_connection("api.minecraftservices.com", 443, ssl=ssl.SSLContext(),
-                                                       ssl_handshake_timeout=5)
+        reader, writer = await asyncio.open_connection(
+            "api.minecraftservices.com",
+            443,
+            ssl=ssl.SSLContext(),
+            ssl_handshake_timeout=5,
+        )
         log.debug(f"Connected on account {self.email}")
         writer.write(self.snipe_data[0:-2])
 
@@ -144,21 +151,14 @@ class Account:
         await writer.drain()
         if do_log:
             log.info(f"sent request @ {time.time()}")
-        # Aiohttp code example 🔽 encompasses all of these snipe* functions
-        # async with snipe_session.put("https://api.minecraftservices.com/minecraft/profile/name/%s" % "blah",
-        #                              headers={
-        #                                  "Authorization": "Bearer %s" % self.bearer, "Content-Type": "application/json
-        # ^^^^ THAT LINE IS INVALID YOU NEED A " AT THE END ^^^
-        #                              }) as r:
-        #     print("[%s] %s @ %5f" % (name, r.status, time.time()))
-        #     if r.status == 204:
-        #         return True, self.email
-        #     else:
-        #         return False, None
 
     async def snipe_read(
-            self, name: str, reader: asyncio.StreamReader, writer: asyncio.StreamWriter, do_log: bool = True) -> (
-            bool, str, float):
+        self,
+        name: str,
+        reader: asyncio.StreamReader,
+        writer: asyncio.StreamWriter,
+        do_log: bool = True,
+    ) -> Tuple[bool, str, float]:
         resp = await reader.read(12)
         now = time.time()
         status = int(resp[9:12])
@@ -168,20 +168,12 @@ class Account:
         await writer.wait_closed()
 
         if do_log:
-            pretty_status = '%s%s%s' % (
-                {
-                    False: color.l_red,
-                    True: color.l_green
-                }.get(is_success, color.l_red),
+            pretty_status = "%s%s%s" % (
+                {False: color.l_red, True: color.l_green}.get(is_success, color.l_red),
                 status,
-                color.reset
+                color.reset,
             )
-            pretty_name = '%s%s%s' % (
-                color.l_cyan,
-                name,
-                color.reset
-            )
+            pretty_name = "%s%s%s" % (color.l_cyan, name, color.reset)
 
             log.info("[%s] [%s] @ %.10f" % (pretty_name, pretty_status, now))
         return is_success, self.email, now
-

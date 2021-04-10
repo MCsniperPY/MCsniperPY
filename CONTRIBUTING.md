@@ -10,3 +10,4 @@ If you're interested in contributing to MCsniperPY here are some steps to follow
 - push
 - create a pr
 - wait for someone to look it over. We may or may not merge it.
+- Thanks for contributing :D

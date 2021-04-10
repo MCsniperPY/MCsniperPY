@@ -1,8 +1,10 @@
 import colorama
 from colorama import init
 
+from typing import List
+
 init(autoreset=True)
-logs = []
+logs = List[str]
 
 
 class Color:
@@ -98,7 +100,7 @@ class Logger:
 
         formatted = f"{Color.white}[{Color.green}success{Color.white}] {message}"
 
-        if cls.succcess_enabled:
+        if cls.success_enabled:
             print(f"{Color.white}[{Color.green}success{Color.white}] {message}")
 
         cls.logs.append(formatted)

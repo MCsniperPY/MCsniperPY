@@ -14,31 +14,42 @@ app = typer.Typer()
 
 def startup():
     width = shutil.get_terminal_size().columns
-    print(f"""{log.Color.cyan}
+    print(
+        f"""{log.Color.cyan}
     ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ ██████╗ ██╗   ██╗
     ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝
     ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝██████╔╝ ╚████╔╝
     ██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗██╔═══╝   ╚██╔╝
     ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║██║        ██║
     ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝        ╚═╝
-    """.center(width))
+    """.center(
+            width
+        )
+    )
     print(f"{log.Color.cyan}Created by Kqzz#0001")
-    print(f"Git: github.com/MCSniperPY | Discord: https://mcsniperpy.github.io/discord{log.Color.white}")
+    print(
+        "Git: github.com/MCSniperPY/MCsniperPY | "
+        f"Discord: https://mcsniperpy.com/discord{log.Color.white}"
+    )
 
 
-sniper = Sniper(
-    log.Color,
-    log.Logger
-)
+sniper = Sniper(log.Color, log.Logger)
 
 
 @app.command()
-def snipe(username: str = typer.Option(None, help="The username to attempt a snipe on"),
-          offset: int = typer.Option(None, help="The offset you want to use for the target username."),
-          debug: bool = typer.Option(False, help="Enable debug mode."),
-          color: bool = typer.Option(True, help="Colored terminal output"),
-          next_sorry: int = typer.Option(None, '--next', help='Snipe the next available username.'
-                                         ' It is not recommended to use this!')):
+def snipe(
+    username: str = typer.Option(None, help="The username to attempt a snipe on"),
+    offset: int = typer.Option(
+        None, help="The offset you want to use for the target username."
+    ),
+    debug: bool = typer.Option(False, help="Enable debug mode."),
+    color: bool = typer.Option(True, help="Colored terminal output"),
+    next_with_searches: int = typer.Option(
+        None,
+        "--next",
+        help="Snipe the next available username." " It is not recommended to use this!",
+    ),
+):
     """
     Snipe a minecraft username!
     """
@@ -48,8 +59,8 @@ def snipe(username: str = typer.Option(None, help="The username to attempt a sni
     if not color:
         sniper.color.disable()
 
-    if next_sorry is not None:
-        username = next_name(searches=next_sorry)
+    if next_with_searches is not None:
+        username = next_name(searches=next_with_searches)
 
     startup()
 
@@ -58,7 +69,9 @@ def snipe(username: str = typer.Option(None, help="The username to attempt a sni
 
 
 @app.command()
-def ping(iterations: int = typer.Option(5, help='How many times to ping Mojang\'s servers.')):
+def ping(
+    iterations: int = typer.Option(5, help="How many times to ping Mojang's servers.")
+):
     """
     Test your ping to Mojang's servers
     """
@@ -67,10 +80,15 @@ def ping(iterations: int = typer.Option(5, help='How many times to ping Mojang\'
 
 
 @app.command()
-def offset_test(accuracy: int = typer.Option(20, help="How accurate do you want your offset to be?"),
-                aim_for: float = typer.Option(.15, help="What time do you want to aim for?")):
+def offset_test(
+    accuracy: int = typer.Option(
+        20, help="How accurate do you want your offset to be?"
+    ),
+    aim_for: float = typer.Option(0.15, help="What time do you want to aim for?"),
+):
     """
-    Find the optimal offset for you. Note: this is not entirely accurate since it does not compensate for api lag caused\
+    Find the optimal offset for you. Note: this is not entirely accurate since\
+ it does not compensate for api lag caused
  by other snipers
     """
     offset_calc = OffsetCalculator(accuracy=accuracy, aim_for=aim_for)
@@ -81,8 +99,9 @@ def offset_test(accuracy: int = typer.Option(20, help="How accurate do you want 
 @app.command()
 def init():
     """
-    Initialize MCsniperPY to be able to snipe names. This is an essential step before sniping. Please read the docs for\
- more info. https://docs.mcsnierpy.com
+    Initialize MCsniperPY to be able to snipe names. This is an essential step\
+ before sniping. Please read the docs for
+ more info. https://docs.mcsniperpy.com
     """
     sniper.init()
 
@@ -90,16 +109,18 @@ def init():
 def cli():
     try:
         app()
+    # pylint: disable=broad-except
     except Exception as ex:
-        tb = ex.__traceback__
+        traceback = ex.__traceback__
         sniper.log.error(f"type: {type(ex).__name__}")
         sniper.log.error(f"message: {str(ex)}")
-        while tb is not None:
-            sniper.log.error(f"{tb.tb_frame.f_code.co_filename}:{tb.tb_lineno}")
-            tb = tb.tb_next
+        while traceback is not None:
+            # pylint: disable=no-member
+            sniper.log.error(f"{traceback.tb_frame.f_code.co_filename}:{traceback.tb_lineno}")
+            traceback = traceback.tb_next
     finally:
         sniper.on_shutdown()
 
 
-if __name__ == '__name__':
+if __name__ == "__name__":
     cli()

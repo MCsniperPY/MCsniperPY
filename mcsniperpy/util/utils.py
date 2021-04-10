@@ -7,7 +7,7 @@ from mcsniperpy.util.logs_manager import Logger as log
 from mcsniperpy.util.request_manager import RequestManager
 
 
-def is_float(n):
+def is_float(num):
     """Checks if a number is a valid float
 
     Args:
@@ -15,7 +15,7 @@ def is_float(n):
     Returns:
         a boolean saying if n is a valid float"""
     try:
-        float(n)
+        float(num)
         return True
     except ValueError:
         return False
@@ -23,26 +23,32 @@ def is_float(n):
 
 def parse_accs(file_path) -> List[Account]:
     accounts = list()
-    log.debug(f'accounts path: {file_path}')
+    log.debug(f"accounts path: {file_path}")
     if os.path.isfile(file_path):
         lines = [line.strip().split(":") for line in open(file_path).readlines()]
     else:
         log.error("accounts.txt file not found!")
         close(1)
     # ^ reads every line from a file and splits into a :
-    for line in lines:  # This variable cannot be referenced before assignment due to close()
+    for (
+        line
+    ) in lines:  # This variable cannot be referenced before assignment due to close()
 
-        if line[0].startswith('#'):
+        if line[0].startswith("#"):
             pass  # This triggers is the line is a "comment"
         elif len(line) in (2, 5):
-            accounts.append(Account(*line))  # While this line is difficult to read, it creates an Account object.
+            accounts.append(
+                Account(*line)
+            )  # While this line is difficult to read, it creates an Account object.
         else:
             log.error(f"accounts.txt invalid account on line {lines.index(line) + 1}")
 
     log.debug("loaded accounts from file")
 
     if len(accounts) == 0:
-        log.error("No accounts were loaded from file. Please check accounts.txt and try again.")
+        log.error(
+            "No accounts were loaded from file. Please check accounts.txt and try again."
+        )
         close(0)
 
     if len(accounts) == 1:
@@ -54,7 +60,7 @@ def parse_accs(file_path) -> List[Account]:
 
 def parse_accs_string(accounts_string) -> List[Account]:
     accounts = list()
-    lines = accounts_string.split('\n')
+    lines = accounts_string.split("\n")
     for line in lines:
         line = line.split(":")
 
@@ -66,7 +72,9 @@ def parse_accs_string(accounts_string) -> List[Account]:
     log.debug("loaded accounts from string")
 
     if len(accounts) == 0:
-        log.error("No accounts were loaded from string. Please check accounts.txt and try again.")
+        log.error(
+            "No accounts were loaded from string. Please check accounts.txt and try again."
+        )
         close(0)
 
     return accounts
@@ -76,20 +84,23 @@ def find_acc_by_email(email, accounts):
     for acc in accounts:
         if acc.email == email:
             return acc
+    return None
 
 
 def close(code) -> None:
-    log.input(f"Press enter to exit:")
     sys.exit(code)
 
 
 async def upcoming(
-        session: RequestManager,
-        length: int = 3,
-        length_op: str = '',
-        searches: int = 0,
-        url: str = "https://api.kqzz.me/api/namemc/upcoming"
+    session: RequestManager,
+    length: int = 3,
+    length_op: str = "",
+    searches: int = 0,
+    url: str = "https://api.kqzz.me/api/namemc/upcoming",
 ):
     full_url = f"{url}?length_op={length_op}&length={length}&searches={searches}"
     resp, _, resp_json = await session.get(full_url)
-    return resp_json
+    if resp.status < 300:
+        return resp_json
+
+    return None

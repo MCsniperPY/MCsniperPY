@@ -4,7 +4,6 @@ import time
 from statistics import mean
 
 import aiohttp
-
 from mcsniperpy.util import request_manager
 from mcsniperpy.util import utils as util
 from mcsniperpy.util.logs_manager import Color as color
@@ -14,7 +13,8 @@ from mcsniperpy.util.logs_manager import Logger as log
 class OffsetCalculator:
     def __init__(self, req_count=2, accuracy=20, aim_for=0.15, do_log=True):
         self.session = request_manager.RequestManager(
-            None  # aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=300),headers={})
+            None
+            # aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=300),headers={})
         )
 
         self.aim_for = aim_for
@@ -40,7 +40,8 @@ class OffsetCalculator:
             self.accounts = util.parse_accs_string("email:pass")
             if self.do_log:
                 log.info(
-                    f"testing offset {self.offset} in {round(droptime - time.time())} seconds"
+                    f"testing offset {self.offset} in "
+                    f"{round(droptime - time.time())} seconds"
                 )
             res = await self.offset_test(droptime, "test", self.offset)
             if res is not True:
@@ -51,7 +52,8 @@ class OffsetCalculator:
     async def offset_test(self, droptime, target, offset):
 
         pre_snipe_coroutines = [
-            acc.snipe_connect() for _ in range(self.req_count) for acc in self.accounts
+            acc.snipe_connect() for _ in range(self.req_count)
+            for acc in self.accounts
         ]  # For later use
 
         now = time.time()
@@ -105,7 +107,7 @@ class OffsetCalculator:
             if self.do_log:
                 log.info(
                     f"{color.white}[{color.green}success{color.white}] "
-                    "{color.reset} {offset} is a good offset!"
+                    f"{color.reset}{offset} is a good offset!"
                 )
             return True
 

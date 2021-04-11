@@ -1,7 +1,6 @@
 import asyncio
 import ssl
 import time
-
 from typing import Tuple
 
 from mcsniperpy.util.logs_manager import Color as color

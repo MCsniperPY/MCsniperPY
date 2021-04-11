@@ -88,7 +88,12 @@ def create_user_config() -> configparser.ConfigParser:
         "skin": "",
     }
 
-    user_config["announce"] = {"announce_snipe": "no", "announcement_code": ""}
+    user_config["announce"] = {
+        "announce_snipe": "no",
+        "announcement_code": "",
+        "webhook_urls": "",
+        "webhook_format": "sniped `{name}` with `{searches}` searches!",
+    }
 
     user_config.set(
         "skin",

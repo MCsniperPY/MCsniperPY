@@ -1,6 +1,8 @@
 import asyncio
 import os.path
+import re
 import time
+from typing import List
 
 import aiohttp
 
@@ -50,6 +52,8 @@ class Sniper:
         # announce
         self.do_announce = False
         self.announce_code = ""
+        self.webhook_urls = List[str]
+        self.webhook_format = ""
 
     @property
     def initialized(self):
@@ -101,6 +105,11 @@ class Sniper:
         self.announce_code = self.user_config.config["announce"].getboolean(
             "announce_code", ""
         )
+        webhook_urls = self.user_config.config["announce"].get("webhook_urls", "")
+        self.webhook_urls = webhook_urls.split(",")
+        self.webhook_format = self.user_config.config["announce"].get(
+            "webhook_format", "sniped `{name}` with `{searches}` searches!"
+        )
 
     async def run(self, target=None, offset=None):
 
@@ -116,6 +125,8 @@ class Sniper:
         self.user_config = Config(
             os.path.join(self.config.config["sniper"].get("init_path"), "config.ini")
         )
+
+        self.get_config_values()
 
         if target is None:
             self.log.debug("No username detected")
@@ -146,11 +157,11 @@ class Sniper:
 
         await self.snipe(droptime, target, offset)
 
+    # pylint: disable=too-many-locals
     async def snipe(self, droptime, target, offset):
 
         authentication_coroutines = [
-            acc.fully_authenticate(session=self.session) \
-            for acc in self.accounts
+            acc.fully_authenticate(session=self.session) for acc in self.accounts
         ]
         pre_snipe_coroutines = [
             acc.snipe_connect()
@@ -208,8 +219,8 @@ class Sniper:
                 success_acc = util.find_acc_by_email(email, self.accounts)
                 self.log.info(
                     f"{self.color.white}[{self.color.l_green}"
-                    f"success{self.color.white}]{self.color.reset}"
-                    f"sniped {self.target} onto {success_acc.email}"
+                    f"success{self.color.white}]{self.color.reset} "
+                    f"sniped {target} onto {success_acc.email}"
                 )
                 if self.do_announce:
                     await announce.announce(
@@ -217,6 +228,23 @@ class Sniper:
                         authorization=self.announce_code,
                         session=self.session,
                     )
+                if len(self.webhook_urls) > 0:
+                    webhook_description = await announce.gen_webhook_description(
+                        self.webhook_format, target, self.session
+                    )
+                    for webhook_url in self.webhook_urls:
+                        regex = re.compile(
+                            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|"
+                            r"[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+                        )
+                        if regex.match(webhook_url):
+                            await announce.webhook_announce(
+                                webhook_url,
+                                self.session,
+                                webhook_description,
+                                "New Snipe!",
+                                False,
+                            )
 
     def on_shutdown(self):
         if self.session.session is not None:

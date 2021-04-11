@@ -90,6 +90,6 @@ async def webhook_announce(
         return True
 
     log.error(
-        f"failed to send Discord webhook. {resp.status} | "
+        f"failed to send Discord webhook | {resp.status} | "
         f"{DISCORD_RESP_CODES.get(resp.status, 'unknown')}"
     )

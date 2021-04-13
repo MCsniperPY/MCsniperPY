@@ -15,7 +15,7 @@
 
 <p align="center">
 	<strong>
-		<a href="https://mcsniperpy.github.io/">Website</a>
+		<a href="https://mcsniperpy.com">Website</a>
 		•
 		<a href="https://docs.mcsniperpy.com">Docs</a>
 	</strong>

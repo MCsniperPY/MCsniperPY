@@ -60,14 +60,15 @@ class Sniper:
         return self.config.config["sniper"].get("init_path", "") != ""
 
     @staticmethod
-    def init() -> None:
-        populate_configs()
+    def init(no_confirm=False) -> None:
+        populate_configs(no_confirm)
 
     def get_config_values(self):
         # sniper
 
         self.timing_system = (
-            self.user_config.config["sniper"].get("timing_system", "kqzz_api").lower()
+            self.user_config.config["sniper"].get(
+                "timing_system", "kqzz_api").lower()
         )
         self.auto_claim_namemc = self.user_config.config["sniper"].getboolean(
             "auto_claim_namemc", "no"
@@ -105,7 +106,8 @@ class Sniper:
         self.announce_code = self.user_config.config["announce"].getboolean(
             "announce_code", ""
         )
-        webhook_urls = self.user_config.config["announce"].get("webhook_urls", "")
+        webhook_urls = self.user_config.config["announce"].get(
+            "webhook_urls", "")
         self.webhook_urls = webhook_urls.split(",")
         self.webhook_format = self.user_config.config["announce"].get(
             "webhook_format", "sniped `{name}` with `{searches}` searches!"
@@ -123,7 +125,8 @@ class Sniper:
         )
 
         self.user_config = Config(
-            os.path.join(self.config.config["sniper"].get("init_path"), "config.ini")
+            os.path.join(self.config.config["sniper"].get(
+                "init_path"), "config.ini")
         )
 
         self.get_config_values()
@@ -148,7 +151,8 @@ class Sniper:
             self.log.info(f"Offset (ms): {offset}")
 
         self.accounts = util.parse_accs(
-            os.path.join(self.config.config["sniper"].get("init_path"), "accounts.txt")
+            os.path.join(self.config.config["sniper"].get(
+                "init_path"), "accounts.txt")
         )
 
         droptime = await {"kqzz_api": api_timing, "namemc": namemc_timing}.get(
@@ -176,7 +180,8 @@ class Sniper:
             else (droptime - self.start_authentication) - now
         )
 
-        self.log.debug(f"authorizing accounts in {time_until_authentication} seconds.")
+        self.log.debug(
+            f"authorizing accounts in {time_until_authentication} seconds.")
 
         await asyncio.sleep(time_until_authentication)
 
@@ -186,7 +191,8 @@ class Sniper:
             acc.encode_snipe_data(target)
 
         now = time.time()
-        time_until_connect = 0 if now > (droptime - 20) else (droptime - 20) - now
+        time_until_connect = 0 if now > (
+            droptime - 20) else (droptime - 20) - now
 
         self.log.debug(f"Connecting in {time_until_connect} seconds.")
 

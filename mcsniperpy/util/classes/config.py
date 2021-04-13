@@ -6,7 +6,8 @@ from ..logs_manager import Logger as log
 from ..utils import close
 
 MCSNIPERPY_BACKEND_DIR = os.path.join(str(Path.home()), ".mcsniperpy")
-MCSNIPERPY_CONFIG_FILE_PATH = os.path.join(MCSNIPERPY_BACKEND_DIR, "backend_config.ini")
+MCSNIPERPY_CONFIG_FILE_PATH = os.path.join(
+    MCSNIPERPY_BACKEND_DIR, "backend_config.ini")
 
 DEFAULT_ACCOUNTS_FILE = """Clear this file and write accounts in this format
 email:pass:answer:answer:answer
@@ -97,17 +98,19 @@ def create_user_config() -> configparser.ConfigParser:
 
     user_config.set(
         "skin",
-        "; skin_change_type can be url, path, or username. refer to docs for more info.",
+        "; skin_change_type can be url, path, or username."
+        "refer to docs for more info.",
     )
 
     return user_config
 
 
-def populate_configs():
-    if not log.yes_or_no(
-        "Are you sure you want to initialize your config in your cwd:"
-    ):
-        close(1)
+def populate_configs(no_confirm=False):
+    if not no_confirm:
+        if not log.yes_or_no(
+            "Are you sure you want to initialize your config in your cwd:"
+        ):
+            close(1)
 
     config = configparser.ConfigParser()
     config["sniper"] = {"init_path": os.getcwd()}
@@ -119,12 +122,14 @@ def populate_configs():
         config.write(file)
 
     accounts_path = os.path.join(config["sniper"]["init_path"], "accounts.txt")
-    user_config_path = os.path.join(config["sniper"]["init_path"], "config.ini")
+    user_config_path = os.path.join(
+        config["sniper"]["init_path"], "config.ini")
 
     if os.path.isfile(accounts_path):
         if log.yes_or_no("Overwrite current accounts file:"):
             with open(
-                os.path.join(config["sniper"]["init_path"], "accounts.txt"), "w"
+                os.path.join(config["sniper"]["init_path"],
+                             "accounts.txt"), "w"
             ) as file:
                 file.write(DEFAULT_ACCOUNTS_FILE)
     else:

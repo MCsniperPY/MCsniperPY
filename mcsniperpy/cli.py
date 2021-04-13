@@ -97,13 +97,13 @@ def offset_test(
 
 
 @app.command()
-def init():
+def init(no_confirm: bool = typer.Option(False, help="remove confirmation message")):
     """
     Initialize MCsniperPY to be able to snipe names. This is an essential step\
  before sniping. Please read the docs for
  more info. https://docs.mcsniperpy.com
     """
-    sniper.init()
+    sniper.init(no_confirm=no_confirm)
 
 
 def cli():
@@ -116,7 +116,9 @@ def cli():
         sniper.log.error(f"message: {str(ex)}")
         while traceback is not None:
             # pylint: disable=no-member
-            sniper.log.error(f"{traceback.tb_frame.f_code.co_filename}:{traceback.tb_lineno}")
+            sniper.log.error(
+                f"{traceback.tb_frame.f_code.co_filename}:{traceback.tb_lineno}"
+            )
             traceback = traceback.tb_next
     finally:
         sniper.on_shutdown()

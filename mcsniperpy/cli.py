@@ -1,5 +1,4 @@
 import asyncio
-import shutil
 
 import typer
 
@@ -13,19 +12,27 @@ app = typer.Typer()
 
 
 def startup():
-    width = shutil.get_terminal_size().columns
-    print(
-        f"""{log.Color.cyan}
-    ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ ██████╗ ██╗   ██╗
-    ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝
-    ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝██████╔╝ ╚████╔╝
-    ██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗██╔═══╝   ╚██╔╝
-    ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║██║        ██║
-    ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝        ╚═╝
-    """.center(
-            width
-        )
-    )
+    title = f"""{log.Color.cyan}
+███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ \
+{log.Color.blue}██████╗ {log.Color.blue}██{log.Color.blue}╗   {log.Color.blue}\
+██╗
+████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗\
+{log.Color.blue}██╔══{log.Color.blue}██╗╚{log.Color.blue}██{log.Color.blue}╗ \
+{log.Color.blue}██╔╝
+██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝\
+{log.Color.blue}██{log.Color.blue}████╔╝ ╚{log.Color.blue}████╔╝
+██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗\
+{log.Color.blue}█{log.Color.blue}█╔═══╝   ╚{log.Color.blue}██╔╝
+██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║\
+{log.Color.blue}██║        {log.Color.blue}██║
+╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝\
+╚═╝        ╚═╝
+"""
+    lines = "╗║╔═╝╚"
+    for line_type in lines:
+        title = title.replace(
+            line_type, f"{log.Color.white}%s{log.Color.cyan}" % line_type)
+    print(title)
     print(f"{log.Color.cyan}Created by Kqzz#0001")
     print(
         "Git: github.com/MCSniperPY/MCsniperPY | "

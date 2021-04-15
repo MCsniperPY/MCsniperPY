@@ -13,20 +13,20 @@ app = typer.Typer()
 
 def startup():
     title = f"""{log.Color.cyan}
-███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ \
-{log.Color.blue}██████╗ {log.Color.blue}██{log.Color.blue}╗   {log.Color.blue}\
-██╗
-████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗\
-{log.Color.blue}██╔══{log.Color.blue}██╗╚{log.Color.blue}██{log.Color.blue}╗ \
-{log.Color.blue}██╔╝
-██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝\
-{log.Color.blue}██{log.Color.blue}████╔╝ ╚{log.Color.blue}████╔╝
-██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗\
-{log.Color.blue}█{log.Color.blue}█╔═══╝   ╚{log.Color.blue}██╔╝
-██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║\
-{log.Color.blue}██║        {log.Color.blue}██║
-╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝\
-╚═╝        ╚═╝
+ ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ \
+ {log.Color.blue}██████╗ {log.Color.blue}██{log.Color.blue}╗   {log.Color.blue}\
+ ██╗
+ ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗\
+ {log.Color.blue}██╔══{log.Color.blue}██╗╚{log.Color.blue}██{log.Color.blue}╗ \
+ {log.Color.blue}██╔╝
+ ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝\
+ {log.Color.blue}██{log.Color.blue}████╔╝ ╚{log.Color.blue}████╔╝
+ ██║╚██╔╝██║██║     ╚════██║██║╚██╗██║██║██╔═══╝ ██╔══╝  ██╔══██╗\
+ {log.Color.blue}█{log.Color.blue}█╔═══╝   ╚{log.Color.blue}██╔╝
+ ██║ ╚═╝ ██║╚██████╗███████║██║ ╚████║██║██║     ███████╗██║  ██║\
+ {log.Color.blue}██║        {log.Color.blue}██║
+ ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝\
+ ╚═╝        ╚═╝
 """
     lines = "╗║╔═╝╚"
     for line_type in lines:

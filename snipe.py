@@ -365,7 +365,18 @@ class session:
         loop = asyncio.get_event_loop()
         while True:
             now = time.time()
-            if now >= self.drop_time and not self.ran:
+            if now >= self.setup_time and not self.setup:
+                loop.run_until_complete(self.run_auth())
+                for acc in accounts:
+                    if acc.failed_auth:
+                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
+                        accounts.remove(acc)
+                if len(accounts) == 0:
+                    logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] you have 0 accounts available to snipe on! | quitting program...")
+                    quit()
+                custom_info("setup complete")
+                self.setup = True
+            elif now >= self.drop_time and not self.ran:
                 try:
                     start = time.time()
                     loop.run_until_complete(self.send_requests())
@@ -386,17 +397,6 @@ class session:
                     return
                 except Exception:
                     return
-            elif now >= self.setup_time and not self.setup:
-                loop.run_until_complete(self.run_auth())
-                for acc in accounts:
-                    if acc.failed_auth:
-                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
-                        accounts.remove(acc)
-                if len(accounts) == 0:
-                    logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] you have 0 accounts available to snipe on! | quitting program...")
-                    quit()
-                custom_info("setup complete")
-                self.setup = True
             time.sleep(.00001)
 
     async def webhook_skin_file(self, acc):

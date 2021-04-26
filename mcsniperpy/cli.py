@@ -14,10 +14,10 @@ app = typer.Typer()
 def startup():
     title = f"""{log.Color.cyan}
  ███╗   ███╗ ██████╗███████╗███╗   ██╗██╗██████╗ ███████╗██████╗ \
- {log.Color.blue}██████╗ {log.Color.blue}██{log.Color.blue}╗   {log.Color.blue}\
+ {log.Color.blue}██████╗ {log.Color.blue}██{log.Color.blue}╗  {log.Color.blue}\
  ██╗
  ████╗ ████║██╔════╝██╔════╝████╗  ██║██║██╔══██╗██╔════╝██╔══██╗\
- {log.Color.blue}██╔══{log.Color.blue}██╗╚{log.Color.blue}██{log.Color.blue}╗ \
+ {log.Color.blue}██╔══{log.Color.blue}██╗╚{log.Color.blue}██{log.Color.blue}╗\
  {log.Color.blue}██╔╝
  ██╔████╔██║██║     ███████╗██╔██╗ ██║██║██████╔╝█████╗  ██████╔╝\
  {log.Color.blue}██{log.Color.blue}████╔╝ ╚{log.Color.blue}████╔╝
@@ -45,7 +45,8 @@ sniper = Sniper(log.Color, log.Logger)
 
 @app.command()
 def snipe(
-    username: str = typer.Option(None, help="The username to attempt a snipe on"),
+    username: str = typer.Option(
+        None, help="The username to attempt a snipe on"),
     offset: int = typer.Option(
         None, help="The offset you want to use for the target username."
     ),
@@ -54,7 +55,8 @@ def snipe(
     next_with_searches: int = typer.Option(
         None,
         "--next",
-        help="Snipe the next available username." " It is not recommended to use this!",
+        help="Snipe the next available username."
+        " It is not recommended to use this!",
     ),
 ):
     """
@@ -77,7 +79,8 @@ def snipe(
 
 @app.command()
 def ping(
-    iterations: int = typer.Option(5, help="How many times to ping Mojang's servers.")
+    iterations: int = typer.Option(
+        5, help="How many times to ping Mojang's servers.")
 ):
     """
     Test your ping to Mojang's servers
@@ -91,7 +94,8 @@ def offset_test(
     accuracy: int = typer.Option(
         20, help="How accurate do you want your offset to be?"
     ),
-    aim_for: float = typer.Option(0.15, help="What time do you want to aim for?"),
+    aim_for: float = typer.Option(
+        0.15, help="What time do you want to aim for?"),
 ):
     """
     Find the optimal offset for you. Note: this is not entirely accurate since\

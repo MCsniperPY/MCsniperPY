@@ -32,10 +32,10 @@ def parse_accs(file_path) -> List[Account]:
     # ^ reads every line from a file and splits into a :
     for (
         line
-    ) in lines:  # This variable cannot be referenced before assignment due to close()
-
+    ) in lines:
+        # This variable cannot be referenced before assignment due to close()
         if line[0].startswith("#"):
-            pass  # This triggers is the line is a "comment"
+            pass  # This line is ignored because it is a "comment"
         elif len(line) in (2, 5):
             accounts.append(
                 Account(*line)

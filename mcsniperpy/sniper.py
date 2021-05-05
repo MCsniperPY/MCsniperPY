@@ -235,22 +235,17 @@ class Sniper:
                         session=self.session,
                     )
                 if len(self.webhook_urls) > 0:
-                    webhook_description = await announce.gen_webhook_description(
+                    webhook_description = await announce.gen_webhook_desc(
                         self.webhook_format, target, self.session
                     )
                     for webhook_url in self.webhook_urls:
-                        regex = re.compile(
-                            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|"
-                            r"[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+                        await announce.webhook_announce(
+                            webhook_url,
+                            self.session,
+                            webhook_description,
+                            "New Snipe!",
+                            False,
                         )
-                        if regex.match(webhook_url):
-                            await announce.webhook_announce(
-                                webhook_url,
-                                self.session,
-                                webhook_description,
-                                "New Snipe!",
-                                False,
-                            )
 
     def on_shutdown(self):
         if self.session.session is not None:

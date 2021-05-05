@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 from mcsniperpy.util.logs_manager import Color as color
@@ -38,7 +39,7 @@ DISCORD_RESP_CODES = {
 }
 
 
-async def gen_webhook_description(desc_format, name, session: RequestManager):
+async def gen_webhook_desc(desc_format, name, session: RequestManager):
     resp, _, resp_json = await session.get(
         f"https://api.kqzz.me/api/namemc/searches/{name}"
     )
@@ -65,31 +66,37 @@ async def webhook_announce(
     prename: bool = False,
     embed_color: int = 0x779ABD,
 ):
-    action = "prenamed" if prename else "sniped"
-    embed_content = {
-        "content": None,
-        "embeds": [
-            {
-                "title": embed_title,
-                "description": embed_description,
-                "color": embed_color,
-                "footer": {
-                    "text": f"{action.title()} with MCsniperPY",
-                    "icon_url": "https://mcsniperpy.com/img/old-logo.png",
-                },
-                "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-            }
-        ],
-    }
-    resp, _, _ = await session.post(webhook_url, json=embed_content)
-    if resp.status < 300:
-        log.info(
-            f"{color.white}[{color.l_green}success{color.white}]{color.reset} "
-            "successfully sent discord webhook!"
-        )
-        return True
-
-    log.error(
-        f"failed to send Discord webhook | {resp.status} | "
-        f"{DISCORD_RESP_CODES.get(resp.status, 'unknown')}"
+    regex = re.compile(
+        r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|"
+        r"[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
     )
+    if regex.match(webhook_url):
+        action = "prenamed" if prename else "sniped"
+        embed_content ={
+            "content": None,
+            "embeds": [                {
+                    "title": embed_title,
+                    "description": embed_description,
+                    "color": embed_color,
+                    "footer": {
+                        "text": f"{action.title()} with MCsniperPY",
+                        "icon_url": "https://mcsniperpy.com/img/old-logo.png",
+                    },
+                    "timestamp": datetime.utcnow().strftime(
+                        "%Y-%m-%dT%H:%M:%S.000Z"
+                    ),
+                }
+            ],
+        }
+        resp, _, _ = await session.post(webhook_url, json=embed_content)
+        if resp.status < 300:
+            log.info(
+                f"{color.white}[{color.l_green}success{color.white}]{color.reset} "
+                "successfully sent discord webhook!"
+            )
+            return True
+
+        log.error(
+            f"failed to send Discord webhook | {resp.status} | "
+            f"{DISCORD_RESP_CODES.get(resp.status, 'unknown')}"
+        )

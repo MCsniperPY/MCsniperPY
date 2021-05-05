@@ -108,11 +108,11 @@ async def namemc_timing(target, block_snipe):
 
         wait_time = snipe_time - now
         wait_time = wait_time.total_seconds()
-        if wait_time >= 60:
+        if wait_time >= 3600:
+            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600)} hours | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
+        elif wait_time >= 60:
             custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-        elif wait_time >= 3600:
-            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-        else:
+                else:
             custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
         return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
 

@@ -1,6 +1,5 @@
 import asyncio
 import os.path
-import re
 import time
 from typing import List
 
@@ -48,6 +47,7 @@ class Sniper:
         self.change_skin_on_snipe = False
         self.skin_change_type = "url"
         self.skin = ""
+        self.skin_variant = "classic"
 
         # announce
         self.do_announce = False
@@ -98,6 +98,7 @@ class Sniper:
             "skin_change_type", "url"
         )
         self.skin = self.user_config.config["skin"].get("skin", "")
+        self.skin_variant = self.user_config.config["skin"].get("skin_variant", "classic")
 
         # announce
         self.do_announce = self.user_config.config["announce"].getboolean(
@@ -155,9 +156,10 @@ class Sniper:
                 "init_path"), "accounts.txt")
         )
 
-        droptime = await {"kqzz_api": api_timing, "namemc": namemc_timing}.get(
-            self.timing_system, "kqzz_api"
-        )(target, self.session)
+        droptime = await {
+            "kqzz_api": api_timing,
+            "namemc": namemc_timing
+        }.get(self.timing_system, api_timing)(target, self.session)
 
         await self.snipe(droptime, target, offset)
 
@@ -165,7 +167,8 @@ class Sniper:
     async def snipe(self, droptime, target, offset):
 
         authentication_coroutines = [
-            acc.fully_authenticate(session=self.session) for acc in self.accounts
+            acc.fully_authenticate(session=self.session)
+            for acc in self.accounts
         ]
         pre_snipe_coroutines = [
             acc.snipe_connect()
@@ -192,7 +195,7 @@ class Sniper:
 
         now = time.time()
         time_until_connect = 0 if now > (
-            droptime - 20) else (droptime - 20) - now
+            droptime - 6000) else (droptime - 6000) - now
 
         self.log.debug(f"Connecting in {time_until_connect} seconds.")
 
@@ -245,6 +248,14 @@ class Sniper:
                             webhook_description,
                             "New Snipe!",
                             False,
+                        )
+                if self.change_skin_on_snipe:
+                    for acc in self.accounts:
+                        await acc.change_skin(
+                            self.skin_variant,
+                            self.skin,
+                            self.skin_change_type,
+                            self.session
                         )
 
     def on_shutdown(self):

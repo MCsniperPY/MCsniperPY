@@ -131,6 +131,47 @@ class Account:
             else:
                 log.error(f"failed to authenticate {self.email}")
 
+    async def change_skin_file(self, variant, skin, session):
+        headers = self.headers
+        data = {
+            "variant": variant,
+            "file": skin
+        }
+        resp, _, _ = await session.post(
+            "https://api.minecraftservices.com/minecraft/profile/skins",
+            headers=headers,
+            data=data
+        )
+        if resp.status < 300:
+            log.success(f"changed skin on {self.email}")
+        else:
+            log.error(f"Failed to change skin on {self.email} | {resp.status}")
+
+    async def change_skin_url(self, variant, skin, session):
+        headers = self.headers
+        headers["Content-Type"] = "application/json"
+        post_json = {
+            "variant": variant,
+            "url": skin
+        }
+        resp, _, _ = await session.post(
+            "https://api.minecraftservices.com/minecraft/profile/skins",
+            headers=headers,
+            json=post_json
+        )
+        if resp.status < 300:
+            log.success(f"changed skin on {self.email}")
+        else:
+            log.error(f"Failed to change skin on {self.email} | {resp.status}")
+
+    async def change_skin(self, variant, skin, skin_type, session):
+        if variant not in ["classic", "slim"]:
+            return None
+        await {
+            "url": self.change_skin_url,
+            "file": self.change_skin_file
+        }.get(skin_type, self.change_skin_url)(variant, skin, session)
+
     async def snipe_connect(self) -> None:
 
         reader, writer = await asyncio.open_connection(

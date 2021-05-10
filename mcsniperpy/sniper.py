@@ -211,7 +211,7 @@ class Sniper:
 
         now = time.time()
         time_until_connect = 0 if now > (
-            droptime - 6000) else (droptime - 6000) - now
+            droptime - 32) else (droptime - 32) - now
 
         self.log.debug(f"Connecting in {time_until_connect} seconds.")
 

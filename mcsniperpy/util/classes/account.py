@@ -134,8 +134,8 @@ class Account:
     async def change_skin_file(self, variant, skin, session):
         headers = self.headers
         data = {
-            "variant": variant,
-            "file": skin
+            "file": skin,
+            "variant": variant
         }
         resp, _, _ = await session.post(
             "https://api.minecraftservices.com/minecraft/profile/skins",

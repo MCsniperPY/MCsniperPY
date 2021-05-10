@@ -98,7 +98,22 @@ class Sniper:
             "skin_change_type", "url"
         )
         self.skin = self.user_config.config["skin"].get("skin", "")
-        self.skin_variant = self.user_config.config["skin"].get("skin_variant", "classic")
+        self.skin_variant = self.user_config.config["skin"].get(
+            "skin_variant", "classic"
+        )
+
+        if self.skin_change_type == "file":
+            with open(
+                os.path.join(
+                    [
+                        self.config.config["sniper"].get(
+                            "init_path", ""
+                    ),
+                    self.skin
+                    ]
+                    )
+            ) as f:
+                self.skin = f.read()
 
         # announce
         self.do_announce = self.user_config.config["announce"].getboolean(
@@ -122,7 +137,8 @@ class Sniper:
 
         self.config = BackConfig()
         self.log.debug(
-            f"Using sniping path of {self.config.config['sniper'].get('init_path')}"
+            "Using sniping path of"
+            f" {self.config.config['sniper'].get('init_path')}"
         )
 
         self.user_config = Config(

@@ -232,7 +232,8 @@ class Sniper:
         responses = await asyncio.gather(
             *[
                 acc.snipe_read(
-                    target, acc.readers_writers[i][0], acc.readers_writers[i][1]
+                    target, acc.readers_writers[i][0],
+                    acc.readers_writers[i][1]
                 )
                 for i in range(self.snipe_requests)
                 for acc in self.accounts

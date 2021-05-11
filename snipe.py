@@ -2,7 +2,7 @@ try:
     from os import path, system
     import aiohttp
     import logging
-    from aiocfscrape import CloudflareScraper
+    import cloudscraper
     from colorama import Fore, init
     from datetime import datetime, timezone
     import os
@@ -73,57 +73,27 @@ def check_resp(status):
 
 def resp_error(message):
     print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] {message}")
-
+def drooptime(username):
+    a = cloudscraper.create_scraper()
+    url = f"https://namemc.com/profile/{username}"
+    b = a.get(url)
+    soup = BeautifulSoup(b.text, 'html.parser')
+    time = str(soup.time)
+    time = (time[36:60])
+    resp = requests.get(f"https://showcase.api.linx.twenty57.net/UnixTime/tounix?date={time[0:4]}/{time[5:7]}/{time[8:10]}%20{time[11:13]}:{time[14:16]}:{time[17:19]}").text
+    resp = resp[1:-1]
+    return resp
 
 async def namemc_timing(target, block_snipe):
-    now = datetime.utcnow()
-    block_snipe_words = ["snipe", "block"]
-    async with CloudflareScraper() as session:
-        
-        try:
-            async with session.get(f"https://namemc.com/search?q={target}", ssl=False) as page:
-                # page = requests.get(namemc_url)
-                soup = BeautifulSoup(await page.text(), 'html.parser')
-                snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]
-                snipe_time = datetime.strptime(snipe_time, '%Y-%m-%dT%H:%M:%S.000Z')
-        except AttributeError:
-            status_bar = soup.find(id="status-bar")
-            info = status_bar.find_all("div", class_="col-sm-6 my-1")
-            status = info[0].text.split("\n")[2]
-            if status.lower().rstrip('*') == 'available':
-                custom_info(f"\"{target}\" is {status}. The sniper can turbo {status} names!")
-                snipe_time = custom_input("At what time will this name be able to be turboed (month/day/yr, 24hrtime_hour:minute:second) (UTC)\nexample: 03/06/2020 01:06:45\n» ")
-                try:
-                    snipe_time = datetime.strptime(snipe_time.strip(), "%m/%d/%Y %H:%M:%S")
-                except ValueError:
-                    resp_error("invalid time format")
-                    raise ValueError
-                wait_time = snipe_time - now
-                wait_time = wait_time.total_seconds()
-                if wait_time >= 60:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                else:
-                    custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-                return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
-            print(f"\"{target}\" is {status}. The sniper cannot claim names that are {status} so go claim it fast through https://my.minecraft.net if possible.")
-            quit()
-
-        wait_time = snipe_time - now
-        wait_time = wait_time.total_seconds()
-        if wait_time >= 3600:
-            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 3600)} hours | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-        elif wait_time >= 60:
-            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in ~{round(wait_time / 60)} minutes | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-        else:
-            custom_info(f"{block_snipe_words[block_snipe].rstrip('e')}ing \"{target}\" in {wait_time} seconds | {block_snipe_words[block_snipe].rstrip('e')}ing at {snipe_time} (utc)")
-        return int(snipe_time.replace(tzinfo=timezone.utc).timestamp())
-
+    snipe_time = int(drooptime(target))
+    print(snipe_time)
+    return snipe_time * 1000
 
 async def time_snipe(target, block_snipe):
     try:
         return await namemc_timing(target, block_snipe)
-    except Exception:
+    except Exception as e:
+        print(e)
         print(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Failed to time snipe!")
         time.sleep(3)
         quit()

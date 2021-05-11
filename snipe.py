@@ -2,6 +2,7 @@ try:
     from os import path, system
     import aiohttp
     import logging
+    from aiocfscrape import CloudflareScraper
     from colorama import Fore, init
     from datetime import datetime, timezone
     import os
@@ -77,9 +78,10 @@ def resp_error(message):
 async def namemc_timing(target, block_snipe):
     now = datetime.utcnow()
     block_snipe_words = ["snipe", "block"]
-    async with aiohttp.ClientSession() as session:
+    async with CloudflareScraper() as session:
+        
         try:
-            async with session.get(f"https://namemc.tenscape.io/search?q={target}", ssl=False) as page:
+            async with session.get(f"https://namemc.com/search?q={target}", ssl=False) as page:
                 # page = requests.get(namemc_url)
                 soup = BeautifulSoup(await page.text(), 'html.parser')
                 snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]

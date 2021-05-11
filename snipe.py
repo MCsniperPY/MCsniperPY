@@ -52,6 +52,7 @@ def print_title():
 │{Fore.RESET}  ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝{Fore.BLUE}╚═╝        ╚═╝      {Fore.CYAN}│
 {Fore.CYAN}└──────────────────────────────────────────────────────────────────────────────────────┘
 {Fore.GREEN}Developed by @Kqzz#0001 on Discord {Fore.BLUE}| Website: https://mcsniperpy.github.io
+{Fore.GREEN}THIS SNIPER DOES NOT USE AN API OWNED BY MCSNIPERPY TO GET DROPTIME{Fore.RESET}
 {Fore.GREEN}THIS SNIPER IS 100% FREE ON GITHUB{Fore.RESET}"""
     print(title)
 

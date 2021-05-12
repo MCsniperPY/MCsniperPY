@@ -52,7 +52,6 @@ def print_title():
 │{Fore.RESET}  ╚═╝     ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝{Fore.BLUE}╚═╝        ╚═╝      {Fore.CYAN}│
 {Fore.CYAN}└──────────────────────────────────────────────────────────────────────────────────────┘
 {Fore.GREEN}Developed by @Kqzz#0001 on Discord {Fore.BLUE}| Website: https://mcsniperpy.github.io
-{Fore.GREEN}This sniper uses an api not owned by MCsniperPY to get the droptime{Fore.RESET}
 {Fore.GREEN}THIS SNIPER IS 100% FREE ON GITHUB{Fore.RESET}"""
     print(title)
 
@@ -79,7 +78,7 @@ async def namemc_timing(target, block_snipe):
     block_snipe_words = ["snipe", "block"]
     async with aiohttp.ClientSession() as session:
         try:
-            async with session.get(f"https://namemc.tenscape.io/search?q={target}", ssl=False) as page:
+            async with session.get(f"https://namemc.com/search?q={target}", ssl=False) as page:
                 # page = requests.get(namemc_url)
                 soup = BeautifulSoup(await page.text(), 'html.parser')
                 snipe_time = soup.find("time", {"id": "availability-time"}).attrs["datetime"]

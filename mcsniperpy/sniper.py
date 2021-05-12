@@ -105,15 +105,14 @@ class Sniper:
         if self.skin_change_type == "file":
             with open(
                 os.path.join(
-                    [
                         self.config.config["sniper"].get(
                             "init_path", ""
+                            ),
+                        self.skin
                     ),
-                    self.skin
-                    ]
-                    )
+                "rb"
             ) as f:
-                self.skin = f.read()
+                self.skin = f.read
 
         # announce
         self.do_announce = self.user_config.config["announce"].getboolean(

@@ -8,7 +8,7 @@ import aiohttp
 from mcsniperpy.util import announce, request_manager
 from mcsniperpy.util import utils as util
 from mcsniperpy.util.classes.config import BackConfig, Config, populate_configs
-from mcsniperpy.util.name_system import api_timing, namemc_timing
+from mcsniperpy.util.name_system import api_timing, namemc_timing, teun_timing
 
 
 class Sniper:
@@ -173,8 +173,9 @@ class Sniper:
 
         droptime = await {
             "kqzz_api": api_timing,
-            "namemc": namemc_timing
-        }.get(self.timing_system, api_timing)(target, self.session)
+            "namemc": namemc_timing,
+            "teun": teun_timing
+        }.get(self.timing_system, "kqzz_api")(target, self.session)
 
         await self.snipe(droptime, target, offset)
 

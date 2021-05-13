@@ -70,6 +70,29 @@ async def namemc_timing(username: str, session: RequestManager) -> float:
     return 0
 
 
+async def teun_timing(
+    username: str,
+    session: RequestManager
+) -> int:  # Returns a unix timestamp
+    resp, _, resp_json = await session.get(
+        f"https://mojang-api.teun.lol/droptime/{username}"
+    )
+    # pylint: disable=no-else-return
+    if resp_json.get("error", None) is None:
+        log.info(
+            f"sniping {color.cyan}{username}{color.reset} @ {datetime.fromtimestamp(resp_json['UNIX'])}"
+        )
+        return resp_json["UNIX"]
+    else:
+        log.error(
+            f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through teuns's MC API"
+        )
+        log.error(f"{resp_json['error']} | {resp.status}")
+        close(0)
+
+    close(0)
+    return 0
+             
 async def api_timing(
     username: str,
     session: RequestManager

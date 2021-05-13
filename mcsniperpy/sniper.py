@@ -155,13 +155,11 @@ class Sniper:
                 "init_path"), "accounts.txt")
         )
 
-        # droptime = await {"kqzz_api": api_timing, "namemc": namemc_timing}.get(
-        #     self.timing_system, "kqzz_api"
-        # )(target, self.session)
-        
-        droptime = await {"kqzz_api": api_timing, "namemc": teun_timing}.get(
-            self.timing_system, "kqzz_api"
-        )(target, self.session)
+        droptime = await {
+            "kqzz_api": api_timing,
+            "namemc": namemc_timing,
+            "teun": teun_timing
+        }.get(self.timing_system, "kqzz_api")(target, self.session)
 
 
         await self.snipe(droptime, target, offset)

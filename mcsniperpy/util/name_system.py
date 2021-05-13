@@ -69,6 +69,7 @@ async def namemc_timing(username: str, session: RequestManager) -> float:
     close(1)
     return 0
 
+
 async def teun_timing(
     username: str,
     session: RequestManager

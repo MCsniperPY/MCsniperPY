@@ -69,17 +69,28 @@ async def namemc_timing(username: str, session: RequestManager) -> float:
     close(1)
     return 0
 
-async def teun_timing(username: str) -> int:
-    r = await requests.get(f"https://mojang-api.teun.lol/droptime/{username}")
-    if r.status_code != 200:
-        log.error(f"Couldn't get time from teun's API. Status: {r.status}")
-        close(1)
-    if "UNIX" in r.json():
-        log.info(f"sniping {username} @ {r.json()['UNIX']}")
-        return r.json()["UNIX"]
-    prev = input("Whats the name of the previous owner?\n>")
-    r = requests.post("https://mojang-api.teun.lol/upload-droptime", json={'name': username, 'prevOwner': prev})
-    return r.json()["UNIX"]
+async def teun_timing(
+    username: str,
+    session: RequestManager
+) -> int:  # Returns a unix timestamp
+    resp, _, resp_json = await session.get(
+        f"https://mojang-api.teun.lol/droptime/{username}"
+    )
+    # pylint: disable=no-else-return
+    if resp_json.get("error", None) is None:
+        log.info(
+            f"sniping {color.cyan}{username}{color.reset} @ {datetime.fromtimestamp(resp_json['UNIX'])}"
+        )
+        return resp_json["UNIX"]
+    else:
+        log.error(
+            f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through teuns's MC API"
+        )
+        log.error(f"{resp_json['error']} | {resp.status}")
+        close(0)
+
+    close(0)
+    return 0
              
 async def api_timing(
     username: str,

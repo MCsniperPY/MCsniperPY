@@ -1,6 +1,5 @@
 import asyncio
 import os.path
-import re
 import time
 from typing import List
 
@@ -48,6 +47,7 @@ class Sniper:
         self.change_skin_on_snipe = False
         self.skin_change_type = "url"
         self.skin = ""
+        self.skin_variant = "classic"
 
         # announce
         self.do_announce = False
@@ -98,6 +98,21 @@ class Sniper:
             "skin_change_type", "url"
         )
         self.skin = self.user_config.config["skin"].get("skin", "")
+        self.skin_variant = self.user_config.config["skin"].get(
+            "skin_variant", "classic"
+        )
+
+        if self.skin_change_type == "file":
+            with open(
+                os.path.join(
+                        self.config.config["sniper"].get(
+                            "init_path", ""
+                            ),
+                        self.skin
+                    ),
+                "rb"
+            ) as f:
+                self.skin = f.read
 
         # announce
         self.do_announce = self.user_config.config["announce"].getboolean(
@@ -121,7 +136,8 @@ class Sniper:
 
         self.config = BackConfig()
         self.log.debug(
-            f"Using sniping path of {self.config.config['sniper'].get('init_path')}"
+            "Using sniping path of"
+            f" {self.config.config['sniper'].get('init_path')}"
         )
 
         self.user_config = Config(
@@ -161,14 +177,14 @@ class Sniper:
             "teun": teun_timing
         }.get(self.timing_system, "kqzz_api")(target, self.session)
 
-
         await self.snipe(droptime, target, offset)
 
     # pylint: disable=too-many-locals
     async def snipe(self, droptime, target, offset):
 
         authentication_coroutines = [
-            acc.fully_authenticate(session=self.session) for acc in self.accounts
+            acc.fully_authenticate(session=self.session)
+            for acc in self.accounts
         ]
         pre_snipe_coroutines = [
             acc.snipe_connect()
@@ -195,7 +211,7 @@ class Sniper:
 
         now = time.time()
         time_until_connect = 0 if now > (
-            droptime - 20) else (droptime - 20) - now
+            droptime - 32) else (droptime - 32) - now
 
         self.log.debug(f"Connecting in {time_until_connect} seconds.")
 
@@ -216,7 +232,8 @@ class Sniper:
         responses = await asyncio.gather(
             *[
                 acc.snipe_read(
-                    target, acc.readers_writers[i][0], acc.readers_writers[i][1]
+                    target, acc.readers_writers[i][0],
+                    acc.readers_writers[i][1]
                 )
                 for i in range(self.snipe_requests)
                 for acc in self.accounts
@@ -238,22 +255,25 @@ class Sniper:
                         session=self.session,
                     )
                 if len(self.webhook_urls) > 0:
-                    webhook_description = await announce.gen_webhook_description(
+                    webhook_description = await announce.gen_webhook_desc(
                         self.webhook_format, target, self.session
                     )
                     for webhook_url in self.webhook_urls:
-                        regex = re.compile(
-                            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|"
-                            r"[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+                        await announce.webhook_announce(
+                            webhook_url,
+                            self.session,
+                            webhook_description,
+                            "New Snipe!",
+                            False,
                         )
-                        if regex.match(webhook_url):
-                            await announce.webhook_announce(
-                                webhook_url,
-                                self.session,
-                                webhook_description,
-                                "New Snipe!",
-                                False,
-                            )
+                if self.change_skin_on_snipe:
+                    for acc in self.accounts:
+                        await acc.change_skin(
+                            self.skin_variant,
+                            self.skin,
+                            self.skin_change_type,
+                            self.session
+                        )
 
     def on_shutdown(self):
         if self.session.session is not None:

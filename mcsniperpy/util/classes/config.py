@@ -87,6 +87,7 @@ def create_user_config() -> configparser.ConfigParser:
         "change_skin_on_snipe": "no",
         "skin_change_type": "url",
         "skin": "",
+        "skin_variant": "classic ;or slim"
     }
 
     user_config["announce"] = {

@@ -2,6 +2,7 @@ import asyncio
 import ssl
 import time
 from typing import Tuple
+from aiohttp import FormData
 
 from mcsniperpy.util.logs_manager import Color as color
 from mcsniperpy.util.logs_manager import Logger as log
@@ -133,10 +134,15 @@ class Account:
 
     async def change_skin_file(self, variant, skin, session):
         headers = self.headers
-        data = {
-            "file": skin,
-            "variant": variant
-        }
+        data = FormData()
+        data.add_field("variant", "slim")
+        data.add_field(
+            'file',
+            skin,
+            filename="skin.png",
+            content_type="image/png"
+        )
+
         resp, _, _ = await session.post(
             "https://api.minecraftservices.com/minecraft/profile/skins",
             headers=headers,

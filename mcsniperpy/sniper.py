@@ -170,7 +170,9 @@ class Sniper:
             os.path.join(self.config.config["sniper"].get(
                 "init_path"), "accounts.txt")
         )
-
+        if len(self.accounts) > 1:
+            self.log.info("Using more than one account isn't recommended!")
+            
         droptime = await {
             "kqzz_api": api_timing,
             "namemc": namemc_timing,

@@ -69,19 +69,22 @@ class Account:
             return True
         return False
 
-    async def get_questions(self, session) -> None:
+    # Returns if the account has security questions
+    async def get_questions(self, session) -> bool:
         resp, _, resp_json = await session.get(
             "https://api.mojang.com/user/security/challenges", headers=self.headers
         )
 
         self.answer_ids = [question["answer"]["id"] for question in resp_json]
-        self.questions = [question["question"]["question"] for question in resp_json]
+        self.questions = [
+            question["question"]["question"] for question in resp_json
+        ]
 
         if resp.status == 200:
-            return
+            return len(self.questions) == 0
         log.error(f"failed to get security questions for {self.email}")
 
-    async def need_sqs(self, session) -> bool:
+    async def need_to_submit_sqs(self, session) -> bool:
         resp, _, _ = await session.get(
             "https://api.mojang.com/user/security/location", headers=self.headers
         )
@@ -116,21 +119,26 @@ class Account:
             log.error(f"failed to auth {self.email}")
             return
 
-        if not await self.need_sqs(session):
+        if not await self.need_to_submit_sqs(session):
             log.info(
                 f"{color.white}[{color.l_green}success{color.white}]"
                 f"{color.reset} authenticated {self.email}"
             )
         else:
-            await self.get_questions(session)
-            if await self.submit_questions(session):
+            if await self.get_questions(session):
+                if await self.submit_questions(session):
+                    log.info(
+                        f"{color.white}[{color.l_green}success{color.white}]"
+                        f"{color.reset} authenticated {self.email}"
+                        " with security questions"
+                    )
+                else:
+                    log.error(f"failed to authenticate {self.email}")
+            else:
                 log.info(
                     f"{color.white}[{color.l_green}success{color.white}]"
                     f"{color.reset} authenticated {self.email}"
-                    " with security questions"
                 )
-            else:
-                log.error(f"failed to authenticate {self.email}")
 
     async def change_skin_file(self, variant, skin, session):
         headers = self.headers

@@ -40,7 +40,7 @@ class Sniper:
 
         self.max_accounts = 30
         self.authentication_delay = 500
-        self.start_authentication = 720
+        self.start_authentication = 720 * 60
 
         # skin
 
@@ -87,7 +87,7 @@ class Sniper:
         )
         self.start_authentication = self.user_config.config["accounts"].getint(
             "start_authentication", "720"
-        )
+        ) * 60
 
         # skin
 

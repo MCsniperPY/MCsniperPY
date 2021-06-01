@@ -72,7 +72,7 @@ class Config:
 def create_user_config() -> configparser.ConfigParser:
     user_config = configparser.ConfigParser(allow_no_value=True)
     user_config["sniper"] = {
-        "timing_system": "kqzz_api",
+        "timing_system": "teun",
         "auto_claim_namemc": "no",
         "snipe_requests": "3",
     }

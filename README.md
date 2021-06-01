@@ -257,5 +257,16 @@ When the sniper sends requests to a server, it returns a HTTP Status Code. Mojan
 | 429 | Account or IP is rate limited|
 | 500| Minecraft API issue|
 
+## Development install
+
+```shell
+# You need git, python, and pip installed for this to work
+git clone https://github.com/MCsniperPY/MCsniperPY.git
+cd ./MCSniperPY
+git checkout recode
+YOURPYTHONCOMMAND -m pip install --editable .
+YOURPYTHONCOMMAND -m mcsniperpy --help
+# You can now edit code / add features / whatever
+```
 
 > Thanks to [sneakers](https://github.com/sneakers) for writing these docs!

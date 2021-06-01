@@ -195,9 +195,9 @@ Awesome! Now that you've put your account\(s\) in the accounts.txt file it's tim
 
 ###### Note that currently only Mojang accounts are supported.
 
-## Delays
+## Offset
 
-A delay is the time in milliseconds that the sniper starts to send requests before the name drop time. If a name drops at `10:00:59` and you tell the sniper to use a delay of `1000`, the sniper will start sending the requests at `10:00:58` because 1000 milliseconds = 1 second.
+An offset is the time in milliseconds that the sniper starts to send requests before the name drop time. If a name drops at `10:00:59` and you tell the sniper to use a delay of `1000`, the sniper will start sending the requests at `10:00:58` because 1000 milliseconds = 1 second.
 
 Delays are useful for 2 reasons — ping and server lag.
 
@@ -207,9 +207,9 @@ If a lot of people are going for a username (you can usually determine this by t
 
 Other people's delays in most cases won't work on your machine. Delays can depend on many things, including ping, network routes and even CPU speed. 
 
-A good way to find a delay that works for you is to attempt to snipe usernames with a delay of `400`, then adjusting the delay based off of the timestamp you receieve. If the snipe is early, your delay is too high.
+### How do I find an offset that works for me?
 
-If you need help with your delays, and have followed the suggested method above then you can ask for help in the `#support` channel in McSniperPY's Discord server.
+While finding an offset is now fairly easy, it still requires some manual tweaking. Start by running MCsniperPY `offset-test --aim-for .1` in your terminal. After a little bit it should say `[success] <offset> is a good offset!` Start with that offset and tweak based on if you're early or late. Compare the droptime of the name to the time of the requests. if you are late, then that means your offset is too low. if you are early, that means your offset is too high. Keep tweaking until you find something that works for you!
 
 ## Running the sniper
 

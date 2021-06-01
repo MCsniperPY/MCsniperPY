@@ -68,9 +68,7 @@ to `CONTRIBUTING.md`.
 
 ## Installing
 
-You will have to have a few things installed before running the sniper. This installation guide assumes that you are on a 64bit Windows system.
-
-First, you will need to install Python. It's recommended to use either version `3.8.5` or `3.8.6`. You must use a Python version above `3.0`. 
+Before you begin, make sure you have Python and Pip installed. To check if you have these installed run `python3 -V` and `python3 -m pip -V`. If you don't have these installed google "[How to install python and pip for &lt;insert your operating system here&gt;](https://www.google.com/search?q=how+to+install+python+and+pip+YourOS)". After that you can run this command to install MCsniperPY.
 
 ### Installing Python for Windows
 
@@ -102,17 +100,19 @@ sudo apt install -y python3 python3-pip
 
 ### Installing MCsniperPY
 
+## Windows
+
 You now need to open a command prompt. Navigate to the folder you want to install MCsniperPY on and open the folder and typing `cmd` in the path:
 
 <img src="https://i.imgur.com/qWfwXIL.png">
 
 Once you have a commant prompt open to the correct path, type the following commands:
 
-```shell
-YOURPYTHONPREFIX -m pip install mcsniperpy
+```
+py -m pip install mcsniperpy
 ```
 
-Replace `YOURPYTHONPREFIX` with `py` for Windows, and `python3` for MacOS or Linux.
+Many windows users will have to run `py -m mcsniperpy` instead of the `mcsniperpy` command in the future sections of this readme. you'll want to **always do this or it won't work.**
 
 If you get a message similar to this:
 
@@ -130,6 +130,18 @@ then you will need to download Microsoft Build Tools, you can do that by downloa
 
 Otherwise, you have installed the correct dependencies and can follow on with the tutorial.
 If you have a problem and can't figure it out, feel free to ask in `#support` in the McSniperPY Discord server.
+
+## MacOS and Linux
+
+```shell
+python3 -m pip install mcsniperpy
+```
+
+If you get a message saying something like `WARNING: The script mcsniperpy is installed in '/home/$USER/.local/bin' which is not on PATH.` then run the command below. If that fails, try replacing `bashrc` with `zshrc`.
+
+```shell
+echo "PATH=$PATH:/home/$USER/.local/bin" >> ~/.bashrc && source ~/.bashrc
+```
 
 ### Installing Dimension 4
 
@@ -151,55 +163,37 @@ You can check if your time is synced by visiting the following website:
 
 ## Setup
 
-You have to provide the sniper with accounts, you can also edit the config file if wanted. 
+Something that MCsniperPY does differently than other snipers is it's method for loading accounts and your configuration. Rather than requiring you to be in a certain directory with your config and accounts file, MCsniperPY requires you to initialize it in a directory which will act as your "home" directory \(not to be confused with your system's home directory\). When you run `mcsniperpy init`, MCsniperPY does a lot of stuff under the hood. It starts by making \(or not, if it already exists\) a directory in `$HOME` or `%userprofile%` called `.mcsniperpy` and putting a "backend" configuration file, which contains a path to your current working directory \(which is now your "home" directory for MCsniperPY\) in that directory. This is where MCsniperPY looks to figure out where your accounts and config are. If you move or delete this directory or config file your sniper will not function until you run `mcsniperpy init` again. After that, it makes your config and accounts file in your current directory. Whenever you run the `mcsniperpy snipe` command from now on it will check that config file to find your accounts and main config file.
 
-### Accounts
+### Initializing Your Sniper
 
-Open the file `accounts.txt` and put your accounts in.
-
-The order for accounts are:
-
-`email:password:sq1:sq2:sq3`
-
-Sq1, 2 and 3 being the answer to security questions. The order of these are the same order that they appear on the Minecraft website.
-The security questions are optional.
-
-Here's an example of a valid `accounts.txt`:
+Initializing your sniper is very simple. It's the same no matter what platform you're on. All you do is run the command shown below in a terminal / command prompt. It should do everything mentioned in "How Initialization Works."  to sum up that section, it makes a config and accounts file for you and then stores the path to both of those files so you don't have to worry about what directory you're in again!
 
 ```
-email@gmail.com:Password1
-email@hotmail.co.uk:Password2:Dogs:Cats:Llamas
+mcsniperpy init
 ```
+
+## Pre-snipe
+
+Before you start sniping, add your accounts to the accounts.txt file. Just open the `accounts.txt` file through your favorite program such as notepad or nano. The format for accounts.txt should be in the file, but in case it's not it is show below in the code block.
+
+Note: `accounts.txt` is located in the directory you initialized MCsniperPY in.
+
+```
+# You can comment out lines (the sniper ignores them) by prefixing them with a hashtag #
+# If you have security questions, then the format should look like as shown below:
+email:password:answer:answer:answer
+# Note: replace all of those answer's with the actual answers to your security questions.
+
+# If you don't have security questions the format will look like this:
+email:password
+
+# IMPORTANT!!! If there is a colon in your email or password THIS WILL NOT WORK.
+```
+
+Awesome! Now that you've put your account\(s\) in the accounts.txt file it's time to configure the sniper to your liking. Just look for a file named `config.ini` in the same folder / directory as your accounts.txt, and open it with a text editor \(notepad, or something else\). You can edit the values to your liking.
 
 ###### Note that currently only Mojang accounts are supported.
-
-### Config
-
-The config is where you can customise the sniper, it is found at `config.txt`.
-
-You can modify all of these values, please note that you shouldn't put quotes.
-
-Here's what all of the current features do:
-
-
-| Key | Possible Values| Explanation|
-| ------------- |:-------------:| -----:|
-| timing_system      | namemc | What timing system to use |
-| skin      | path      |  The path to a skin to upload when a snipe is successful|
-| skin_model | slim, classic      | What skin type to use when uploading |
-| change_skin | true, false    | Whether the sniper should change skin on a successful snipe |
-| snipe_reqs | number    | How many requests per account to send when sniping |
-| auth_delay | number    | Time in milliseconds to login to accounts before they release |
-| max_accs | number    | Maximum number of accounts to use when sniping |
-
-Optional features:
-
-| Key | Possible Values| Explanation|
-| ------------- |:-------------:| -----:|
-| custom_announce | token    | Your token for the Discord server's custom announcer |
-| wh | webhook | Discord Webhook URL  |
-
-To get a custom_announce token, join the Discord server and type `>generate` in the `#bot-commands` channel and follow the instructions that the bot DM's you. Make sure your DM's are open.
 
 ## Delays
 
@@ -219,22 +213,11 @@ If you need help with your delays, and have followed the suggested method above 
 
 ## Running the sniper
 
-To run the sniper you want to open a command prompt window where McSniperPY is located.
+Now that you've got everything setup, it's time to try a snipe! You can start the sniper with one simple command! Just run the command shown below, enter in the necessary values \(i'll cover offset later; it's the same as delay btw\), press enter, and wait for the name to drop! Hopefully you get the name 🤞
 
-You can do that like so:
-
-<img src="https://i.imgur.com/qWfwXIL.png">
-
-
-Once the window is open, you want to type the following command:
-
-```shell
-YOURPYTHONPREFIX -m mcsniperpy
+```text
+mcsniperpy snipe
 ```
-
-Assuming nothing went wrong, the sniper should now be running;
-
-<img src="https://i.imgur.com/3YZ0pP3.png">
 
 You can now follow the onscreen instructions.
 

@@ -44,6 +44,11 @@
 - **Open source** • MCsniperPY is open source, meaning you can look at everything that goes on behind the scenes to get you a name. This means you can be sure it doesn't steal your account.
 - **Fast** • MCsniperPY is fast, but not so fast that your requests run out instantly.
 
+## Contributing
+
+MCsniperPY is looking for people to help code it! If you want to contribute something (not just code) refer
+to `CONTRIBUTING.md`.
+
 ## Table of Contents
 
 <ul>

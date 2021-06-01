@@ -61,7 +61,6 @@ to `CONTRIBUTING.md`.
     <li><a href="#Offset">Offset</a></li>
     <li><a href="#Running-the-sniper">Running the sniper</a></li>
     <li><a href="#Command-line-arguments">Command line arguments</a></li>
-    <li><a href="#Understanding-the-logs">Understanding the logs</a></li>
     <li><a href="#Development-install">Development install</a></li>
   </ul>
 
@@ -208,23 +207,7 @@ Other people's delays in most cases won't work on your machine. Delays can depen
 
 While finding an offset is now fairly easy, it still requires some manual tweaking. Start by running MCsniperPY `offset-test --aim-for .1` in your terminal. After a little bit it should say `[success] <offset> is a good offset!` Start with that offset and tweak based on if you're early or late. Compare the droptime of the name to the time of the requests. if you are late, then that means your offset is too low. if you are early, that means your offset is too high. Keep tweaking until you find something that works for you!
 
-## Running the sniper
-
-Now that you've got everything setup, it's time to try a snipe! You can start the sniper with one simple command! Just run the command shown below, enter in the necessary values \(i'll cover offset later; it's the same as delay btw\), press enter, and wait for the name to drop! Hopefully you get the name 🤞
-
-```text
-mcsniperpy snipe
-```
-
-You can now follow the onscreen instructions.
-
-## Command line arguments
-
-```shell
-YOURPYTHONPREFIX -m mcsniperpy --help
-```
-
-## Understanding the logs
+### Understanding the logs
 
 When you attempt to snipe a name, you are given information about the requests that McSniperPY sends to Mojang's API. This information is in the following format: 
 
@@ -242,6 +225,22 @@ When the sniper sends requests to a server, it returns a HTTP Status Code. Mojan
 | 403 | Failed to snipe name|
 | 429 | Account or IP is rate limited|
 | 500| Minecraft API issue|
+
+## Running the sniper
+
+Now that you've got everything setup, it's time to try a snipe! You can start the sniper with one simple command! Just run the command shown below, enter in the necessary values \(i'll cover offset later; it's the same as delay btw\), press enter, and wait for the name to drop! Hopefully you get the name 🤞
+
+```text
+mcsniperpy snipe
+```
+
+You can now follow the onscreen instructions.
+
+## Command line arguments
+
+```shell
+YOURPYTHONPREFIX -m mcsniperpy --help
+```
 
 ## Development install
 

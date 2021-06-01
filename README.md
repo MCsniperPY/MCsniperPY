@@ -59,7 +59,7 @@ to `CONTRIBUTING.md`.
     <li><a href="#Installing">Installing</a></li>
     <li><a href="#Setup">Setup</a></li>
     <li><a href="#Config">Config</a></li>
-    <li><a href="#Delays">Delays</a></li>
+    <li><a href="#Offset">Offset</a></li>
     <li><a href="#Running-the-sniper">Running the sniper</a></li>
     <li><a href="#Command-line-arguments">Command line arguments</a></li>
     <li><a href="#Understanding-the-logs">Understanding the logs</a></li>

@@ -173,7 +173,7 @@ Initializing your sniper is very simple. It's the same no matter what platform y
 mcsniperpy init
 ```
 
-## Pre-snipe
+### Pre-snipe
 
 Before you start sniping, add your accounts to the accounts.txt file. Just open the `accounts.txt` file through your favorite program such as notepad or nano. The format for accounts.txt should be in the file, but in case it's not it is show below in the code block.
 

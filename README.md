@@ -61,7 +61,7 @@ to `CONTRIBUTING.md`.
     <li><a href="#Config">Config</a></li>
     <li><a href="#Delays">Delays</a></li>
     <li><a href="#Running-the-sniper">Running the sniper</a></li>
-    <li><a href="#Command-line-arguments-help">Command line arguments help</a></li>
+    <li><a href="#Command-line-arguments">Command line arguments</a></li>
     <li><a href="#Understanding-the-logs">Understanding the logs</a></li>
     <li><a href="#Development-install">Development install</a></li>
   </ul>
@@ -238,7 +238,7 @@ Assuming nothing went wrong, the sniper should now be running;
 
 You can now follow the onscreen instructions.
 
-## Command line arguments help
+## Command line arguments
 
 ```shell
 YOURPYTHONPREFIX -m mcsniperpy --help

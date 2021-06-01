@@ -62,18 +62,11 @@ to `CONTRIBUTING.md`.
 
 ## Installing
 
-### Linux easy installation
-
-Run `bash -c "curl -sLo mcsniperpy.sh https://raw.githubusercontent.com/MCsniperPY/MCsniperPY/master/install.sh && chmod +x mcsniperpy.sh && ./mcsniperpy.sh"` in your terminal to install the sniper. To run it again just type `./mcsniperpy.sh`.
-
-
-### Windows installation
-
 You will have to have a few things installed before running the sniper. This installation guide assumes that you are on a 64bit Windows system.
 
 First, you will need to install Python. It's recommended to use either version `3.8.5` or `3.8.6`. You must use a Python version above `3.0`. 
 
-### Installing Python
+### Installing Python for Windows
 
 Go to the following link and download Python:
 
@@ -83,42 +76,40 @@ Once you have opened the installer, make sure that you add Python to path. Your 
 
 <img align="center" src="https://i.imgur.com/iefWNyw.png">
 
-Run through the installer as normal, then download the McSniperPY files.
+### Installing Python for MacOS.
 
-### Downloading McSniperPY
+Go to the following link and download Python:
 
-Download the following file:
+`https://www.python.org/ftp/python/3.8.5/python-3.8.5-macosx10.9.pkg`
 
-`https://github.com/MCsniperPY/MCsniperPY/archive/master.zip`
+Once you have opened the installer, make sure that you add Python to path.
 
-Extract the folder to somewhere easily accessible, such as your desktop.
+### Installing Python for Linux
 
-You should have a folder containing the following files:
+Since there are so many package installers for Linux, we are going to use `apt` for Debian-derived distros such as Ubuntu as an example.
 
-<img src="https://i.imgur.com/pdB8Y8P.png">
+Go to the terminal and type in the following:
 
-If you have more files than this don't worry, the sniper has most likely been updated since this guide was written.
-If your folder doesn't have a file called `accounts.txt`, then create one.
+```shell
+sudo apt install -y python3 python3-pip
+```
 
-### Installing dependencies
+### Installing MCsniperPY
 
-You now need to open a command prompt to the McSniperPY path. An easy way to do this is by opening the folder and typing `cmd` in the path:
+You now need to open a command prompt. Navigate to the folder you want to install MCsniperPY on and open the folder and typing `cmd` in the path:
 
 <img src="https://i.imgur.com/qWfwXIL.png">
 
-Your command prompt should have a line similar to this:
+Once you have a commant prompt open to the correct path, type the following commands:
 
-`C:\Users\%USERNAME%\%PATH%\MCsniperPY-master>`
+```shell
+# First, find your python prefix. for windows it's `py`, for everything else, it's `python3`
+YOURPYTHONPREFIX -m pip install mcsniperpy
+```
 
-If there is nothing after your Windows username, you will have to type the following command:
+Replace `YOURPYTHONPREFIX` with `py` for Windows, and `python3` or `python` for MacOS or Linux.
 
-`cd path_to_folder`
-
-Once you have a commant prompt open to the correct path, you should type the following command:
-
-`py -m pip install -r requirements.txt`
-
-If you get the following message:
+If you get a message similar to this:
 
 `'py' is not recognized as an internal or external command, operable program or batch file.`
 
@@ -232,13 +223,21 @@ You can do that like so:
 
 Once the window is open, you want to type the following command:
 
-`py snipe.py`
+```shell
+YOURPYTHONPREFIX -m mcsniperpy
+```
 
 Assuming nothing went wrong, the sniper should now be running;
 
 <img src="https://i.imgur.com/3YZ0pP3.png">
 
 You can now follow the onscreen instructions.
+
+## Command line arguments help
+
+```shell
+YOURPYTHONPREFIX -m mcsniperpy --help
+```
 
 ## Understanding the logs
 

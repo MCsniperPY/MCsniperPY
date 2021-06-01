@@ -103,7 +103,6 @@ You now need to open a command prompt. Navigate to the folder you want to instal
 Once you have a commant prompt open to the correct path, type the following commands:
 
 ```shell
-# First, find your python prefix. for windows it's `py`, for everything else, it's `python3`
 YOURPYTHONPREFIX -m pip install mcsniperpy
 ```
 

@@ -58,7 +58,6 @@ to `CONTRIBUTING.md`.
 <ul>
     <li><a href="#Installing">Installing</a></li>
     <li><a href="#Setup">Setup</a></li>
-    <li><a href="#Config">Config</a></li>
     <li><a href="#Offset">Offset</a></li>
     <li><a href="#Running-the-sniper">Running the sniper</a></li>
     <li><a href="#Command-line-arguments">Command line arguments</a></li>

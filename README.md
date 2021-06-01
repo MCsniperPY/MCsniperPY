@@ -85,8 +85,6 @@ Go to the following link and download Python:
 
 `https://www.python.org/ftp/python/3.8.5/python-3.8.5-macosx10.9.pkg`
 
-Once you have opened the installer, make sure that you add Python to path.
-
 ### Installing Python for Linux
 
 Since there are so many package installers for Linux, we are going to use `apt` for Debian-derived distros such as Ubuntu as an example.

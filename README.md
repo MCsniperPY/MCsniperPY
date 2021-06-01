@@ -57,7 +57,9 @@ to `CONTRIBUTING.md`.
     <li><a href="#Config">Config</a></li>
     <li><a href="#Delays">Delays</a></li>
     <li><a href="#Running-the-sniper">Running the sniper</a></li>
+    <li><a href="#Command-line-arguments-help">Command line arguments help</a></li>
     <li><a href="#Understanding-the-logs">Understanding the logs</a></li>
+    <li><a href="#Development-install">Development install</a></li>
   </ul>
 
 ## Installing

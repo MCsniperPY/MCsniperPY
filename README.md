@@ -112,7 +112,7 @@ Once you have a commant prompt open to the correct path, type the following comm
 YOURPYTHONPREFIX -m pip install mcsniperpy
 ```
 
-Replace `YOURPYTHONPREFIX` with `py` for Windows, and `python3` or `python` for MacOS or Linux.
+Replace `YOURPYTHONPREFIX` with `py` for Windows, and `python3` for MacOS or Linux.
 
 If you get a message similar to this:
 

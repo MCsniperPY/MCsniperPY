@@ -49,6 +49,10 @@
 MCsniperPY is looking for people to help code it! If you want to contribute something (not just code) refer
 to `CONTRIBUTING.md`.
 
+## Video guides
+
+- [Installing MCsniperPY for Windows by @Jowz](https://www.youtube.com/watch?v=1FY9IqbOMtI)
+
 ## Table of Contents
 
 <ul>

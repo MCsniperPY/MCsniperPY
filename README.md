@@ -60,8 +60,7 @@ to `CONTRIBUTING.md`.
     <li><a href="#Setup">Setup</a></li>
     <li><a href="#Offset">Offset</a></li>
     <li><a href="#Running-the-sniper">Running the sniper</a></li>
-    <li><a href="#Command-line-arguments">Command line arguments</a></li>
-    <li><a href="#Development-install">Development install</a></li>
+    <li><a href="#For-advanced-users">For advanced users</a></li>
   </ul>
 
 ## Installing
@@ -236,13 +235,17 @@ mcsniperpy snipe
 
 You can now follow the onscreen instructions.
 
-## Command line arguments
+## For advanced users
+
+For this section, replace `YOYRPYTHONPREFIX` with `py` for Windows and `python3` for MacOS or Linux.
+
+### Command line arguments
 
 ```shell
 YOURPYTHONPREFIX -m mcsniperpy --help
 ```
 
-## Development install
+### Development install
 
 ```shell
 # You need git, python, and pip installed for this to work

@@ -81,13 +81,17 @@ class Account:
         ]
 
         if resp.status == 200:
-            return len(self.questions) == 0
-        log.error(f"failed to get security questions for {self.email}")
+            return len(self.questions) > 0
+
+        if self.is_submit_needed:
+            log.error(f"failed to get security questions for {self.email}")
 
     async def need_to_submit_sqs(self, session) -> bool:
         resp, _, _ = await session.get(
             "https://api.mojang.com/user/security/location", headers=self.headers
         )
+
+        self.is_submit_needed = resp.status == 403
 
         return resp.status == 403
 
@@ -126,14 +130,20 @@ class Account:
             )
         else:
             if await self.get_questions(session):
-                if await self.submit_questions(session):
+                if self.is_submit_needed:
+                    if await self.submit_questions(session):
+                        log.info(
+                            f"{color.white}[{color.l_green}success{color.white}]"
+                            f"{color.reset} authenticated {self.email}"
+                            " with security questions"
+                        )
+                    else:
+                        log.error(f"failed to authenticate {self.email}")
+                else:
                     log.info(
                         f"{color.white}[{color.l_green}success{color.white}]"
                         f"{color.reset} authenticated {self.email}"
-                        " with security questions"
                     )
-                else:
-                    log.error(f"failed to authenticate {self.email}")
             else:
                 log.info(
                     f"{color.white}[{color.l_green}success{color.white}]"
@@ -164,6 +174,9 @@ class Account:
     async def change_skin_url(self, variant, skin, session):
         headers = self.headers
         headers["Content-Type"] = "application/json"
+        if "namemc.com/skin" in skin:
+            skin_id = skin.split('/')[-1]
+            skin = f"https://texture.namemc.com/6c/ed/{skin_id}.png"
         post_json = {
             "variant": variant,
             "url": skin

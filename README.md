@@ -85,17 +85,18 @@ Go to the following link and download Python:
 
 ### Installing Python for Linux
 
-Since there are so many package installers for Linux, we are going to use `apt` for Debian-derived distros such as Ubuntu as an example.
+Since there are so many package installers for Linux, we are going to use `apt` used in Debian-derived distros such as Ubuntu as an example.
 
 Go to the terminal and type in the following:
 
 ```shell
+sudo apt update && sudo apt upgrade
 sudo apt install -y python3 python3-pip
 ```
 
 ### Installing MCsniperPY
 
-## Windows
+#### Windows
 
 You now need to open a command prompt. Navigate to the folder you want to install MCsniperPY on and open the folder and typing `cmd` in the path:
 
@@ -126,7 +127,7 @@ then you will need to download Microsoft Build Tools, you can do that by downloa
 Otherwise, you have installed the correct dependencies and can follow on with the tutorial.
 If you have a problem and can't figure it out, feel free to ask in `#support` in the McSniperPY Discord server.
 
-## MacOS and Linux
+#### MacOS and Linux
 
 ```shell
 python3 -m pip install mcsniperpy
@@ -134,8 +135,15 @@ python3 -m pip install mcsniperpy
 
 If you get a message saying something like `WARNING: The script mcsniperpy is installed in '/home/$USER/.local/bin' which is not on PATH.` then run the command below. If that fails, try replacing `bashrc` with `zshrc`.
 
+
+> For Linux
 ```shell
 echo "PATH=$PATH:/home/$USER/.local/bin" >> ~/.bashrc && source ~/.bashrc
+```
+
+> For MACOS 
+```shell
+echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.zshrc && source ~/.zshrc
 ```
 
 ### Installing Dimension 4
@@ -158,11 +166,13 @@ You can check if your time is synced by visiting the following website:
 
 ## Setup
 
+> Note: You do not _need_ to read this paragraph to use the sniper. It may be helpful to you in the future though.
+
 Something that MCsniperPY does differently than other snipers is it's method for loading accounts and your configuration. Rather than requiring you to be in a certain directory with your config and accounts file, MCsniperPY requires you to initialize it in a directory which will act as your "home" directory \(not to be confused with your system's home directory\). When you run `mcsniperpy init`, MCsniperPY does a lot of stuff under the hood. It starts by making \(or not, if it already exists\) a directory in `$HOME` or `%userprofile%` called `.mcsniperpy` and putting a "backend" configuration file, which contains a path to your current working directory \(which is now your "home" directory for MCsniperPY\) in that directory. This is where MCsniperPY looks to figure out where your accounts and config are. If you move or delete this directory or config file your sniper will not function until you run `mcsniperpy init` again. After that, it makes your config and accounts file in your current directory. Whenever you run the `mcsniperpy snipe` command from now on it will check that config file to find your accounts and main config file.
 
 ### Initializing Your Sniper
 
-Initializing your sniper is very simple. It's the same no matter what platform you're on. All you do is run the command shown below in a terminal / command prompt. It should do everything mentioned in "How Initialization Works."  to sum up that section, it makes a config and accounts file for you and then stores the path to both of those files so you don't have to worry about what directory you're in again!
+Initializing your sniper is very simple. It's the same no matter what platform you're on. All you do is run the command shown below in a terminal / command prompt. It should do everything mentioned in "How Initialization Works" in the MCsniperPY documentation. to sum up that section, it makes a config and accounts file for you and then stores the path to both of those files so you don't have to worry about what directory you're in again!
 
 ```
 mcsniperpy init
@@ -204,7 +214,7 @@ Other people's delays in most cases won't work on your machine. Delays can depen
 
 ### How do I find an offset that works for me?
 
-While finding an offset is now fairly easy, it still requires some manual tweaking. Start by running MCsniperPY `offset-test --aim-for .1` in your terminal. After a little bit it should say `[success] <offset> is a good offset!` Start with that offset and tweak based on if you're early or late. Compare the droptime of the name to the time of the requests. if you are late, then that means your offset is too low. if you are early, that means your offset is too high. Keep tweaking until you find something that works for you!
+While finding an offset is now fairly easy, it still requires some manual tweaking. Start by running `mcsniperpy offset-test --aim-for .1` in your terminal. After a little bit it should say `[success] <offset> is a good offset!` Start with that offset and tweak based on if you're early or late. Compare the droptime of the name to the time of the requests. if you are late, then that means your offset is too low. if you are early, that means your offset is too high. Keep tweaking until you find something that works for you!
 
 ### Understanding the logs
 

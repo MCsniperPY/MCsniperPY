@@ -1,0 +1,4 @@
+typer
+colorama
+aiohttp
+bs4

@@ -7,17 +7,19 @@ here = pathlib.Path(__file__).parent.resolve()
 # Get the long description from the README file
 long_description = (here / "README.md").read_text(encoding="utf-8")
 
+install_requires = [line.strip() for line in open("requirements.txt").readlines()]
+
 setup(
     name="MCsniperPY",
-    version="0.20.8",
+    version="0.20.9",
     description="Minecraft name sniper written in Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/MCsniperPY/MCsniperPY",
+    url="https://mcsniperpy.com",
     author="Kqzz",
     license="MIT",
     packages=["mcsniperpy", "mcsniperpy.util", "mcsniperpy.util.classes"],
-    install_requires=["typer", "aiohttp", "colorama", "bs4"],
+    install_requires=install_requires,
     entry_points={"console_scripts": ["mcsniperpy=mcsniperpy.cli:cli"]},
     python_requires=">=3.8",
     classifiers=[
@@ -26,4 +28,8 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
+    project_urls={
+        'GitHub': 'https://github.com/MCsniperPY/MCsniperPY',
+        'Documentation': 'https://docs.mcsniperpy.com'
+        }
 )

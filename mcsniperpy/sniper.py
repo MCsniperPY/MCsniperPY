@@ -38,7 +38,7 @@ class Sniper:
 
         # accounts
 
-        self.max_accounts = 30
+        self.max_accounts = 1
         self.authentication_delay = 500
         self.start_authentication = 720 * 60
 
@@ -80,7 +80,7 @@ class Sniper:
         # accounts
 
         self.max_accounts = self.user_config.config["accounts"].getint(
-            "max_accounts", "30"
+            "max_accounts", "1"
         )
         self.authentication_delay = self.user_config.config["accounts"].getint(
             "authentication_delay", "500"
@@ -105,11 +105,11 @@ class Sniper:
         if self.skin_change_type == "file":
             with open(
                 os.path.join(
-                        self.config.config["sniper"].get(
-                            "init_path", ""
-                            ),
-                        self.skin
+                    self.config.config["sniper"].get(
+                        "init_path", ""
                     ),
+                    self.skin
+                ),
                 "rb"
             ) as f:
                 self.skin = f.read
@@ -170,9 +170,10 @@ class Sniper:
             os.path.join(self.config.config["sniper"].get(
                 "init_path"), "accounts.txt")
         )
-        if len(self.accounts) > 1:
-            self.log.info("Using more than one account isn't recommended!")
-            
+        if len(self.accounts) > self.max_accounts:
+            self.log.warn("Using more than 1 account is entirely innefective!")
+            self.log.warn("For the best chances use only 1 account.")
+
         droptime = await {
             "kqzz_api": api_timing,
             "namemc": namemc_timing,

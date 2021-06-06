@@ -5,7 +5,7 @@ name: Upload Python Package
 
 on:
   push:
-    branches: recode
+    branches: main
     tags:
         - '*'
   workflow_dispatch:

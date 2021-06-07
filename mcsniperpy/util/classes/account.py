@@ -1,6 +1,6 @@
 import asyncio
 import ssl
-import time
+from datetime import datetime
 from typing import Tuple
 from aiohttp import FormData
 
@@ -217,7 +217,7 @@ class Account:
         writer.write(self.snipe_data[-2:])
         await writer.drain()
         if do_log:
-            log.info(f"sent request @ {time.time()}")
+            log.info(f"sent request @ {datetime.now()}")
 
     async def snipe_read(
         self,
@@ -227,7 +227,7 @@ class Account:
         do_log: bool = True,
     ) -> Tuple[bool, str, float]:
         resp = await reader.read(12)
-        now = time.time()
+        now = datetime.now()
         status = int(resp[9:12])
         is_success = status < 300
 
@@ -242,5 +242,5 @@ class Account:
             )
             pretty_name = "%s%s%s" % (color.l_cyan, name, color.reset)
 
-            log.info("[%s] [%s] @ %.10f" % (pretty_name, pretty_status, now))
-        return is_success, self.email, now
+            log.info("[%s] [%s] @ %s" % (pretty_name, pretty_status, now))
+        return is_success, self.email, now.timestamp()

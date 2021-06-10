@@ -1,2 +1,4 @@
-print("If you're seeing this, you may be following an outdated guide")
-print("check out the README for a video guide & written guide AT https://mcsniperpy.com/git")
+print("IF YOU SEE THIS MESSAGE YOU DID NOT PROPERLY INSTALL THE SNIPER.")
+print("THE VIDEO / WRITTEN GUIDE YOU WERE FOLLOWING WAS OUT OF DATE")
+print("GO TO THE README @ https://mcsniperpy.com/git AND FOLLOW THE INSTRUCTIONS THERE")
+input("")

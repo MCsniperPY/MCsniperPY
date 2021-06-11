@@ -49,6 +49,16 @@
 MCsniperPY is looking for people to help code it! If you want to contribute something (not just code) refer
 to `CONTRIBUTING.md`.
 
+## Support the project
+
+If you would like to support the development of MCsniperPY, and my (Kqzz) other projects, you can use one of these affiliate codes below or donate through Brave tips, GitHub sponsors, or another cryptocurrency.
+
+If you're interested in running MCsniperPY on a server (FOR FREE) that will have much better / more consistent connectivity check out these two places:
+- **[Digitalocean](https://m.do.co/c/c6b4729acf8c)**: https://m.do.co/c/c6b4729acf8c
+- **[Vultr](https://www.vultr.com/?ref=8671284-6G)**: https://www.vultr.com/?ref=8671284-6G
+
+By signing up with that link you are supporting me _and_ getting free vps to host the sniper on!
+
 ## Video guides
 
 - [Installing MCsniperPY for Windows by @Jowz](https://www.youtube.com/watch?v=1FY9IqbOMtI)

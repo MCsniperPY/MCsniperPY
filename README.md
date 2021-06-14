@@ -30,7 +30,7 @@
 		src="https://img.shields.io/pypi/pyversions/MCsniperPY?color=%2370a1d2&label=Python%20%F0%9F%90%8D"></a>
     <a href="https://mcsniperpy.com/discord"><img src="https://img.shields.io/discord/734794891258757160?color=%2370a1d2&label=Discord&logo=discord&logoColor=white"></a>
 	    <img alt="PyPI - License" src="https://img.shields.io/pypi/l/MCsniperPY?color=%2370a1d2">
-		<a href="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/overview/recode"><img src="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/badge/recode" alt="CodeFactor" /></a>
+		<a href="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/overview/main"><img src="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/badge/main" alt="CodeFactor" /></a>
   <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/MCsniperPY?logo=python&logoColor=%2370a1d2">
 </p>
 

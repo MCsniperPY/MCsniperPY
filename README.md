@@ -277,4 +277,4 @@ YOURPYTHONCOMMAND -m mcsniperpy --help
 # You can now edit code / add features / whatever
 ```
 
-> Thanks to [sneakers](https://github.com/sneakers) for writing these docs!
+> Thanks to [sneakers](https://github.com/sneakers) and [tropicbliss](https://github.com/tropicbliss) for writing these docs!

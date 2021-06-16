@@ -176,7 +176,7 @@ class Account:
         headers["Content-Type"] = "application/json"
         if "namemc.com/skin" in skin:
             skin_id = skin.split('/')[-1]
-            skin = f"https://texture.namemc.com/6c/ed/{skin_id}.png"
+            skin = f"https://namemc.com/texture/{skin_id}.png"
         post_json = {
             "variant": variant,
             "url": skin

@@ -30,7 +30,7 @@
 		src="https://img.shields.io/pypi/pyversions/MCsniperPY?color=%2370a1d2&label=Python%20%F0%9F%90%8D"></a>
     <a href="https://mcsniperpy.com/discord"><img src="https://img.shields.io/discord/734794891258757160?color=%2370a1d2&label=Discord&logo=discord&logoColor=white"></a>
 	    <img alt="PyPI - License" src="https://img.shields.io/pypi/l/MCsniperPY?color=%2370a1d2">
-		<a href="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/overview/recode"><img src="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/badge/recode" alt="CodeFactor" /></a>
+		<a href="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/overview/main"><img src="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/badge/main" alt="CodeFactor" /></a>
   <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/MCsniperPY?logo=python&logoColor=%2370a1d2">
 </p>
 
@@ -48,6 +48,16 @@
 
 MCsniperPY is looking for people to help code it! If you want to contribute something (not just code) refer
 to `CONTRIBUTING.md`.
+
+## Support the project
+
+If you would like to support the development of MCsniperPY, and my (Kqzz) other projects, you can use one of these affiliate codes below or donate through Brave tips, GitHub sponsors, or another cryptocurrency.
+
+If you're interested in running MCsniperPY on a server (FOR FREE) that will have much better / more consistent connectivity check out these two places:
+- **[Digitalocean](https://m.do.co/c/c6b4729acf8c)**: https://m.do.co/c/c6b4729acf8c
+- **[Vultr](https://www.vultr.com/?ref=8671284-6G)**: https://www.vultr.com/?ref=8671284-6G
+
+By signing up with that link you are supporting me _and_ getting free vps to host the sniper on!
 
 ## Video guides
 
@@ -267,4 +277,4 @@ YOURPYTHONCOMMAND -m mcsniperpy --help
 # You can now edit code / add features / whatever
 ```
 
-> Thanks to [sneakers](https://github.com/sneakers) for writing these docs!
+> Thanks to [sneakers](https://github.com/sneakers) and [tropicbliss](https://github.com/tropicbliss) for writing these docs!

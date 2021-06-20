@@ -210,6 +210,75 @@ Awesome! Now that you've put your account\(s\) in the accounts.txt file it's tim
 
 ###### Note that currently only Mojang accounts are supported.
 
+
+## Config.ini
+
+
+
+```ini
+[sniper]
+timing_system = teun
+auto_claim_namemc = no
+snipe_requests = 3
+```
+**timing_system:** `kqzz_api` / `namemc` / `teun` (namemc does not work at times because cloudflare blocks the scraper, `teun` is the default value and works most of the time)
+
+**auto_claim_namemc:** whether the namemc account is claimed automatically
+
+**snipe_requests:** the amount of requests for every account in your `accounts.txt` File. (For Example: 10 Accounts = 30 Requests)
+
+
+
+```ini
+[accounts]
+max_accounts = 30
+authentication_delay = 500
+start_authentication = 720
+```
+**max_accounts:** The maximum number of accounts in your `accounts.txt` file
+
+**authentication_delay:** the delay it waits for your accounts to authenticate
+
+**start_authentication:** delay to wait before starting the authentication process
+
+
+```ini
+[skin]
+change_skin_on_snipe = yes
+skin_change_type = username
+skin = notch
+skin_variant = slim
+```
+**change_skin_on_snipe:** `yes` or `no` to automatically change the skin on snipe
+
+**skin_change_type:** `username` / `url` / `path`
+
+**skin:** depends on what you put at **skin_change_type**
+- username: just the ign of another player
+- url: complete url to a skin file (For Example https://texture.namemc.com/e2/5b/e25b74257e66f379.png)
+- path: path to a skin file (For Example "skin.png", if the file is in the same directory)
+
+
+**skin_variant:** `slim / classic`
+```ini
+[announce]
+announce_snipe = no
+announcement_code = 
+webhook_urls = 
+webhook_format = sniped `{name}` with `{searches}` searches!
+```
+
+**announce_snipe:** `yes` / `no`, can be used for webhooks
+
+**announcement_code:** what to send
+
+**webhook_urls:** your webhook url
+
+**webhook_format:** what your webhook should look like
+
+
+
+
 ## Offset
 
 An offset is the time in milliseconds that the sniper starts to send requests before the name drop time. If a name drops at `10:00:59` and you tell the sniper to use a delay of `1000`, the sniper will start sending the requests at `10:00:58` because 1000 milliseconds = 1 second.
@@ -270,7 +339,7 @@ YOURPYTHONPREFIX -m mcsniperpy --help
 ```shell
 # You need git, python, and pip installed for this to work
 git clone https://github.com/MCsniperPY/MCsniperPY.git
-cd ./MCSniperPY
+cd ./MCsniperPY
 git checkout recode
 YOURPYTHONCOMMAND -m pip install --editable .
 YOURPYTHONCOMMAND -m mcsniperpy --help

@@ -246,7 +246,7 @@ start_authentication = 720
 [skin]
 change_skin_on_snipe = yes
 skin_change_type = username
-skin = treppiii
+skin = notch
 skin_variant = slim
 ```
 **change_skin_on_snipe:** `yes` or `no` to automatically change the skin on snipe

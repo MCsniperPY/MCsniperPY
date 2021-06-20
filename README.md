@@ -211,7 +211,7 @@ Awesome! Now that you've put your account\(s\) in the accounts.txt file it's tim
 ###### Note that currently only Mojang accounts are supported.
 
 
-## The config.ini File
+## Config.ini
 
 
 ```ini
@@ -220,9 +220,9 @@ timing_system = teun
 auto_claim_namemc = no
 snipe_requests = 3
 ```
-**timing_system: ** `kqzz_api` / `namemc` / `teun` (namemc does not work at times because cloudflare blocks the scraper, `teun` is the default value and works most of the time)
-**auto_claim_namemc: ** wheter the namemc account is claimed automatically
-**snipe_requests: ** the amount of requests for every account in your `accounts.txt` File. (For Example: 10 Accounts = 30 Requests)
+**timing_system:** `kqzz_api` / `namemc` / `teun` (namemc does not work at times because cloudflare blocks the scraper, `teun` is the default value and works most of the time)
+**auto_claim_namemc:** wheter the namemc account is claimed automatically
+**snipe_requests:** the amount of requests for every account in your `accounts.txt` File. (For Example: 10 Accounts = 30 Requests)
 
 
 
@@ -232,9 +232,9 @@ max_accounts = 30
 authentication_delay = 500
 start_authentication = 720
 ```
-**max_accounts: ** The maximum number of accoutns in your `accounts.txt` file
-**authentication_delay: ** the delay it waits for your accounts to authenticate
-**start_authentication: ** delay to wait before starting the authentication process
+**max_accounts:** The maximum number of accoutns in your `accounts.txt` file
+**authentication_delay:** the delay it waits for your accounts to authenticate
+**start_authentication:** delay to wait before starting the authentication process
 
 ```ini
 [skin]
@@ -243,13 +243,13 @@ skin_change_type = username
 skin = treppiii
 skin_variant = slim
 ```
-**change_skin_on_snipe: ** `yes` or `no` to automatically change the skin on snipe
-**skin_change_type: ** `username` / `url` / `path`
-**skin: ** depends on what you put at **skin_change_type**
+**change_skin_on_snipe:** `yes` or `no` to automatically change the skin on snipe
+**skin_change_type:** `username` / `url` / `path`
+**skin:** depends on what you put at **skin_change_type**
 - username: just the ign of another player
 - url: complete url to a skin file (For Example https://texture.namemc.com/e2/5b/e25b74257e66f379.png)
 - path: path to a skin file (For Example "skin.png", if the file is in the same directory)
-**skin_variant: ** `slim / classic`
+**skin_variant:** `slim / classic`
 ```ini
 [announce]
 announce_snipe = no
@@ -257,10 +257,10 @@ announcement_code =
 webhook_urls = 
 webhook_format = sniped `{name}` with `{searches}` searches!
 ```
-**announce_snipe: ** `yes` / `no`, can be used for webhooks
-**announcement_code: ** what to send
-**webhook_urls: ** your webhook url
-**webhook_format: ** what your webhook should look like
+**announce_snipe:** `yes` / `no`, can be used for webhooks
+**announcement_code:** what to send
+**webhook_urls:** your webhook url
+**webhook_format:** what your webhook should look like
 
 
 

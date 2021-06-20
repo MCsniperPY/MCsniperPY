@@ -223,7 +223,7 @@ snipe_requests = 3
 ```
 **timing_system:** `kqzz_api` / `namemc` / `teun` (namemc does not work at times because cloudflare blocks the scraper, `teun` is the default value and works most of the time)
 
-**auto_claim_namemc:** wheter the namemc account is claimed automatically
+**auto_claim_namemc:** whether the namemc account is claimed automatically
 
 **snipe_requests:** the amount of requests for every account in your `accounts.txt` File. (For Example: 10 Accounts = 30 Requests)
 
@@ -235,7 +235,7 @@ max_accounts = 30
 authentication_delay = 500
 start_authentication = 720
 ```
-**max_accounts:** The maximum number of accoutns in your `accounts.txt` file
+**max_accounts:** The maximum number of accounts in your `accounts.txt` file
 
 **authentication_delay:** the delay it waits for your accounts to authenticate
 

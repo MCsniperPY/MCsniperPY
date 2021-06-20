@@ -270,7 +270,7 @@ YOURPYTHONPREFIX -m mcsniperpy --help
 ```shell
 # You need git, python, and pip installed for this to work
 git clone https://github.com/MCsniperPY/MCsniperPY.git
-cd ./MCSniperPY
+cd ./MCsniperPY
 git checkout recode
 YOURPYTHONCOMMAND -m pip install --editable .
 YOURPYTHONCOMMAND -m mcsniperpy --help

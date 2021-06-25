@@ -231,15 +231,15 @@ snipe_requests = 3
 
 ```ini
 [accounts]
-max_accounts = 30
+max_accounts = 1
 authentication_delay = 500
 start_authentication = 720
 ```
-**max_accounts:** The maximum number of accounts in your `accounts.txt` file
+**max_accounts:** The maximum number of accounts allowed in your `accounts.txt` file before MCsniperPY warns you (1 is recommended)
 
-**authentication_delay:** the delay it waits for your accounts to authenticate
+**authentication_delay:** milliseconds between authorizing each account
 
-**start_authentication:** delay to wait before starting the authentication process
+**start_authentication:** minutes before droptime to authenticate
 
 
 ```ini
@@ -255,8 +255,8 @@ skin_variant = slim
 
 **skin:** depends on what you put at **skin_change_type**
 - username: just the ign of another player
-- url: complete url to a skin file (For Example https://texture.namemc.com/e2/5b/e25b74257e66f379.png)
-- path: path to a skin file (For Example "skin.png", if the file is in the same directory)
+- url: complete url to a skin file or namemc url (For Example https://texture.namemc.com/6e/b7/6eb76940096ed6ac.png or https://namemc.com/skin/6eb76940096ed6ac)
+- path: path to a skin file (For Example `C:/Users/kqzz/Desktop/skin.png`)
 
 
 **skin_variant:** `slim / classic`
@@ -268,13 +268,13 @@ webhook_urls =
 webhook_format = sniped `{name}` with `{searches}` searches!
 ```
 
-**announce_snipe:** `yes` / `no`, can be used for webhooks
+**announce_snipe:** `yes` / `no` announce snipe throught custom announce
 
-**announcement_code:** what to send
+**announcement_code:** announcement code (cannot be generated atm)
 
-**webhook_urls:** your webhook url
+**webhook_urls:** webhook urls, separated by commas (if you have one url, then no need for any comma)
 
-**webhook_format:** what your webhook should look like
+**webhook_format:** webhook format. see example above.
 
 
 
@@ -283,7 +283,7 @@ webhook_format = sniped `{name}` with `{searches}` searches!
 
 An offset is the time in milliseconds that the sniper starts to send requests before the name drop time. If a name drops at `10:00:59` and you tell the sniper to use a delay of `1000`, the sniper will start sending the requests at `10:00:58` because 1000 milliseconds = 1 second.
 
-Delays are useful for 2 reasons — ping and server lag.
+Offsets are useful for 2 reasons — ping and server lag.
 
 If you have high ping to Mojang's APIs (api.minecraftservices.com, not api.mojang.com - they're seperate servers) then using a higher ping is recommended, vice versa goes for lower pings. Note that MinecraftServices is hosted in Ashburn, Virginia. 
 

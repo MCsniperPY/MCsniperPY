@@ -210,11 +210,80 @@ Awesome! Now that you've put your account\(s\) in the accounts.txt file it's tim
 
 ###### Note that currently only Mojang accounts are supported.
 
+
+## Config.ini
+
+
+
+```ini
+[sniper]
+timing_system = teun
+auto_claim_namemc = no
+snipe_requests = 3
+```
+**timing_system:** `kqzz_api` / `namemc` / `teun` (namemc does not work at times because cloudflare blocks the scraper, `teun` is the default value and works most of the time)
+
+**auto_claim_namemc:** whether the namemc account is claimed automatically
+
+**snipe_requests:** the amount of requests for every account in your `accounts.txt` File. (For Example: 10 Accounts = 30 Requests)
+
+
+
+```ini
+[accounts]
+max_accounts = 1
+authentication_delay = 500
+start_authentication = 720
+```
+**max_accounts:** The maximum number of accounts allowed in your `accounts.txt` file before MCsniperPY warns you (1 is recommended)
+
+**authentication_delay:** milliseconds between authorizing each account
+
+**start_authentication:** minutes before droptime to authenticate
+
+
+```ini
+[skin]
+change_skin_on_snipe = yes
+skin_change_type = username
+skin = notch
+skin_variant = slim
+```
+**change_skin_on_snipe:** `yes` or `no` to automatically change the skin on snipe
+
+**skin_change_type:** `username` / `url` / `path`
+
+**skin:** depends on what you put at **skin_change_type**
+- username: just the ign of another player
+- url: complete url to a skin file or namemc url (For Example https://texture.namemc.com/6e/b7/6eb76940096ed6ac.png or https://namemc.com/skin/6eb76940096ed6ac)
+- path: path to a skin file (For Example `C:/Users/kqzz/Desktop/skin.png`)
+
+
+**skin_variant:** `slim / classic`
+```ini
+[announce]
+announce_snipe = no
+announcement_code = 
+webhook_urls = 
+webhook_format = sniped `{name}` with `{searches}` searches!
+```
+
+**announce_snipe:** `yes` / `no` announce snipe throught custom announce
+
+**announcement_code:** announcement code (cannot be generated atm)
+
+**webhook_urls:** webhook urls, separated by commas (if you have one url, then no need for any comma)
+
+**webhook_format:** webhook format. see example above.
+
+
+
+
 ## Offset
 
 An offset is the time in milliseconds that the sniper starts to send requests before the name drop time. If a name drops at `10:00:59` and you tell the sniper to use a delay of `1000`, the sniper will start sending the requests at `10:00:58` because 1000 milliseconds = 1 second.
 
-Delays are useful for 2 reasons — ping and server lag.
+Offsets are useful for 2 reasons — ping and server lag.
 
 If you have high ping to Mojang's APIs (api.minecraftservices.com, not api.mojang.com - they're seperate servers) then using a higher ping is recommended, vice versa goes for lower pings. Note that MinecraftServices is hosted in Ashburn, Virginia. 
 
@@ -270,7 +339,7 @@ YOURPYTHONPREFIX -m mcsniperpy --help
 ```shell
 # You need git, python, and pip installed for this to work
 git clone https://github.com/MCsniperPY/MCsniperPY.git
-cd ./MCSniperPY
+cd ./MCsniperPY
 git checkout recode
 YOURPYTHONCOMMAND -m pip install --editable .
 YOURPYTHONCOMMAND -m mcsniperpy --help

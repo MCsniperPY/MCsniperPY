@@ -1,4 +1,5 @@
 import asyncio
+import time
 import ssl
 from datetime import datetime
 from typing import Tuple
@@ -213,11 +214,11 @@ class Account:
         await writer.drain()
         self.readers_writers.append((reader, writer))
 
-    async def snipe(self, writer: asyncio.StreamWriter, do_log: bool = True) -> None:
+    async def snipe(self, writer: asyncio.StreamWriter, do_log: bool = True, droptime: int = 0) -> None:
         writer.write(self.snipe_data[-2:])
         await writer.drain()
         if do_log:
-            log.info(f"sent request @ {datetime.now()}")
+            log.info(f"sent request @ {round(time.time() - droptime, 5)}")
 
     async def snipe_read(
         self,
@@ -225,9 +226,10 @@ class Account:
         reader: asyncio.StreamReader,
         writer: asyncio.StreamWriter,
         do_log: bool = True,
+        droptime: int = 0,
     ) -> Tuple[bool, str, float]:
         resp = await reader.read(12)
-        now = datetime.now()
+        now = time.time()
         status = int(resp[9:12])
         is_success = status < 300
 
@@ -242,5 +244,5 @@ class Account:
             )
             pretty_name = "%s%s%s" % (color.l_cyan, name, color.reset)
 
-            log.info("[%s] [%s] @ %s" % (pretty_name, pretty_status, now))
-        return is_success, self.email, now.timestamp()
+            log.info("[%s] [%s] @ %s" % (pretty_name, pretty_status, round(now - droptime, 5)))
+        return is_success, self.email, now

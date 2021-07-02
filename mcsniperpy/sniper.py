@@ -225,7 +225,7 @@ class Sniper:
         await asyncio.gather(*pre_snipe_coroutines)
 
         snipe_coroutines = [
-            acc.snipe(acc.readers_writers[i][1])
+            acc.snipe(acc.readers_writers[i][1], droptime=droptime)
             for i in range(self.snipe_requests)
             for acc in self.accounts
         ]
@@ -238,7 +238,8 @@ class Sniper:
             *[
                 acc.snipe_read(
                     target, acc.readers_writers[i][0],
-                    acc.readers_writers[i][1]
+                    acc.readers_writers[i][1],
+                    droptime=droptime
                 )
                 for i in range(self.snipe_requests)
                 for acc in self.accounts

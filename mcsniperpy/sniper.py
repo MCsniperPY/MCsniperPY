@@ -118,7 +118,7 @@ class Sniper:
         self.do_announce = self.user_config.config["announce"].getboolean(
             "announce_snipe", "no"
         )
-        self.announce_code = self.user_config.config["announce"].getboolean(
+        self.announce_code = self.user_config.config["announce"].get(
             "announce_code", ""
         )
         webhook_urls = self.user_config.config["announce"].get(

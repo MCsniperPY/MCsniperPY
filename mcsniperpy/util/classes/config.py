@@ -92,7 +92,7 @@ def create_user_config() -> configparser.ConfigParser:
 
     user_config["announce"] = {
         "announce_snipe": "no",
-        "announcement_code": "",
+        "announce_code": "",
         "webhook_urls": "",
         "webhook_format": "sniped `{name}` with `{searches}` searches!",
     }

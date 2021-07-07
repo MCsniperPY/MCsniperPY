@@ -180,7 +180,7 @@ class Sniper:
             "teun": teun_timing,
             "ckm": coolkidmacho_timing,
             "coolkidmacho": coolkidmacho_timing,
-        }.get(self.timing_system, "teun")(target, self.session)
+        }.get(self.timing_system, "ckm")(target, self.session)
 
         await self.snipe(droptime, target, offset)
 

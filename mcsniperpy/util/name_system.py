@@ -97,7 +97,7 @@ async def coolkidmacho_timing(
         session: RequestManager
 ):
     resp, _, resp_json = await session.get(
-        f"https://api.coolkidmacho.com/droptime/{username}"
+        f"http://api.coolkidmacho.com/droptime/{username}"
     )
 
     if resp.status < 300:

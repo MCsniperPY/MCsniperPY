@@ -217,11 +217,11 @@ Awesome! Now that you've put your account\(s\) in the accounts.txt file it's tim
 
 ```ini
 [sniper]
-timing_system = teun
+timing_system = ckm
 auto_claim_namemc = no
 snipe_requests = 3
 ```
-**timing_system:** `kqzz_api` / `namemc` / `teun` (namemc does not work at times because cloudflare blocks the scraper, `teun` is the default value and works most of the time)
+**timing_system:** `kqzz_api` / `namemc` / `teun` / `ckm` (namemc does not work at times because cloudflare blocks the scraper, `ckm` is the default value and newest API)
 
 **auto_claim_namemc:** whether the namemc account is claimed automatically
 

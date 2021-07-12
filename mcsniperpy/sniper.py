@@ -254,6 +254,9 @@ class Sniper:
                     f"success{self.color.white}]{self.color.reset} "
                     f"sniped {target} onto {success_acc.email}"
                 )
+                self.log.info(
+                    f"If you like this sniper, please consider donating at {self.color.l_green}https://mcsniperpy.com/donate{self.color.reset} :)"
+                )
                 if self.do_announce:
                     await announce.announce(
                         username=target,

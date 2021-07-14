@@ -14,7 +14,6 @@ async def peet_timing(username: str, session: RequestManager):
         f"https://drops.peet.ws/droptime?name={username}",
         headers = {"User-Agent": "PiratSnipe"}
     )
-    print(resp_json)
     if resp.status < 300:
         log.info(
             f"sniping {color.cyan}{username}{color.reset} @ {datetime.fromtimestamp(resp_json['UNIX'])}"

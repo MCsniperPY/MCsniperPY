@@ -9,9 +9,10 @@ from mcsniperpy.util.request_manager import RequestManager
 from mcsniperpy.util.utils import close
 
 async def peet_timing(username: str, session: RequestManager):
-    session.ua = "PiratSnipe"
+   
     resp, _, resp_json = await session.get(
-        f"https://drops.peet.ws/droptime?name={username}"
+        f"https://drops.peet.ws/droptime?name={username}",
+        ua = "PiratSnipe"
     )
     print(resp_json)
     if resp.status < 300:

@@ -8,7 +8,7 @@ import aiohttp
 from mcsniperpy.util import announce, request_manager
 from mcsniperpy.util import utils as util
 from mcsniperpy.util.classes.config import BackConfig, Config, populate_configs
-from mcsniperpy.util.name_system import api_timing, namemc_timing, teun_timing, coolkidmacho_timing
+from mcsniperpy.util.name_system import api_timing, namemc_timing, teun_timing, coolkidmacho_timing, peet_timing
 
 
 class Sniper:

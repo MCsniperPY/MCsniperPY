@@ -12,7 +12,7 @@ async def peet_timing(username: str, session: RequestManager):
    
     resp, _, resp_json = await session.get(
         f"https://drops.peet.ws/droptime?name={username}",
-        headers = {"User-Agent": "PiratSnipe"}
+        headers={"User-Agent": "PiratSnipe"}
     )
     if resp.status < 300:
         log.info(
@@ -20,7 +20,7 @@ async def peet_timing(username: str, session: RequestManager):
         )
         return resp_json["UNIX"]
     log.error(
-        f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through teuns's MC API"
+        f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through Peet's MC API"
     )
     log.error(f"{resp_json['error']} | {resp.status}")
 

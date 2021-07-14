@@ -12,7 +12,7 @@ async def peet_timing(username: str, session: RequestManager):
    
     resp, _, resp_json = await session.get(
         f"https://drops.peet.ws/droptime?name={username}",
-        ua = "PiratSnipe"
+        headers = {"User-Agent": "PiratSnipe"}
     )
     print(resp_json)
     if resp.status < 300:

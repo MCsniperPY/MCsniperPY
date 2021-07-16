@@ -18,6 +18,8 @@
 		<a href="https://mcsniperpy.com">Website</a>
 		•
 		<a href="https://docs.mcsniperpy.com">Docs</a>
+		•
+		<a href="https://mcsniperpy.com/donate">Donate</a>
 	</strong>
 </p>
 <p align="center">

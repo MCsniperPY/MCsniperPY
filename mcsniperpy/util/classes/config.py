@@ -130,12 +130,12 @@ def populate_configs(no_confirm=False):
         if log.yes_or_no("Overwrite current accounts file:"):
             with open(
                 os.path.join(config["sniper"]["init_path"],
-                             "accounts.txt"), "w"
+                             "accounts.txt"), "w", encoding="utf-8"
             ) as file:
                 file.write(DEFAULT_ACCOUNTS_FILE)
     else:
         with open(
-            os.path.join(config["sniper"]["init_path"], "accounts.txt"), "w"
+            os.path.join(config["sniper"]["init_path"], "accounts.txt"), "w", encoding="utf-8"
         ) as file:
             file.write(DEFAULT_ACCOUNTS_FILE)
 

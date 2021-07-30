@@ -11,7 +11,7 @@ install_requires = [line.strip() for line in open("requirements.txt").readlines(
 
 setup(
     name="MCsniperPY",
-    version="3.4.4",
+    version="3.4.5",
     description="Minecraft name sniper written in Python",
     long_description=long_description,
     long_description_content_type="text/markdown",

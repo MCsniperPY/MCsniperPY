@@ -25,7 +25,7 @@ def parse_accs(file_path) -> List[Account]:
     accounts = list()
     log.debug(f"accounts path: {file_path}")
     if os.path.isfile(file_path):
-        lines = [line.strip().split(":") for line in open(file_path).readlines()]
+        lines = [line.strip().split(":") for line in open(file_path, encoding="utf-8").readlines()]
     else:
         log.error("accounts.txt file not found!")
         close(1)

@@ -8,7 +8,7 @@ import aiohttp
 from mcsniperpy.util import announce, request_manager
 from mcsniperpy.util import utils as util
 from mcsniperpy.util.classes.config import BackConfig, Config, populate_configs
-from mcsniperpy.util.name_system import api_timing, namemc_timing, teun_timing, coolkidmacho_timing
+from mcsniperpy.util.name_system import api_timing, namemc_timing, star_shopping_timing, teun_timing, coolkidmacho_timing, peet_timing
 
 
 class Sniper:
@@ -175,12 +175,12 @@ class Sniper:
             self.log.warn("For the best chances use only 1 account.")
 
         droptime = await {
-            "kqzz_api": api_timing,
-            "namemc": namemc_timing,
-            "teun": teun_timing,
             "ckm": coolkidmacho_timing,
             "coolkidmacho": coolkidmacho_timing,
-        }.get(self.timing_system, coolkidmacho_timing)(target, self.session)
+            "star.shopping": star_shopping_timing,
+            "star": star_shopping_timing,
+            "api.star.shopping": star_shopping_timing,
+        }.get(self.timing_system, star_shopping_timing)(target, self.session)
 
         await self.snipe(droptime, target, offset)
 

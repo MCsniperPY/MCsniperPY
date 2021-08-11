@@ -8,6 +8,47 @@ from mcsniperpy.util.logs_manager import Logger as log, Color as color
 from mcsniperpy.util.request_manager import RequestManager
 from mcsniperpy.util.utils import close
 
+async def peet_timing(username: str, session: RequestManager):
+   
+    resp, _, resp_json = await session.get(
+        f"https://drops.peet.ws/droptime?name={username}",
+        headers={"User-Agent": "PiratSnipe"}
+    )
+    if resp.status < 300:
+        log.info(
+            f"sniping {color.cyan}{username}{color.reset} @ {datetime.fromtimestamp(resp_json['UNIX'])}"
+        )
+        return resp_json["UNIX"]
+    log.error(
+        f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through Peet's MC API"
+    )
+    log.error(f"{resp_json['error']} | {resp.status}")
+
+    close(0)
+    return 0
+        
+
+async def star_shopping_timing(username: str, session: RequestManager):
+    
+    resp, _, resp_json = await session.get(
+        f"https://api.star.shopping/droptime/{username}",
+        headers={"User-Agent": "Sniper"}
+    )
+
+    if resp.status < 300:
+        log.info(
+            f"sniping {color.cyan}{username}{color.reset} @ {datetime.fromtimestamp(resp_json['unix'])}"
+        )
+        return resp_json["unix"]
+    
+    log.error(
+        f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through star.shopping"
+    )
+
+    log.error(f"{resp_json['error']} | {resp.status}")
+
+    close(0)
+    return 0
 
 async def namemc_timing(username: str, session: RequestManager) -> float:
     resp, text, _ = await session.get(f"https://namemc.com/search?q={username}")

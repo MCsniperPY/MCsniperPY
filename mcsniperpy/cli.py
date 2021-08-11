@@ -6,7 +6,6 @@ from mcsniperpy import Sniper
 from mcsniperpy.util import logs_manager as log
 from mcsniperpy.util import ping_tester
 from mcsniperpy.util.name_system import next_name
-from mcsniperpy.util.offset_calculator import OffsetCalculator
 
 app = typer.Typer()
 
@@ -91,20 +90,11 @@ def ping(
 
 @app.command()
 def offset_test(
-    accuracy: int = typer.Option(
-        20, help="How accurate do you want your offset to be?"
-    ),
-    aim_for: float = typer.Option(
-        0.15, help="What time do you want to aim for?"),
-):
-    """
-    Find the optimal offset for you. Note: this is not entirely accurate since\
- it does not compensate for api lag caused
- by other snipers
-    """
-    offset_calc = OffsetCalculator(accuracy=accuracy, aim_for=aim_for)
-    asyncio.get_event_loop().run_until_complete(offset_calc.run())
-    offset_calc.on_shutdown()
+): 
+    print("offset test was removed due to innacuracy")
+    print("it will not be re-added")
+    print("change your offset around until 403 requests around around .01 through .04 and do not rely on an offset test of any kind for best results")
+    print("better instructions will be added later")
 
 
 @app.command()

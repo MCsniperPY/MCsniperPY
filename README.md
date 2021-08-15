@@ -36,7 +36,11 @@
   <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/MCsniperPY?logo=python&logoColor=%2370a1d2">
 </p>
 
+
+
+
 <p align="center">
+	<a href="https://mcsniperpy.com/discord"><img src="https://invidget.switchblade.xyz/yp69ZqtxNk"/><a/>
 	<img src="https://i.imgur.com/5PUNwfR.gif" width="550" alt="example">
 </p>
 

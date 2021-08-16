@@ -45,7 +45,7 @@ async def star_shopping_timing(username: str, session: RequestManager):
         f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through star.shopping"
     )
 
-    log.error(f"{resp_json['error']} | {resp.status}")
+    log.error(f"{resp.text} | {resp.status}")
 
     close(0)
     return 0
@@ -150,7 +150,7 @@ async def coolkidmacho_timing(
     log.error(
         f"failed to parse droptime for {color.l_cyan}{username}{color.reset} through Coolkidmacho's droptime API"
     )
-    log.error(f"{resp_json['error']} | {resp.status}")
+    log.error(f"{resp.text} | {resp.status}")
 
     close(0)
     return 0

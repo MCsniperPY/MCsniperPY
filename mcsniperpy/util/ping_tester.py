@@ -8,7 +8,6 @@ import typer
 from mcsniperpy.util.logs_manager import Color as color
 from mcsniperpy.util.logs_manager import Logger as log
 
-
 async def check(url: str, iterations: int):
     async def ping():
         try:
@@ -50,4 +49,3 @@ async def check(url: str, iterations: int):
 async def ping_test(iterations):
     print()
     await check("https://api.minecraftservices.com/minecraft", iterations)
-    # await check("https://api.mojang.com") ### Literally useless lol

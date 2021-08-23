@@ -25,7 +25,7 @@ def parse_accs(file_path) -> List[Account]:
     accounts = list()
     log.debug(f"accounts path: {file_path}")
     if os.path.isfile(file_path):
-        lines = [line.strip().split(":") for line in open(file_path, encoding="utf-8").readlines()]
+        lines = [line.strip().split(":") for line in open(file_path, encoding="utf-8", errors="ignore").readlines()]
     else:
         log.error("accounts.txt file not found!")
         close(1)
@@ -80,11 +80,12 @@ def parse_accs_string(accounts_string) -> List[Account]:
     return accounts
 
 
-def find_acc_by_email(email, accounts):
+def find_acc_by_email(email: str, accounts: list) -> str:
     for acc in accounts:
         if acc.email == email:
             return acc
     return None
+    
 
 
 def close(code) -> None:
@@ -100,7 +101,7 @@ async def upcoming(
 ):
     full_url = f"{url}?length_op={length_op}&length={length}&searches={searches}"
     resp, _, resp_json = await session.get(full_url)
-    if resp.status < 300:
+    if int(resp.status) < 300:
         return resp_json
 
     return None

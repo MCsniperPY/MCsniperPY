@@ -35,7 +35,7 @@ DISCORD_RESP_CODES = {
     405: "method not allowed",
     429: "too many requests",
     502: "gateway unavailable",
-    500: "server error",
+    500: "server error"
 }
 
 

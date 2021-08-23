@@ -7,7 +7,7 @@ from time import perf_counter
 import typer
 from mcsniperpy.util.logs_manager import Color as color
 from mcsniperpy.util.logs_manager import Logger as log
-
+import exceptions
 
 async def check(url: str, iterations: int):
     async def ping():
@@ -43,11 +43,12 @@ async def check(url: str, iterations: int):
             await asyncio.sleep(0.01)
 
     print()
-    log.info(f"Host {color.l_cyan}» {color.blue}{urllib.parse.urlparse(url).hostname}")
-    log.info(f"Ping {color.l_cyan}» {color.blue}{sum(pings) / 5}ms")
+    #log.info(f"Host {color.l_cyan}» {color.blue}{urllib.parse.urlparse(url).hostname}")
+    #log.info(f"Ping {color.l_cyan}» {color.blue}{sum(pings) / 5}ms")
 
 
 async def ping_test(iterations):
     print()
     await check("https://api.minecraftservices.com/minecraft", iterations)
-    # await check("https://api.mojang.com") ### Literally useless lol
+
+newfeature = asyncio.run(ping_test(1))

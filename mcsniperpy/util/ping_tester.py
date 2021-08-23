@@ -43,12 +43,10 @@ async def check(url: str, iterations: int):
             await asyncio.sleep(0.01)
 
     print()
-    #log.info(f"Host {color.l_cyan}» {color.blue}{urllib.parse.urlparse(url).hostname}")
-    #log.info(f"Ping {color.l_cyan}» {color.blue}{sum(pings) / 5}ms")
+    log.info(f"Host {color.l_cyan}» {color.blue}{urllib.parse.urlparse(url).hostname}")
+    log.info(f"Ping {color.l_cyan}» {color.blue}{sum(pings) / 5}ms")
 
 
 async def ping_test(iterations):
     print()
     await check("https://api.minecraftservices.com/minecraft", iterations)
-
-newfeature = asyncio.run(ping_test(1))

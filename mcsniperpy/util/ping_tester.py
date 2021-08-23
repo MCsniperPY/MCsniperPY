@@ -7,7 +7,6 @@ from time import perf_counter
 import typer
 from mcsniperpy.util.logs_manager import Color as color
 from mcsniperpy.util.logs_manager import Logger as log
-import exceptions
 
 async def check(url: str, iterations: int):
     async def ping():

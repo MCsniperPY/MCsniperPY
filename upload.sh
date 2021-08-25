@@ -12,7 +12,7 @@ if ! [ -x "$(command -v twine)" ]; then
 			choice="y";
 		else
 			echo "You do not have twine installed, do you want to restart with root permission and install it? (Y/N): ";
-			read TMP;
+			read -r TMP;
 			if [ $TMP  == "y" ] || [ $TMP == "Y" ]; then
 				exec sudo "$0" "$@"
 			else

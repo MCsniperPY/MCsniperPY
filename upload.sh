@@ -9,7 +9,7 @@ manager[/etc/debian_version]=apt-get;
 if ! [ -x "$(command -v twine)" ]; then
 		if [ "$UID" -eq 0 ]; then
 			echo "Press enter to install twine";
-			CHOICE="y";
+			choice="y";
 		else
 			echo "You do not have twine installed, do you want to restart with root permission and install it? (Y/N): ";
 			read TMP;
@@ -20,7 +20,7 @@ if ! [ -x "$(command -v twine)" ]; then
 				exit
 			fi
 		fi
-		if [ $CHOICE == "y" ]; then
+		if [ $choice == "y" ]; then
 			for f in ${!manager[@]}
 			do
 				if [[ -f $f ]];then

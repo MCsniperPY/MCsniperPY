@@ -2,24 +2,17 @@ import pathlib
 
 from setuptools import setup
 
-here = pathlib.Path(__file__).parent.resolve()
-
-# Get the long description from the README file
-long_description = (here / "README.md").read_text(encoding="utf-8")
-
-install_requires = [line.strip() for line in open("requirements.txt").readlines()]
-
 setup(
     name="MCsniperPY",
     version="3.4.7",
     description="Minecraft name sniper written in Python",
-    long_description=long_description,
+    long_description=(pathlib.Path(__file__).parent.resolve() / "README.md").read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
     url="https://mcsniperpy.com",
     author="Kqzz",
     license="MIT",
     packages=["mcsniperpy", "mcsniperpy.util", "mcsniperpy.util.classes"],
-    install_requires=install_requires,
+    install_requires=[x.rstrip() for x in open("requirements.txt", "r")],
     entry_points={"console_scripts": ["mcsniperpy=mcsniperpy.cli:cli"]},
     python_requires=">=3.8",
     classifiers=[
@@ -30,6 +23,6 @@ setup(
     ],
     project_urls={
         'GitHub': 'https://github.com/MCsniperPY/MCsniperPY',
-        'Documentation': 'https://docs.mcsniperpy.com'
-    }
+        'Documentation': 'https://docs.mcsniperpy.com',
+    },
 )

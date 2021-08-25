@@ -12,7 +12,7 @@ setup(
     author="Kqzz",
     license="MIT",
     packages=["mcsniperpy", "mcsniperpy.util", "mcsniperpy.util.classes"],
-    install_requires=[x.rstrip() for x in (open("requirements.txt", "r"))],
+    install_requires=[x.rstrip() for x in open("requirements.txt", "r")],
     entry_points={"console_scripts": ["mcsniperpy=mcsniperpy.cli:cli"]},
     python_requires=">=3.8",
     classifiers=[

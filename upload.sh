@@ -1,10 +1,10 @@
 #!/bin/bash
 
-declare -A manager;
-manager[/etc/redhat-release]=yum;
-manager[/etc/arch-release]=pacman;
-manager[/etc/gentoo-release]=emerge;
-manager[/etc/debian_version]=apt-get;
+declare -A packagepackageManager;
+packageManager[/etc/redhat-release]=yum;
+packageManager[/etc/arch-release]=pacman;
+packageManager[/etc/gentoo-release]=emerge;
+packageManager[/etc/debian_version]=apt-get;
 
 if ! [ -x "$(command -v twine)" ]; then
 		if [ "$UID" -eq 0 ]; then
@@ -21,12 +21,12 @@ if ! [ -x "$(command -v twine)" ]; then
 			fi
 		fi
 		if [ $choice == "y" ]; then
-			for f in ${!manager[@]}
+			for f in ${!packageManager[@]}
 			do
 				if [[ -f $f ]];then
-					manager=${manager[$f]}
-					echo "Detected $manager as your package manager";
-					case $manager in
+					packageManager=${packageManager[$f]}
+					echo "Detected $packageManager as your package package manager";
+					case $packageManager in
 						pacman)
 							pacman -S twine
 						;;

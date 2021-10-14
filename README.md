@@ -1,3 +1,17 @@
+
+<h1 align="center">
+	⚠️ IMPORTANT ⚠️
+</h1>
+
+<p align="center">
+This sniper does not support Microsoft accounts or prename / gc sniping
+</p>
+<p align="center">
+Use MCsniperGO for both of those features - 
+https://github.com/Kqzz/MCsniperGO
+</p>
+
+	
 <h1 align="center">
 	<img
 		width="500"
@@ -45,14 +59,6 @@
 	<img src="https://i.imgur.com/5PUNwfR.gif" width="550" alt="example">
 </p>
 
-
-## ⚠️ IMPORTANT ⚠️
-
-**This sniper does not support Microsoft accounts or prename / gc sniping**
-
-***Use MCsniperGO for both of those features***
-
-https://github.com/Kqzz/MCsniperGO
 
 ## Overview
 

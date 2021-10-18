@@ -3,6 +3,10 @@
 	⚠️ IMPORTANT ⚠️
 </h1>
 
+<h1 align="center">
+	DO NOT USE MCSNIPERPY -- READ BELOW
+</h1>
+
 <p align="center">
 This sniper does not support Microsoft accounts or prename / gc sniping
 </p>

@@ -15,7 +15,33 @@ Use MCsniperGO for both of those features -
 https://github.com/Kqzz/MCsniperGO
 </h1>
 
-	
+<h1 align="center">
+https://github.com/Kqzz/MCsniperGO
+</h1>
+
+<h1 align="center">
+https://github.com/Kqzz/MCsniperGO
+</h1>
+
+<h1 align="center">
+https://github.com/Kqzz/MCsniperGO
+</h1>
+
+
+<h1 align="center">
+https://github.com/Kqzz/MCsniperGO
+</h1>
+
+<h1 align="center">
+https://github.com/Kqzz/MCsniperGO
+</h1>
+
+<h1 align="center">
+https://github.com/Kqzz/MCsniperGO
+</h1>
+
+
+
 <h1 align="center">
 	<img
 		width="500"

@@ -8,7 +8,7 @@
 </h1>
 
 <h1 align="center">
-This sniper does not support Microsoft accounts or prename / gc sniping and is MUCH harder to use than MCsniperGO
+JUST DONT USE THIS IT DOESNT EVEN WORK
 </h1>
 <h1 align="center">
 Use MCsniperGO for both of those features - 

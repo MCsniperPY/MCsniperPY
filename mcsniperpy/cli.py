@@ -126,4 +126,10 @@ def cli():
 
 
 if __name__ == "__name__":
-    cli()
+    # uncomment cli to use the sniper
+    # cli()
+
+    print("THIS SNIPER IS DONE")
+    print("USE MCSNIPERGO")
+    print("github.com/Kqzz/MCsniperGO")
+    print("Made by https://kqzz.me")

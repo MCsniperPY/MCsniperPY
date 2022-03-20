@@ -108,28 +108,27 @@ def init(no_confirm: bool = typer.Option(False, help="remove confirmation messag
 
 
 def cli():
-    try:
-        app()
-    # pylint: disable=broad-except
-    except Exception as ex:
-        traceback = ex.__traceback__
-        sniper.log.error(f"type: {type(ex).__name__}")
-        sniper.log.error(f"message: {str(ex)}")
-        while traceback is not None:
-            # pylint: disable=no-member
-            sniper.log.error(
-                f"{traceback.tb_frame.f_code.co_filename}:{traceback.tb_lineno}"
-            )
-            traceback = traceback.tb_next
-    finally:
-        sniper.on_shutdown()
-
-
-if __name__ == "__name__":
-    # uncomment cli to use the sniper
-    # cli()
+    # try:
+    #     app()
+    # # pylint: disable=broad-except
+    # except Exception as ex:
+    #     traceback = ex.__traceback__
+    #     sniper.log.error(f"type: {type(ex).__name__}")
+    #     sniper.log.error(f"message: {str(ex)}")
+    #     while traceback is not None:
+    #         # pylint: disable=no-member
+    #         sniper.log.error(
+    #             f"{traceback.tb_frame.f_code.co_filename}:{traceback.tb_lineno}"
+    #         )
+    #         traceback = traceback.tb_next
+    # finally:
+    #     sniper.on_shutdown()
 
     print("THIS SNIPER IS DONE")
     print("USE MCSNIPERGO")
     print("github.com/Kqzz/MCsniperGO")
     print("Made by https://kqzz.me")
+
+
+if __name__ == "__name__":
+    cli()

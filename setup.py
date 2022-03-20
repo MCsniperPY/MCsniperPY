@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="MCsniperPY",
-    version="3.4.9",
+    version="3.5",
     description="Minecraft name sniper written in Python",
     long_description=(pathlib.Path(__file__).parent.resolve() / "README.md").read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
